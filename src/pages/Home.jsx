@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import EmailSignup from '../components/EmailSignup';
 import { fetchPersonalization } from '../lib/personalization';
 import { callSupabaseEdge } from '../lib/supabase-edge';
+import { useSiteContent } from '../hooks/useSiteContent';
 import './Home.css';
 
 const pressures = [
@@ -37,6 +38,7 @@ const path = [
 export default function Home() {
   const [optEmail, setOptEmail] = useState('');
   const [optStatus, setOptStatus] = useState(null);
+  const content = useSiteContent();
 
   async function handleOptIn(e) {
     e.preventDefault();
@@ -61,11 +63,10 @@ export default function Home() {
       {/* 1. HERO — premium serif headline, aqua accent, brand rhythm */}
       <section className="page-hero home-hero">
         <div className="container container--narrow">
-          <span className="section__eyebrow">Start here / not everywhere</span>
-          <h1>Build Faceless <span className="hero-accent">Digital Assets.</span></h1>
+          <span className="section__eyebrow">{content['home.heroEyebrow']}</span>
+          <h1>{content['home.heroHeadline']}</h1>
           <p className="hero__tagline">
-            Start your path to freedom-based digital ownership. No camera. No invented
-            urgency. No promise of overnight income.
+            {content['home.heroTagline']}
           </p>
           <div className="action-row home-hero__ctas">
             <a href="/quiz?start=true" className="btn btn--primary">Find Your Superpower First →</a>
@@ -118,7 +119,7 @@ export default function Home() {
       <section className="story-section story-section--white" id="build-path">
         <div className="story-heading">
           <span className="label label--blue">Start here / not everywhere</span>
-          <h2>One path from retirement anxiety to an asset you own.</h2>
+          <h2>{content['home.pathHeading']}</h2>
           <p>You do not need another pile of ideas. You need a sequence that respects your time, privacy, experience, and actual financial goal.</p>
         </div>
         <div className="path-list">
@@ -235,7 +236,7 @@ export default function Home() {
 
       <section className="final-cta">
         <span className="label label--blue">Your next chapter can own property</span>
-        <h2>Start with the truth of your numbers. Then build one useful asset.</h2>
+        <h2>{content['home.finalCtaHeading']}</h2>
         <div className="action-row">
           <a href="/gap" className="btn btn--outline">Calculate My Retirement Gap →</a>
           <a href="/quiz?start=true" className="btn btn--primary btn--large">Find Your Superpower First →</a>

@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Audience network icon">
-  <circle cx="7" cy="6" r="3" fill="#F7F4EF"/>
-  <circle cx="17" cy="6" r="3" fill="#F7F4EF"/>
-  <circle cx="12" cy="16" r="3" fill="#1E4AFF" stroke="none"/>
-  <path d="M8.5 8.5 C9.5 11.5 11 13 12 13 C13 13 14.5 11.5 15.5 8.5"/>
-  <line x1="7" y1="9" x2="10" y2="13"/>
-  <line x1="17" y1="9" x2="14" y2="13"/>
-</svg>

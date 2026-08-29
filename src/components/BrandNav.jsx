@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSiteContent } from '../hooks/useSiteContent';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -15,13 +16,14 @@ const externalLinks = [];
 
 export default function BrandNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const content = useSiteContent();
 
   return (
     <header className="brand-nav">
       <div className="brand-nav__inner dd-container">
         <Link to="/" className="brand-logo" aria-label="DigitallyDefined home">
           <span className="brand-logo__name">Digitally<span>Defined</span></span>
-          <small>Digital Reinvention for Gen X Women</small>
+          <small>{content['nav.tagline']}</small>
         </Link>
 
         <nav className="desktop-nav brand-nav__links" aria-label="Primary navigation">

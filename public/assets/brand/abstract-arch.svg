@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Abstract arch">
-  <rect x="24" y="34" width="152" height="142" fill="#F7F4EF" stroke="#000000" stroke-width="2"/>
-  <path d="M40 176 L40 96 A60 60 0 0 1 160 96 L160 176 Z" fill="none" stroke="#000000" stroke-width="3"/>
-  <path d="M64 176 L64 110 A36 36 0 0 1 136 110 L136 176 Z" fill="#1E4AFF"/>
-  <circle cx="100" cy="70" r="8" fill="#FF7A00"/>
-</svg>

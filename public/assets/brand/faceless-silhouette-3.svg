@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Faceless silhouette with property chip">
-  <rect x="138" y="22" width="38" height="30" fill="#1E4AFF" stroke="#000000" stroke-width="2"/>
-  <polygon points="138,28 150,18 178,18 178,28" fill="#FF7A00" stroke="#000000" stroke-width="2"/>
-  <circle cx="100" cy="62" r="34" fill="#000000"/>
-  <path d="M40 178 C40 138 70 120 100 120 C130 120 160 138 160 178 L160 182 L40 182 Z" fill="#000000"/>
-  <circle cx="122" cy="150" r="7" fill="#FF7A00"/>
-</svg>
