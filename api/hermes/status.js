@@ -7,7 +7,10 @@ export default async function handler(req, res) {
     process.env.VITE_SUPABASE_URL || 'https://dijjlppdljpcgyoakdnq.supabase.co';
   const endpoint =
     process.env.VITE_HERMES_ENDPOINT || `${supabaseUrl}/functions/v1/hermes`;
-  const apiKey = process.env.VITE_DASHBOARD_API_KEY || '';
+  // Same shared key the client uses. Prefer the VITE_ build var (inlined into
+  // the client bundle and also available to serverless via project env); fall
+  // back to the canonical secret name so the function works in both setups.
+  const apiKey = process.env.VITE_DASHBOARD_API_KEY || process.env.DASHBOARD_API_KEY || '';
   if (!apiKey) {
     console.error('[hermes-status] VITE_DASHBOARD_API_KEY is not set. Status probe may be rejected (401).');
   }

@@ -1,0 +1,6 @@
+supabase/
+scripts/
+.env*
+.vercel
+docs/
+node_modules/
