@@ -49,12 +49,6 @@ export default function ToolShell({ eyebrow, title, tagline, ctas = [], points =
           </div>
         )}
 
-        {ctas.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-            {ctas.map((c, i) => <DDCTA key={i} {...c} />)}
-          </div>
-        )}
-
         {related.length > 0 && (
           <div style={{ borderTop: '1px solid rgba(17,17,17,0.08)', marginTop: '2rem', paddingTop: '1.25rem' }}>
             <p style={{ fontFamily: theme.fonts.heading, fontWeight: 800, fontSize: '0.8rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: theme.colors.textMuted, margin: '0 0 0.75rem' }}>

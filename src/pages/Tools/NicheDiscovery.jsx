@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { callAgent } from '../../lib/buzz-agents';
 import { fetchPersonalization } from '../../lib/personalization';
 

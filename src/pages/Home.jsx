@@ -20,37 +20,37 @@ const tools = [
   {
     step: '01',
     title: 'Niche Discovery',
-    desc: 'Find a profitable, low-competition niche in one search.',
+    description: 'Find a profitable, low-competition niche in one search.',
     cta: { label: 'Find a niche →', href: '/tool/niche', variant: 'primary' },
   },
   {
     step: '02',
     title: 'Trend Scanner',
-    desc: 'Spot rising demand before it gets crowded.',
+    description: 'Spot rising demand before it gets crowded.',
     cta: { label: 'Scan trends →', href: '/tool/trends', variant: 'secondary' },
   },
   {
     step: '03',
     title: 'Niche Scorecard',
-    desc: 'Validate an idea in minutes before you invest time.',
+    description: 'Validate an idea in minutes before you invest time.',
     cta: { label: 'Score my niche →', href: '/tool/scorecard', variant: 'primary' },
   },
   {
     step: '04',
     title: 'Roadmap Generator',
-    desc: 'Get a personalized build order for your first asset.',
+    description: 'Get a personalized build order for your first asset.',
     cta: { label: 'Build a roadmap →', href: '/tool/roadmap', variant: 'secondary' },
   },
   {
     step: '05',
     title: 'Product Builder',
-    desc: 'Turn expertise into a sellable digital product.',
+    description: 'Turn expertise into a sellable digital product.',
     cta: { label: 'Build a product →', href: '/tool/product', variant: 'primary' },
   },
   {
     step: '06',
     title: 'Social & Automations',
-    desc: 'Publish, follow up, and measure on autopilot.',
+    description: 'Publish, follow up, and measure on autopilot.',
     cta: { label: 'Automate it →', href: '/tool/social', variant: 'secondary' },
   },
 ];

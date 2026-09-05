@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { ToolStateProvider } from './context/ToolStateContext.jsx';
 import { initTracking, trackPageView } from './lib/tracking.js';
 import './styles/global.css';
@@ -30,11 +31,13 @@ window.history.pushState = (...args) => {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ToolStateProvider>
-      <BrowserRouter>
-        <App />
-        <Analytics />
-        <SpeedInsights />
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <App />
+          <Analytics />
+          <SpeedInsights />
+        </BrowserRouter>
+      </ErrorBoundary>
     </ToolStateProvider>
   </React.StrictMode>
 );

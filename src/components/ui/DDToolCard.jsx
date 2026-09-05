@@ -23,7 +23,7 @@ export default function DDToolCard({ step, title, description, cta, icon, note, 
         </span>
         <div style={{ flex: 1 }}>
           <h3 style={{ fontSize: '1.15rem', fontWeight: 800, fontFamily: theme.fonts.heading, letterSpacing: '-0.03em', margin: '0 0 0.4rem', color: theme.colors.textPrimary }}>{title}</h3>
-          <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: theme.colors.textMuted, margin: '0 0 0.5rem' }}>{desc}</p>
+          <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: theme.colors.textMuted, margin: '0 0 0.5rem' }}>{description}</p>
           {note ? <p style={{ fontSize: '0.85rem', color: theme.colors.textMuted }}>{note}</p> : null}
         </div>
       </div>
