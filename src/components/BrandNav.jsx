@@ -5,12 +5,11 @@ import { useSiteContent } from '../hooks/useSiteContent';
 
 const navLinks = [
   { href: '/', label: 'Home' },
+  { href: '/#tools', label: 'Tools' },
   { href: '/quiz', label: 'Quiz' },
-  { href: '/tools', label: 'Tools' },
-  { href: '/about', label: 'Our Mission' },
 ];
 
-const navCtas = [{ href: '/gap', label: 'Calculate My Gap →' }];
+const navCtas = [{ href: '/dashboard', label: 'Open Dashboard →' }];
 
 const externalLinks = [];
 
