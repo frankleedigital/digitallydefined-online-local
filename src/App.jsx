@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Quiz from './pages/Quiz/DigitalSuperpowerQuiz';
 import NicheDiscovery from './pages/Tools/NicheDiscovery';
+import NicheScanner from './pages/Tools/NicheScanner';
 import RoadmapGenerator from './pages/Tools/RoadmapGenerator';
 import Scorecard from './pages/Scorecard/NicheProfitabilityScorecard';
 import Trends from './pages/Tools/Trends';
@@ -37,6 +38,7 @@ function App() {
 
       {/* Tools */}
       <Route path="/tool/niche" element={tool('tools', <NicheDiscovery />)} />
+      <Route path="/tool/niche-scanner" element={tool('tools', <NicheScanner />)} />
       <Route path="/tool/trends" element={tool('tools', <Trends />)} />
       <Route path="/tool/roadmap" element={tool('roadmap', <RoadmapGenerator />)} />
       <Route path="/tool/scorecard" element={tool('scorecard', <Scorecard />)} />

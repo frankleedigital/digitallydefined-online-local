@@ -53,6 +53,12 @@ const tools = [
     description: 'Publish, follow up, and measure on autopilot.',
     cta: { label: 'Automate it →', href: '/tool/social', variant: 'secondary' },
   },
+  {
+    step: '07',
+    title: 'Niche Scanner',
+    description: 'The paid standalone: scan any idea, buy the full niche report.',
+    cta: { label: 'Scan a niche →', href: '/tool/niche-scanner', variant: 'primary' },
+  },
 ];
 
 const caseSteps = [

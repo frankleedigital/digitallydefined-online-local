@@ -5,6 +5,11 @@ import { getRoadmap } from '../../lib/roadmaps';
 import { scoreQuiz } from '../Quiz/QuizLogic';
 import { fetchPersonalization } from '../../lib/personalization';
 import { PuterSaveButton } from '../../components/Puter/PuterAuth.jsx';
+import { Check } from 'lucide-react';
+
+// Footer funnel capture — stored in website_leads AND synced to the Brevo list.
+const FOOTER_SOURCE = 'roadmap-generator-footer';
+const FOOTER_TAGS = ['roadmap-generator', 'footer-signup'];
 
 const QUESTIONS = [
   ['q1', 'When you learn a new tool, what do you do first?', [
@@ -83,6 +88,25 @@ export default function DigitalSuperpowerQuiz() {
   }, [resultKey]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Footer funnel capture (Brevo-backed via the public `subscribe` action).
+  const [footerOptin, setFooterOptin] = useState({ email: '', status: 'idle' });
+
+  const handleFooterSubmit = async (e) => {
+    e.preventDefault();
+    const value = String(footerOptin.email || '').trim();
+    if (!value) {
+      setFooterOptin((s) => ({ ...s, status: 'error' }));
+      return;
+    }
+    setFooterOptin((s) => ({ ...s, status: 'submitting' }));
+    try {
+      await callSupabaseEdge('subscribe', { name: '', email: value, source: FOOTER_SOURCE, tags: FOOTER_TAGS });
+      setFooterOptin((s) => ({ ...s, status: 'success' }));
+    } catch {
+      setFooterOptin((s) => ({ ...s, status: 'error' }));
+    }
+  };
 
   const roadmap = resultKey ? getRoadmap(resultKey) : null;
   const question = QUESTIONS[currentQuestion];
@@ -297,6 +321,47 @@ export default function DigitalSuperpowerQuiz() {
           </section>
         </>
       )}
+
+      {/* ——— FOOTER SIGNUP (funnel capture) ——— */}
+      <section className="ns-signup" style={{ background: '#111111', borderTop: '1px solid #111' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(3rem,6vw,4rem) 24px' }}>
+          <p className="section__eyebrow" style={{ color: 'var(--color-accent)' }}>Stay in the loop</p>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, letterSpacing: '-0.03em', fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)', color: '#ffffff', margin: '0.5rem 0 1rem' }}>
+            New tools land here first.
+          </h2>
+          <p style={{ fontSize: '1.1rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.72)', maxWidth: 560, margin: '0 0 1.5rem' }}>
+            One short email when a new tool goes live. No hype, no daily noise — unsubscribe anytime.
+          </p>
+
+          {footerOptin.status === 'success' ? (
+            <p className="ns-gate-note ns-gate-note--success" role="status" style={{ color: '#ffffff' }}>
+              <Check size={16} style={{ marginRight: '0.5rem' }} aria-hidden="true" />
+              You&rsquo;re on the list. Watch your inbox for the next tool.
+            </p>
+          ) : (
+            <form className="ns-gate-form" onSubmit={handleFooterSubmit}>
+              <input
+                className="ns-gate-input"
+                type="email"
+                required
+                value={footerOptin.email}
+                onChange={(e) => setFooterOptin((s) => ({ ...s, email: e.target.value, status: 'idle' }))}
+                placeholder="you@example.com"
+                aria-label="Email address for new tool announcements"
+                disabled={footerOptin.status === 'submitting'}
+              />
+              <button type="submit" className="btn btn--primary" disabled={footerOptin.status === 'submitting'}>
+                {footerOptin.status === 'submitting' ? 'Adding you…' : 'Notify me'}
+              </button>
+            </form>
+          )}
+          {footerOptin.status === 'error' && (
+            <p className="ns-gate-note ns-gate-note--error" role="alert" style={{ color: '#ffb4a6' }}>
+              That didn&rsquo;t go through. Check the address and try again.
+            </p>
+          )}
+        </div>
+      </section>
     </>
   );
 }

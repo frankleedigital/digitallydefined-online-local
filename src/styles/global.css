@@ -3754,3 +3754,385 @@ input[type='range']::-moz-range-thumb {
   .brand-nav__inner { padding: 12px 16px; gap: 16px; }
   .scenario-card { padding: 16px; }
 }
+/* ======================================================
+   Niche Scanner — standalone micro-product
+   Soft Brutalism: 0 radius, 1px borders, hard shadows,
+   Inter headings, DM Sans body, palette-only.
+   ====================================================== */
+.ns-root { background: var(--color-bg); }
+
+/* Hero */
+.ns-hero {
+  border-bottom: 1px solid #111;
+  background: var(--color-bg);
+}
+.ns-h1 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  line-height: 1.05;
+  color: var(--color-text);
+  margin: 0 0 1rem;
+}
+.ns-h1__accent { color: var(--color-accent); }
+.ns-tagline {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 640px;
+  margin: 0 0 1.75rem;
+}
+.ns-scan-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 680px;
+}
+.ns-scan-input {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid #111;
+  border-radius: 0;
+  padding: 16px 18px;
+  outline: none;
+}
+.ns-scan-input::placeholder { color: var(--color-text-muted); }
+.ns-scan-input:focus { box-shadow: 2px 2px 0px rgba(0,0,0,0.12); }
+.ns-scan-btn,
+.ns-gate__btn {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--color-accent);
+  border: 1px solid #111;
+  border-radius: 0;
+  padding: 16px 22px;
+  line-height: 1;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+.ns-scan-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.ns-btn-bullet {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #111;
+}
+.ns-privacy { font-size: 0.82rem; color: var(--color-text-muted); margin-top: 0.75rem; }
+
+/* Shared type */
+.ns-eyebrow {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  margin: 0;
+}
+.ns-eyebrow--orange { color: var(--color-accent); }
+.ns-eyebrow--aqua { color: var(--color-blue); }
+.ns-section-h2 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  line-height: 1.15;
+  margin: 0.5rem 0 1rem;
+}
+
+/* Scanning state */
+.ns-step-list {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 1.25rem;
+  border: 1px solid #111;
+  display: grid;
+  gap: 0.9rem;
+}
+.ns-step { display: flex; align-items: center; gap: 1rem; font-family: var(--font-body); font-size: 1rem; color: var(--color-text-muted); }
+.ns-step--done { color: var(--color-text); }
+.ns-step--active { color: var(--color-text); }
+.ns-step__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #111;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.8rem;
+  background: var(--color-surface);
+}
+.ns-step--done .ns-step__mark { background: var(--color-accent); }
+/* Result sheet */
+.ns-sheet { padding: clamp(2rem, 4vw, 3rem); }
+.ns-sheet__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ns-sheet__index { font-family: var(--font-heading); font-weight: 800; font-size: 0.72rem; letter-spacing: 0.12em; color: var(--color-text-muted); }
+.ns-result__niche { font-family: var(--font-heading); font-weight: 800; letter-spacing: -0.03em; font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 0 0 1.5rem; }
+.ns-verdict {
+  padding: 1.5rem;
+  border: 1px solid #111;
+  background: var(--color-bg);
+}
+.ns-verdict__stamp {
+  display: inline-grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 2px solid #111;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 2rem;
+  line-height: 1;
+}
+.ns-verdict__label { margin: 0 0 0.25rem; }
+
+/* Meters */
+.ns-meters { margin-top: 1.5rem; }
+.ns-meter { padding: 1.25rem; }
+.ns-meter__label { margin: 0 0 0.5rem; }
+.ns-meter__value { font-family: var(--font-heading); font-weight: 800; font-size: 1.6rem; display: block; margin: 0 0 1rem; }
+.ns-meter__bar {
+  height: 14px;
+  border: 1px solid #111;
+  background: repeating-linear-gradient(90deg, var(--color-surface), var(--color-surface) 6px, transparent 6px, transparent 10px);
+}
+.ns-meter__fill { display: block; height: 100%; }
+
+/* Keywords chips */
+.ns-block { padding: 1.25rem; }
+.ns-block__label { margin: 0 0 1rem; }
+.ns-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+.ns-chip__idx {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #111;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.7rem;
+}
+
+/* Full Report (gated) */
+.ns-full { margin-top: 1.5rem; }
+.ns-full--locked .ns-full__body { filter: blur(6px); pointer-events: none; user-select: none; opacity: 0.75; }
+.ns-full__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+.ns-full__sub { font-size: 0.95rem; line-height: 1.5; }
+.ns-lock-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #111;
+  color: var(--color-text-muted);
+}
+.ns-full__body { display: grid; gap: 0; padding: 0 clamp(1.5rem,3vw,2.5rem); }
+.ns-full-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  padding: 1.25rem 1.5rem;
+}
+.ns-full-row__idx {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #111;
+  font-family: var(--font-heading);
+  font-weight: 800;
+}
+.ns-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+.ns-list li { position: relative; padding-left: 1.25rem; }
+.ns-list li::before { content: '—'; position: absolute; left: 0; color: var(--color-accent); font-family: var(--font-heading); font-weight: 800; }
+.ns-list--num { counter-reset: ns; }
+.ns-list--num li { counter-increment: ns; }
+.ns-list--num li::before { content: counter(ns, decimal-leading-zero) ' '; color: var(--color-text-muted); }
+.ns-next-action {
+  margin: 0.5rem 1.5rem;
+  padding: 1.5rem;
+  background: var(--color-panel, var(--color-bg));
+}
+.ns-next-action__text { font-size: 1.05rem; line-height: 1.55; }
+/* Full Report gate */
+.ns-full__gate {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  background: var(--color-bg);
+  border: 1px dashed #111;
+}
+.ns-gate__prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--color-text);
+  margin: 0 0 0.5rem;
+}
+.ns-gate__copy { font-size: 0.98rem; line-height: 1.6; color: var(--color-text-muted); margin: 0 0 1.25rem; }
+.ns-gate__reveal {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #111;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+}
+.ns-full__deliver { padding: 1.25rem; text-align: center; }
+
+/* Error */
+.ns-error { border: 1px solid var(--color-red); padding: 1.5rem; background: var(--color-bg); }
+
+/* Value stack */
+.ns-value { padding: 0; }
+.ns-value-grid { margin-top: 2rem; }
+.ns-value-card {
+  padding: 1.75rem;
+  display: grid;
+  gap: 1rem;
+}
+.ns-value-card__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #111;
+  color: var(--color-text);
+}
+.ns-value-card__title { font-family: var(--font-heading); font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; margin: 0; color: var(--color-text); }
+.ns-value-card__body { font-size: 0.98rem; line-height: 1.6; color: var(--color-text-muted); margin: 0; }
+
+/* Meta rows */
+.ns-meta__list { display: grid; }
+.ns-meta__row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.25rem;
+}
+.ns-meta__label { margin: 0; }
+.ns-meta__value { font-family: var(--font-body); font-size: 1rem; color: var(--color-text); }
+.ns-cross { margin-top: 2rem; }
+
+@media (max-width: 767px) {
+  .ns-scan-form { grid-template-columns: 1fr; }
+  .ns-meters { grid-template-columns: 1fr; }
+  .ns-verdict { grid-template-columns: 1fr; }
+  .ns-value-grid { grid-template-columns: 1fr; }
+  .ns-meta__row { grid-template-columns: 120px 1fr; }
+  .ns-full-row { grid-template-columns: 1fr; }
+}
+/* Niche Scanner — funnel email capture + footer signup */
+.ns-gate-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 560px;
+}
+.ns-gate-input {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid #111;
+  border-radius: 0;
+  padding: 14px 16px;
+  outline: none;
+  min-width: 0;
+}
+.ns-gate-input::placeholder { color: var(--color-text-muted); }
+.ns-gate-input:focus { box-shadow: 2px 2px 0px rgba(0,0,0,0.12); }
+.ns-gate-input:disabled { opacity: 0.6; }
+.ns-gate-note {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0.85rem 0 0;
+}
+.ns-gate-note--success {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-success, #16a34a);
+  font-weight: 700;
+}
+.ns-gate-note--error {
+  color: var(--color-red);
+  font-weight: 700;
+}
+.ns-gate__buy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-text-muted);
+  padding-bottom: 2px;
+}
+.ns-gate__buy:hover { color: var(--color-text); border-bottom-color: var(--color-text); }
+
+/* Footer signup band (dark ink) */
+.ns-signup { border-top: 1px solid #111; }
+.ns-signup .ns-gate-input { background: #ffffff; }
+
+@media (max-width: 767px) {
+  .ns-gate-form { grid-template-columns: 1fr; }
+}
+/* Funnel blur-lock utility (used by the Niche Scorecard insight gate) */
+.ns-blur-lock {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.75;
+}

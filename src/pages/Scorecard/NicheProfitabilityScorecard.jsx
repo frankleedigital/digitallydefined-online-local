@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, FlaskConical, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, FlaskConical, AlertTriangle, Mail, Check, Lock, Unlock } from 'lucide-react';
 import { scoreNiche, tierCopy, CRITERIA } from './ScorecardLogic';
 import { callAgent } from '../../lib/buzz-agents';
+import { callSupabaseEdge } from '../../lib/supabase-edge';
 import { useToolState } from '../../context/ToolStateContext.jsx';
 import AiMentorChatBox from '../../components/AiMentorChatBox';
+
+// Funnel lead sources — stored in website_leads AND synced to the Brevo list.
+const FUNNEL_SOURCE = 'niche-scorecard';
+const FUNNEL_TAGS = ['niche-scorecard', 'ai-insight'];
+const FOOTER_SOURCE = 'niche-scorecard-footer';
+const FOOTER_TAGS = ['niche-scorecard', 'footer-signup'];
 
 // Helper guidance shown under each scoring field. Content only — does not affect scoring.
 const CRITERIA_HELP = {
@@ -22,6 +29,49 @@ export default function NicheProfitabilityScorecard() {
   const [nicheName, setNicheName] = useState('');
   const [insight, setInsight] = useState(null);
   const [insightLoading, setInsightLoading] = useState(false);
+
+  // Funnel: email unlocks the AI interpretation (Brevo-backed via `subscribe`).
+  const [insightUnlocked, setInsightUnlocked] = useState(false);
+  const [lead, setLead] = useState({ email: '', status: 'idle' });
+  const [footerOptin, setFooterOptin] = useState({ email: '', status: 'idle' });
+
+  const captureLead = async (email, source, tags, setStatus) => {
+    const value = String(email || '').trim();
+    if (!value) {
+      setStatus('error');
+      return false;
+    }
+    setStatus('submitting');
+    try {
+      await callSupabaseEdge('subscribe', { name: '', email: value, source, tags });
+      setStatus('success');
+      return true;
+    } catch {
+      setStatus('error');
+      return false;
+    }
+  };
+
+  const handleGateSubmit = async (e) => {
+    e.preventDefault();
+    const ok = await captureLead(
+      lead.email,
+      FUNNEL_SOURCE,
+      FUNNEL_TAGS,
+      (status) => setLead((s) => ({ ...s, status })),
+    );
+    if (ok) setInsightUnlocked(true);
+  };
+
+  const handleFooterSubmit = async (e) => {
+    e.preventDefault();
+    await captureLead(
+      footerOptin.email,
+      FOOTER_SOURCE,
+      FOOTER_TAGS,
+      (status) => setFooterOptin((s) => ({ ...s, status })),
+    );
+  };
 
   // Reset toolState when component mounts/unmounts
   useEffect(() => {
@@ -112,7 +162,80 @@ export default function NicheProfitabilityScorecard() {
               <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>
                 {insightLoading ? 'Interpreting your score...' : insight?.summary || 'Use the score as a filter, then validate the market.'}
               </h2>
-              {insight && (
+
+              {/* Funnel gate: email unlocks the full AI interpretation */}
+              {insight && !insightUnlocked && (
+                <div className="funnel-gate" style={{ borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '1.25rem', marginTop: '1rem' }}>
+                  <div className="ns-blur-lock" aria-hidden="true">
+                    <div className="grid-2">
+                      <div>
+                        <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>Strongest signals</h3>
+                        {insight.strongestSignals?.slice(0, 2).map(item => <p key={item}>+ {item}</p>)}
+                        <h3 style={{ fontSize: '1rem', margin: '1rem 0 0.5rem' }}>Monetization paths</h3>
+                        {insight.monetizationPaths?.slice(0, 1).map(item => <p key={item}>+ {item}</p>)}
+                      </div>
+                      <div>
+                        <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>Risk flags</h3>
+                        {insight.riskFlags?.slice(0, 2).map(item => <p key={item}>! {item}</p>)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: '1.1rem', margin: '1.25rem 0 0.35rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Lock size={18} aria-hidden="true" /> Unlock the full interpretation — free
+                  </p>
+                  <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--color-text-muted)', margin: '0 0 1rem' }}>
+                    Enter your email and get the complete read: all signals, monetization paths,
+                    risk flags, validation experiments, and your exact next action.
+                  </p>
+
+                  <form className="ns-gate-form" onSubmit={handleGateSubmit}>
+                    <input
+                      className="ns-gate-input"
+                      type="email"
+                      required
+                      value={lead.email}
+                      onChange={(e) => setLead((s) => ({ ...s, email: e.target.value, status: 'idle' }))}
+                      placeholder="you@example.com"
+                      aria-label="Email address to unlock the AI interpretation"
+                      disabled={lead.status === 'submitting' || lead.status === 'success'}
+                    />
+                    <button
+                      type="submit"
+                      className="btn btn--primary"
+                      disabled={lead.status === 'submitting' || lead.status === 'success'}
+                    >
+                      {lead.status === 'submitting' ? 'Sending…' : lead.status === 'success' ? (
+                        <><Check size={16} /> Unlocked</>
+                      ) : (
+                        <><Mail size={16} /> Send it to me</>
+                      )}
+                    </button>
+                  </form>
+                  {lead.status === 'success' && (
+                    <p className="ns-gate-note ns-gate-note--success" role="status">
+                      Unlocked — the full interpretation is below.
+                    </p>
+                  )}
+                  {lead.status === 'error' && (
+                    <p className="ns-gate-note ns-gate-note--error" role="alert">
+                      That didn’t go through. Check the address and try again.
+                    </p>
+                  )}
+                  <p className="ns-gate-note" style={{ color: 'var(--color-text-muted)' }}>No spam, ever. Unsubscribe anytime.</p>
+
+                  <button
+                    type="button"
+                    className="ns-gate__reveal"
+                    onClick={() => setInsightUnlocked(true)}
+                  >
+                    <Unlock size={15} style={{ marginRight: '0.5rem' }} aria-hidden="true" />
+                    Already subscribed? Reveal the interpretation
+                  </button>
+                </div>
+              )}
+
+              {insight && insightUnlocked && (
                 <div className="grid-2">
                   <div>
                     <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>Strongest signals</h3>
@@ -128,7 +251,7 @@ export default function NicheProfitabilityScorecard() {
                   </div>
                 </div>
               )}
-              {insight?.nextAction && <div className="truth-bar"><strong>Next action</strong><span>{insight.nextAction}</span></div>}
+              {insight?.nextAction && insightUnlocked && <div className="truth-bar"><strong>Next action</strong><span>{insight.nextAction}</span></div>}
             </div>
 
             {/* Breakdown table */}
@@ -317,6 +440,47 @@ export default function NicheProfitabilityScorecard() {
             <a href="/freedom" className="btn btn--ghost">Model My Freedom Number</a>
           </div>
           <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: '1rem' }}>Everything here stays in your browser. You&rsquo;re never locked in.</p>
+        </div>
+      </section>
+
+      {/* ——— FOOTER SIGNUP (funnel capture) ——— */}
+      <section className="ns-signup" style={{ background: '#111111', borderTop: '1px solid #111' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(3rem,6vw,4rem) 24px' }}>
+          <p className="section__eyebrow" style={{ color: 'var(--color-accent)' }}>Stay in the loop</p>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, letterSpacing: '-0.03em', fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)', color: '#ffffff', margin: '0.5rem 0 1rem' }}>
+            New tools land here first.
+          </h2>
+          <p style={{ fontSize: '1.1rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.72)', maxWidth: 560, margin: '0 0 1.5rem' }}>
+            One short email when a new tool goes live. No hype, no daily noise — unsubscribe anytime.
+          </p>
+
+          {footerOptin.status === 'success' ? (
+            <p className="ns-gate-note ns-gate-note--success" role="status" style={{ color: '#ffffff' }}>
+              <Check size={16} style={{ marginRight: '0.5rem' }} aria-hidden="true" />
+              You&rsquo;re on the list. Watch your inbox for the next tool.
+            </p>
+          ) : (
+            <form className="ns-gate-form" onSubmit={handleFooterSubmit}>
+              <input
+                className="ns-gate-input"
+                type="email"
+                required
+                value={footerOptin.email}
+                onChange={(e) => setFooterOptin((s) => ({ ...s, email: e.target.value, status: 'idle' }))}
+                placeholder="you@example.com"
+                aria-label="Email address for new tool announcements"
+                disabled={footerOptin.status === 'submitting'}
+              />
+              <button type="submit" className="btn btn--primary" disabled={footerOptin.status === 'submitting'}>
+                {footerOptin.status === 'submitting' ? 'Adding you…' : 'Notify me'}
+              </button>
+            </form>
+          )}
+          {footerOptin.status === 'error' && (
+            <p className="ns-gate-note ns-gate-note--error" role="alert" style={{ color: '#ffb4a6' }}>
+              That didn&rsquo;t go through. Check the address and try again.
+            </p>
+          )}
         </div>
       </section>
     </>
