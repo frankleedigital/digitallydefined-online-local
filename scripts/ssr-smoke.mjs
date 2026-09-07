@@ -13,9 +13,9 @@ const ROUTES = ['/', '/quiz', '/tool/niche', '/tool/trends', '/tool/roadmap', '/
 // Content that must exist on the launcher for it to be "really" rendering.
 const HOME_ASSERTIONS = [
   'Find Your Superpower',
-  'Niche Discovery',
+  'Find the idea worth building',
   'Niche Scorecard',
-  'The 4-agent AI money machine',
+  'Small decisions. Compounding ownership.',
   'Open the AI Business Partner',
 ];
 

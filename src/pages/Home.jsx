@@ -1,64 +1,20 @@
 import React, { useState } from 'react';
-import DDHero from '../components/ui/DDHero';
+import { ArrowUpRight, Check, LockKeyhole, ScanLine, Sparkles } from 'lucide-react';
 import DDSection from '../components/ui/DDSection';
 import DDToolCard from '../components/ui/DDToolCard';
 import DDCTA from '../components/ui/DDCTA';
 import DDLabel from '../components/ui/DDLabel';
 import { useSiteContent } from '../hooks/useSiteContent';
 import { callSupabaseEdge } from '../lib/supabase-edge';
-import { theme } from '../config/theme';
-
-/**
- * DigitallyDefined — single-page launcher.
- *
- * Sections: Hero → Tools → Case Study → CTA (dashboard + AI partner) → Footer.
- * Every CTA is one obvious next action. No navbar clutter, no overwhelm.
- * Copy is Hermes-editable via the site-content store (useSiteContent).
- */
 
 const tools = [
-  {
-    step: '01',
-    title: 'Niche Discovery',
-    description: 'Find a profitable, low-competition niche in one search.',
-    cta: { label: 'Find a niche →', href: '/tool/niche', variant: 'primary' },
-  },
-  {
-    step: '02',
-    title: 'Trend Scanner',
-    description: 'Spot rising demand before it gets crowded.',
-    cta: { label: 'Scan trends →', href: '/tool/trends', variant: 'secondary' },
-  },
-  {
-    step: '03',
-    title: 'Niche Scorecard',
-    description: 'Validate an idea in minutes before you invest time.',
-    cta: { label: 'Score my niche →', href: '/tool/scorecard', variant: 'primary' },
-  },
-  {
-    step: '04',
-    title: 'Roadmap Generator',
-    description: 'Get a personalized build order for your first asset.',
-    cta: { label: 'Build a roadmap →', href: '/tool/roadmap', variant: 'secondary' },
-  },
-  {
-    step: '05',
-    title: 'Product Builder',
-    description: 'Turn expertise into a sellable digital product.',
-    cta: { label: 'Build a product →', href: '/tool/product', variant: 'primary' },
-  },
-  {
-    step: '06',
-    title: 'Social & Automations',
-    description: 'Publish, follow up, and measure on autopilot.',
-    cta: { label: 'Automate it →', href: '/tool/social', variant: 'secondary' },
-  },
-  {
-    step: '07',
-    title: 'Niche Scanner',
-    description: 'The paid standalone: scan any idea, buy the full niche report.',
-    cta: { label: 'Scan a niche →', href: '/tool/niche-scanner', variant: 'primary' },
-  },
+  { step: '01', title: 'Niche Discovery', description: 'Find a profitable, low-competition niche in one search.', cta: { label: 'Find a niche', href: '/tool/niche', variant: 'primary' } },
+  { step: '02', title: 'Trend Scanner', description: 'Spot rising demand before it gets crowded.', cta: { label: 'Scan trends', href: '/tool/trends', variant: 'secondary' } },
+  { step: '03', title: 'Niche Scorecard', description: 'Validate an idea in minutes before you invest time.', cta: { label: 'Score my niche', href: '/tool/scorecard', variant: 'primary' } },
+  { step: '04', title: 'Roadmap Generator', description: 'Get a personalized build order for your first asset.', cta: { label: 'Build a roadmap', href: '/tool/roadmap', variant: 'secondary' } },
+  { step: '05', title: 'Product Builder', description: 'Turn expertise into a sellable digital product.', cta: { label: 'Build a product', href: '/tool/product', variant: 'primary' } },
+  { step: '06', title: 'Social & Automations', description: 'Publish, follow up, and measure on autopilot.', cta: { label: 'Automate it', href: '/tool/social', variant: 'secondary' } },
+  { step: '07', title: 'Niche Scanner', description: 'Scan any idea and buy the full niche report.', cta: { label: 'Scan a niche', href: '/tool/niche-scanner', variant: 'primary' } },
 ];
 
 const caseSteps = [
@@ -68,121 +24,84 @@ const caseSteps = [
   ['Automate', 'Set it to run while you sleep.'],
 ];
 
-const primaryBtn = {
-  border: '1px solid #111',
-  borderRadius: 0,
-  background: theme.colors.orange,
-  color: theme.colors.textPrimary,
-  padding: '14px 20px',
-  cursor: 'pointer',
-  fontFamily: theme.fonts.body,
-};
-
 export default function Home() {
   const content = useSiteContent();
   const [optin, setOptin] = useState({ email: '', status: 'idle' });
 
-  const handleOptin = async (e) => {
-    e.preventDefault();
+  const handleOptin = async (event) => {
+    event.preventDefault();
     if (!optin.email.trim()) return;
-    setOptin((s) => ({ ...s, status: 'submitting' }));
+    setOptin((state) => ({ ...state, status: 'submitting' }));
     try {
-      await callSupabaseEdge('subscribe', {
-        name: '',
-        email: optin.email.trim(),
-        source: 'launcher-cta',
-        tags: ['website-signup'],
-      });
+      await callSupabaseEdge('subscribe', { name: '', email: optin.email.trim(), source: 'launcher-cta', tags: ['website-signup'] });
       setOptin({ email: '', status: 'success' });
     } catch {
-      setOptin((s) => ({ ...s, status: 'error' }));
+      setOptin((state) => ({ ...state, status: 'error' }));
     }
   };
 
   return (
-    <div id="top">
-      {/* ——— HERO ——— */}
-      <DDHero
-        label={content['home.heroEyebrow']}
-        title={content['home.heroHeadline']}
-        tagline={content['home.heroTagline']}
-        ctas={[
-          { label: 'Find Your Superpower →', href: '/quiz?start=true', variant: 'primary' },
-          { label: 'See the Tools', href: '#tools', variant: 'outline' },
-        ]}
-      />
-{/* ——— TOOLS ——— */}
-      <DDSection
-        id="tools"
-        eyebrow="Free AI Tools"
-        title="One tool per decision. Zero overwhelm."
-        intro="Pick a tool. Get a clear next step. Build one faceless digital asset at a time — no account, no fluff."
-        rule="top"
-      >
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: theme.spacing.gridGap }}>
-          {tools.map((t) => <DDToolCard key={t.step} {...t} />)}
+    <div id="top" className="home-page">
+      <section className="home-hero">
+        <div className="dd-container home-hero__grid">
+          <div className="home-hero__copy">
+            <DDLabel tone="orange">{content['home.heroEyebrow']}</DDLabel>
+            <h1>Build digital assets that work <em>quietly.</em></h1>
+            <p className="home-hero__tagline">{content['home.heroTagline']}</p>
+            <div className="home-hero__actions">
+              <DDCTA label="Find Your Superpower" href="/quiz?start=true" variant="primary" />
+              <DDCTA label="Explore the tools" href="#tools" variant="outline" />
+            </div>
+            <div className="home-hero__proof">
+              <span><LockKeyhole size={15} /> Privacy-first by design</span>
+              <span><Check size={15} /> No camera required</span>
+            </div>
+          </div>
+
+          <div className="asset-map" aria-label="A visual map of a digital asset system">
+            <div className="asset-map__topline"><span>YOUR DIGITAL REAL ESTATE</span><span className="asset-map__status"><i /> BUILDING</span></div>
+            <div className="asset-map__core">
+              <div className="asset-map__orbit asset-map__orbit--one" />
+              <div className="asset-map__orbit asset-map__orbit--two" />
+              <div className="asset-map__center"><ScanLine size={28} strokeWidth={1.5} /><strong>ONE CLEAR<br />NEXT STEP</strong></div>
+              <span className="asset-map__node asset-map__node--one">NICHE</span>
+              <span className="asset-map__node asset-map__node--two">CONTENT</span>
+              <span className="asset-map__node asset-map__node--three">SYSTEMS</span>
+            </div>
+            <div className="asset-map__footer"><span>01 / 04</span><span>OWNED, NOT PERFORMED</span></div>
+          </div>
+        </div>
+      </section>
+
+      <div className="home-truth-bar"><div className="dd-container home-truth-bar__inner"><span>THE QUIET ADVANTAGE</span><strong>You do not need to be visible to be valuable.</strong><ArrowUpRight size={19} aria-hidden="true" /></div></div>
+
+      <DDSection id="tools" eyebrow="Start with a decision" title="A practical system for building what you own." intro="Each tool answers one question and gives you a useful next move. Start anywhere. Keep the part that helps." rule="top">
+        <div className="home-tools-grid">
+          <article className="home-tools-feature">
+            <div className="home-tools-feature__index">01</div>
+            <div><p className="home-tools-feature__kicker">A good place to begin</p><h3>Find the idea worth building.</h3><p>Use the quiz to match your strengths, privacy preferences, and available time with a digital path that makes sense.</p><DDCTA label="Find my starting point" href="/quiz?start=true" variant="primary" /></div>
+            <Sparkles className="home-tools-feature__mark" size={64} strokeWidth={1} aria-hidden="true" />
+          </article>
+          {tools.slice(1).map((tool) => <DDToolCard key={tool.step} {...tool} />)}
         </div>
       </DDSection>
 
-      {/* ——— CASE STUDY ——— */}
-      <DDSection
-        id="case-study"
-        eyebrow="Case Study"
-        title="The 4-agent AI money machine."
-        intro="Niche → Scorecard → Roadmap → Automation. Four focused agents that turn one good idea into a faceless asset you own."
-        tone="white"
-        rule="top"
-      >
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: theme.spacing.gridGap, marginBottom: '1.5rem' }}>
-          {caseSteps.map(([k, v]) => (
-            <div key={k} style={{ border: `1px solid ${theme.colors.border}`, borderRadius: 0, padding: '1rem 1.25rem', background: theme.colors.panel }}>
-              <DDLabel tone="orange">{k}</DDLabel>
-              <p style={{ margin: '0.5rem 0 0', fontSize: '0.95rem', lineHeight: 1.6, color: theme.colors.textMuted }}>{v}</p>
-            </div>
+      <DDSection id="case-study" eyebrow="The operating model" title="Small decisions. Compounding ownership." intro="The path is simple on purpose. Build one useful property, then make the next one easier." tone="panel" rule="top">
+        <div className="home-path">
+          {caseSteps.map(([title, text], index) => (
+            <div key={title} className="home-path__step"><span className="home-path__number">0{index + 1}</span><DDLabel tone="orange">{title}</DDLabel><p>{text}</p></div>
           ))}
         </div>
-        <DDCTA label="See how it builds →" href="/tool/roadmap" variant="primary" />
+        <DDCTA label="See the full build order" href="/tool/roadmap" variant="primary" />
       </DDSection>
 
-      {/* ——— CTA — DASHBOARD + AI BUSINESS PARTNER ——— */}
-      <DDSection
-        id="launch"
-        eyebrow="Your AI Business Partner"
-        title="Plug in your numbers. Get a plan you can act on today."
-        intro="The dashboard connects your live website analytics to an AI business partner that tells you what to build, fix, and double down on next."
-        tone="dark"
-        rule="top"
-      >
-        <div style={{ maxWidth: 560, margin: '0 0 1.5rem' }}>
-          {optin.status === 'success' ? (
-            <p style={{ margin: 0, fontSize: '1.05rem', color: theme.colors.success }}>
-              You're in. Watch your inbox for your first step.
-            </p>
-          ) : (
-            <form onSubmit={handleOptin} style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-              <input
-                type="email"
-                required
-                value={optin.email}
-                onChange={(e) => setOptin({ email: e.target.value, status: 'idle' })}
-                placeholder="your@email.com"
-                aria-label="Email address"
-                style={{
-                  flex: '1 1 200px', border: `1px solid ${theme.colors.border}`, borderRadius: 0,
-                  background: '#fff', padding: '14px 20px', fontSize: '1rem', color: theme.colors.textPrimary,
-                  fontFamily: theme.fonts.body,
-                }}
-              />
-              <button type="submit" disabled={optin.status === 'submitting'} style={primaryBtn}>
-                {optin.status === 'submitting' ? 'Joining…' : 'Get the Free Starter Kit →'}
-              </button>
-            </form>
-          )}
-          {optin.status === 'error' && <p style={{ color: theme.colors.red, fontSize: '0.9rem' }}>That didn't work — please try again.</p>}
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-          <DDCTA label="Open the AI Business Partner →" href="/dashboard" variant="secondary" />
-          <DDCTA label="Take the Quiz First" href="/quiz?start=true" variant="outline" />
+      <DDSection id="launch" eyebrow="Keep going when you are ready" title="A calmer way to make digital progress." intro="Use the free tools first. When you want a clearer view of what is working, the dashboard keeps your signals and next steps in one place." tone="dark" rule="top">
+        <div className="home-launch-grid">
+          <div className="home-launch__copy"><div className="home-launch__signal"><span /> Your private workspace</div><h3>Build without becoming the brand.</h3><p>Track the properties you are building, see the gaps, and choose the next useful action with less noise.</p><div className="home-launch__actions"><DDCTA label="Open the AI Business Partner" href="/dashboard" variant="secondary" /><DDCTA label="Take the quiz first" href="/quiz?start=true" variant="outline" /></div></div>
+          <div className="home-launch__capture"><p className="home-launch__capture-label">Get the free starter kit</p><p>One concise worksheet to turn an idea into a first property.</p>
+            {optin.status === 'success' ? <p className="home-launch__success">You're in. Watch your inbox for your first step.</p> : <form onSubmit={handleOptin}><label htmlFor="starter-email">Email address</label><div className="home-launch__form-row"><input id="starter-email" type="email" required value={optin.email} onChange={(event) => setOptin({ email: event.target.value, status: 'idle' })} placeholder="you@example.com" /><button type="submit" disabled={optin.status === 'submitting'}>{optin.status === 'submitting' ? 'Joining...' : 'Send it'}</button></div></form>}
+            {optin.status === 'error' && <p className="home-launch__error">That did not work. Please try again.</p>}
+          </div>
         </div>
       </DDSection>
     </div>
