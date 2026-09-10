@@ -70,7 +70,7 @@ Secondary: Women over 40 exploring digital real estate, rank-and-rent, and simpl
 - Avoid decorative fonts
 
 ### Layout rules
-- Thin black borders as section dividers
+- Thin black borders as section dividers 1px.
 - Generous whitespace
 - Single-column layouts for clarity
 - No autoplay video
