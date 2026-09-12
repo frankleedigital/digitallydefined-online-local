@@ -3,6 +3,8 @@
 // All agent calls route directly through Supabase Edge Functions
 
 import { callSupabaseEdge, getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from './supabase-edge';
+import { callFastAPI } from './fastapi';
+import { runtimeFor } from './agentRegistry';
 
 // Agent configurations
 const AGENTS = {
@@ -95,28 +97,29 @@ export function getAgent(name) {
 }
 
 // Call an agent via Supabase Edge Function
-export const PROVIDERS = {
-  agnes: 'agnes',
-  openrouter: 'openrouter'
-};
-
-// Direct call to Agnes via Supabase Edge Function
-export async function callAgnes(messages) {
-  const resp = await fetch(getSupabaseEdgeUrl(), {
-    method: 'POST',
-    headers: getSupabaseEdgeHeaders(),
-    body: JSON.stringify({ provider: 'agnes', messages, model: 'agnes' }),
-  });
-  if (!resp.ok) throw new Error(`Agnes proxy call failed: ${resp.status}`);
-  return resp.json();
-}
-
 export async function callAgent(agentName, inputData, provider = null) {
   try {
     // allow caller to ask the backend to use a specific provider
     if (provider) inputData = { ...(inputData || {}), provider };
 
-    const payload = await callSupabaseEdge(`agent.${agentName}`, { inputData });
+    const action = `agent.${agentName}`;
+
+    // FastAPI-owned microservices are served by the FastAPI layer (via the
+    // backend proxy). Fall back to Hermes if FastAPI is unreachable/errors so
+    // the marketing site never breaks.
+    if (runtimeFor(action) === 'fastapi') {
+      try {
+        const fastResult = await callFastAPI(agentName, inputData);
+        return fastResult;
+      } catch (fastErr) {
+        console.warn(
+          `CallAgent: FastAPI unavailable for ${action}, falling back to Hermes:`,
+          fastErr && fastErr.message ? fastErr.message : fastErr
+        );
+      }
+    }
+
+    const payload = await callSupabaseEdge(action, { inputData });
 
     if (!payload.success) {
       throw new Error(payload.error || `Agent ${agentName} did not return a successful result`);

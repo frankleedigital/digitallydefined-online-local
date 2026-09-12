@@ -35,18 +35,3 @@ export async function submitEmailToSupabase(email) {
 }
 
 export default { createSupabaseClient, submitEmailToSupabase }
-
-// Optional: call Agnes directly from the marketing site
-export async function callAgnes(messages) {
-  const edgeUrl = `${import.meta.env.VITE_SUPABASE_URL || 'https://dijjlppdljpcgyoakdnq.supabase.co'}/functions/v1/hermes`;
-  const res = await fetch(edgeUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': import.meta.env.VITE_DASHBOARD_API_KEY || '',
-    },
-    body: JSON.stringify({ provider: 'agnes', messages, model: 'agnes' }),
-  });
-  if (!res.ok) throw new Error(`Agnes proxy call failed: ${res.status}`);
-  return res.json();
-}
