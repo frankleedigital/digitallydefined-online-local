@@ -363,6 +363,24 @@ export default function DigitalSuperpowerQuiz() {
               </div>
             )}
 
+            {/* Link to inbox confirmation page */}
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+              <a
+                href={`/quiz/inbox?email=${encodeURIComponent(contact.email)}`}
+                className="btn btn--outline"
+                style={{ marginRight: '8px' }}
+              >
+                Check your inbox →
+              </a>
+              <a
+                href="/dashboard/roadmap"
+                className="btn btn--outline"
+                style={{ marginLeft: '8px' }}
+              >
+                View my roadmap in dashboard →
+              </a>
+            </div>
+
             {intelligenceReady && (
               <div style={{ textAlign: 'center', marginTop: '24px' }}>
                 <a href="https://dashboard.digitallydefined.online/intelligence" target="_blank" rel="noopener noreferrer" className="btn btn--outline">
