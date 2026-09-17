@@ -3,7 +3,10 @@ import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { isQuizComplete } from '../hooks/useToolState.js';
 
-const FACEBOOK_GROUP_URL = 'https://www.facebook.com/groups/digitallydefin1';
+// Community: the private Facebook group (digitallydefind)
+// Page: the public Facebook page (handle: digitallydefin1)
+export const FACEBOOK_GROUP_URL = 'https://facebook.com/groups/digitallydefind';
+export const FACEBOOK_PAGE_URL = 'https://facebook.com/digitallydefin1';
 
 export default function BrandNav() {
   const [menuOpen, setMenuOpen] = useState(false);

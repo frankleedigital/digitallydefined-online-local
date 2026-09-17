@@ -1,5 +1,6 @@
 import React from 'react';
 import SocialIcons from './SocialIcons';
+import { FACEBOOK_GROUP_URL } from './BrandNav';
 
 export default function BrandFooter() {
   return (
@@ -14,7 +15,7 @@ export default function BrandFooter() {
         <SocialIcons />
 
         <a
-          href="https://facebook.com/groups/digitallydefin1"
+          href={FACEBOOK_GROUP_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn--primary"

@@ -29,8 +29,14 @@ export default function SocialIcons() {
   const icons = [
     {
       platform: 'Facebook Group',
-      href: 'https://facebook.com/groups/digitallydefin1',
+      href: 'https://facebook.com/groups/digitallydefind',
       label: 'Facebook Group Community',
+      icon: <FacebookIcon />,
+    },
+    {
+      platform: 'Facebook Page',
+      href: 'https://facebook.com/digitallydefin1',
+      label: 'DigitallyDefined on Facebook',
       icon: <FacebookIcon />,
     },
     {

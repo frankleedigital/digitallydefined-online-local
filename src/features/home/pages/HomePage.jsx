@@ -7,7 +7,7 @@ import DDSection from '../../../components/ui/DDSection.jsx';
 import DDCTA from '../../../components/ui/DDCTA.jsx';
 import { theme } from '../../../config/theme';
 
-const COMMUNITY_URL = 'https://www.facebook.com/groups/digitallydefin1';
+const COMMUNITY_URL = 'https://facebook.com/groups/digitallydefind';
 
 const FLOW = [
   { step: '01', title: 'Take the Quiz', body: 'Seven questions. One digital superpower. About 90 seconds.' },
