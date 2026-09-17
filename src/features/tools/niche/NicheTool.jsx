@@ -19,9 +19,11 @@ export default function NicheTool() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     if (CRITERIA.some(c => scores[c.key] == null)) return;
     const scored = scoreNiche(scores);
     setResult(scored);
+    setInsight(null);
     setLoading(true);
     try {
       const response = await callAgent('scorecard', { nicheName, scores, result: scored, criteria: CRITERIA });
@@ -63,8 +65,8 @@ export default function NicheTool() {
           ))}
         </div>
 
-        <button type="submit" disabled={!allAnswered} className="btn btn--primary" style={{ opacity: allAnswered ? 1 : 0.5, cursor: allAnswered ? 'pointer' : 'default' }}>
-          Calculate My Score
+        <button type="submit" disabled={!allAnswered || loading} className="btn btn--primary" style={{ opacity: allAnswered && !loading ? 1 : 0.5, cursor: allAnswered && !loading ? 'pointer' : 'default' }}>
+          {loading ? 'Calculating…' : 'Calculate My Score'}
         </button>
       </form>
 

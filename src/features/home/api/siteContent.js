@@ -1,14 +1,10 @@
 // lib/siteContent.js
 // Runtime site copy loader for the DigitallyDefined marketing site.
-//
 // Hermes can change these fields through the `website.edit` action (which writes
 // overrides to the Supabase `site_content` table). This module merges those
 // overrides over the hardcoded defaults below, then components render the merged
 // values. If the fetch fails or returns nothing for a key, the default copy is
 // used — so the site never breaks when the store is unavailable.
-//
-// Keep DEFAULT_SITE_CONTENT in sync with SITE_CONTENT_CATALOG in
-// os-backend/supabase/functions/hermes/index.ts (same keys + defaults).
 
 import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from '../../../api/supabase.js';
 
@@ -22,8 +18,31 @@ export const DEFAULT_SITE_CONTENT = {
   'home.finalCtaHeading': 'Start with the truth of your numbers. Then build one useful asset.',
 };
 
+const SESSION_KEY = 'dd_site_content_cache';
 let cached = null;
 let inflight = null;
+
+function readSessionCache() {
+  if (typeof window === 'undefined' || !window.sessionStorage) return null;
+  try {
+    const raw = window.sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') return parsed;
+  } catch {
+    // ignore invalid cache state and retry network fetch
+  }
+  return null;
+}
+
+function writeSessionCache(content) {
+  if (typeof window === 'undefined' || !window.sessionStorage) return;
+  try {
+    window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(content));
+  } catch {
+    // storage may be full or unavailable; fail silently
+  }
+}
 
 /**
  * Fetch website content overrides (merged over defaults), cached for the page
@@ -32,6 +51,12 @@ let inflight = null;
 export async function getSiteContent() {
   if (cached) return cached;
   if (inflight) return inflight;
+
+  const sessionCache = readSessionCache();
+  if (sessionCache) {
+    cached = { ...DEFAULT_SITE_CONTENT, ...sessionCache };
+    return cached;
+  }
 
   inflight = (async () => {
     const content = { ...DEFAULT_SITE_CONTENT };
@@ -56,6 +81,7 @@ export async function getSiteContent() {
       // offline / availability — fall back to defaults
     }
     cached = content;
+    writeSessionCache(content);
     return content;
   })();
 

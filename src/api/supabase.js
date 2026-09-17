@@ -1,5 +1,3 @@
-// src/api/supabase.js — calls to the Hermes Supabase Edge Function
-
 export const getSupabaseEdgeUrl = () => {
   const baseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://dijjlppdljpcgyoakdnq.supabase.co';
   return `${baseUrl}/functions/v1/hermes`;
@@ -18,11 +16,13 @@ export const getSupabaseEdgeHeaders = (extra = {}) => {
 };
 
 /** Call the Hermes edge function with an action and payload. */
-export async function callSupabaseEdge(action, payload = {}, extraHeaders = {}) {
+export async function callSupabaseEdge(action, payload = {}, extraHeaders = {}, signal) {
+  const requestSignal = signal ?? (typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined);
   const res = await fetch(getSupabaseEdgeUrl(), {
     method: 'POST',
     headers: getSupabaseEdgeHeaders(extraHeaders),
     body: JSON.stringify({ action, ...payload }),
+    ...(requestSignal ? { signal: requestSignal } : {}),
   });
 
   if (!res.ok) {

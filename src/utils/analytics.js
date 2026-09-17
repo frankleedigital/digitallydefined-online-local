@@ -1,5 +1,3 @@
-// src/utils/analytics.js — event tracking (migrated from lib/tracking.js)
-
 const BACKEND_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_BACKEND_URL) || 'https://digitallydefined-backend-clean.vercel.app';
 const ENDPOINT = `${BACKEND_URL.replace(/\/+$/, '')}/api/analytics`;
 const SESSION_KEY = 'dd_session_id';
@@ -8,6 +6,7 @@ const SESSION_START_KEY = 'dd_session_start';
 let queue = [];
 let initialized = false;
 let maxScrollDepth = 0;
+let flushLock = false;
 
 const getSessionId = () => {
   let id = null;
@@ -37,17 +36,37 @@ export function trackEvent(eventType, metadata = {}) {
 }
 
 export function flush(useBeacon = false) {
-  if (!queue.length) return;
+  if (flushLock || !queue.length) return;
+  flushLock = true;
   const events = queue.splice(0, queue.length);
   const body = JSON.stringify({ action: 'track', events });
   try {
     const apiKey = import.meta.env.VITE_DASHBOARD_API_KEY;
     if (useBeacon && typeof navigator.sendBeacon === 'function') {
-      navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'application/json' }));
+      const beaconSuccess = navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'application/json' }));
+      if (!beaconSuccess) {
+        queue.unshift(...events);
+      }
       return;
     }
-    fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(apiKey ? { 'x-api-key': apiKey } : {}) }, body, keepalive: true }).catch(() => {});
-  } catch {}
+    const requestSignal = typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(12000) : undefined;
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(apiKey ? { 'x-api-key': apiKey } : {}),
+      },
+      body,
+      keepalive: true,
+      ...(requestSignal ? { signal: requestSignal } : {}),
+    }).catch(() => {
+      queue.unshift(...events);
+    });
+  } catch {
+    queue.unshift(...events);
+  } finally {
+    flushLock = false;
+  }
 }
 
 export function trackPageView(page) {
@@ -66,7 +85,11 @@ export function initTracking() {
   getSessionId();
   trackEvent('session_start', { referrer: document.referrer || null });
   trackPageView();
-  setInterval(() => flush(), 8000);
+  setInterval(() => flush(), 30000);
+  window.addEventListener('pagehide', () => flush(true));
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flush(true);
+  });
 }
 
 export default { initTracking, trackEvent, trackPageView, trackQuizStart, trackQuizComplete, flush };
