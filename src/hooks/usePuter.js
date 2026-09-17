@@ -1,6 +1,17 @@
 // usePuter.js - React hook for Puter.js cloud OS features
 import { useState, useEffect, useCallback } from 'react';
-import puter from '../puter-adapter.js';
+
+let puterInstance = null;
+let puterPromise = null;
+
+async function getPuter() {
+  if (puterInstance) return puterInstance;
+  if (!puterPromise) {
+    puterPromise = import('@heyputer/puter.js').then((mod) => mod.default ?? mod);
+  }
+  puterInstance = await puterPromise;
+  return puterInstance;
+}
 
 export function usePuter() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,7 +23,7 @@ export function usePuter() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        // Check if user is already signed in
+        const puter = await getPuter();
         const currentUser = await puter.auth.getUser();
         if (currentUser) {
           setUser(currentUser);
@@ -24,7 +35,7 @@ export function usePuter() {
         setIsLoading(false);
       }
     }
-    
+
     checkAuth();
   }, []);
 
@@ -32,6 +43,7 @@ export function usePuter() {
   const signIn = useCallback(async () => {
     try {
       setIsLoading(true);
+      const puter = await getPuter();
       const result = await puter.auth.signIn();
       const currentUser = await puter.auth.getUser();
       setUser(currentUser);
@@ -49,6 +61,7 @@ export function usePuter() {
   // Sign out
   const signOut = useCallback(async () => {
     try {
+      const puter = await getPuter();
       await puter.auth.signOut();
       setUser(null);
       setIsAuthenticated(false);
@@ -64,26 +77,27 @@ export function usePuter() {
       if (!isAuthenticated) {
         throw new Error('Must be authenticated to write files');
       }
-      
+
+      const puter = await getPuter();
       const path = options.path || `digitallydefined/${filename}`;
       const mimeType = options.mimeType || 'text/plain';
-      
+
       const file = await puter.fs.write(path, content, {
         overwrite: options.overwrite ?? true,
-        mimeType: mimeType
+        mimeType: mimeType,
       });
-      
+
       return {
         success: true,
         path: file.path,
         url: file.url,
-        id: file.id
+        id: file.id,
       };
     } catch (err) {
       console.error('Puter writeFile error:', err);
       return {
         success: false,
-        error: err.message
+        error: err.message,
       };
     }
   }, [isAuthenticated]);
@@ -94,18 +108,19 @@ export function usePuter() {
       if (!isAuthenticated) {
         throw new Error('Must be authenticated to read files');
       }
-      
+
+      const puter = await getPuter();
       const file = await puter.fs.read(path);
       return {
         success: true,
         content: file,
-        path: path
+        path: path,
       };
     } catch (err) {
       console.error('Puter readFile error:', err);
       return {
         success: false,
-        error: err.message
+        error: err.message,
       };
     }
   }, [isAuthenticated]);
@@ -116,23 +131,24 @@ export function usePuter() {
       if (!isAuthenticated) {
         throw new Error('Must be authenticated to list files');
       }
-      
+
+      const puter = await getPuter();
       const entries = await puter.fs.readdir(directory);
       return {
         success: true,
-        files: entries.map(entry => ({
+        files: entries.map((entry) => ({
           name: entry.name,
           path: entry.path,
           type: entry.type,
           size: entry.size,
-          modified: entry.modified
-        }))
+          modified: entry.modified,
+        })),
       };
     } catch (err) {
       console.error('Puter listFiles error:', err);
       return {
         success: false,
-        error: err.message
+        error: err.message,
       };
     }
   }, [isAuthenticated]);
@@ -143,17 +159,18 @@ export function usePuter() {
       if (!isAuthenticated) {
         throw new Error('Must be authenticated to delete files');
       }
-      
+
+      const puter = await getPuter();
       await puter.fs.delete(path);
       return {
         success: true,
-        message: `Deleted ${path}`
+        message: `Deleted ${path}`,
       };
     } catch (err) {
       console.error('Puter deleteFile error:', err);
       return {
         success: false,
-        error: err.message
+        error: err.message,
       };
     }
   }, [isAuthenticated]);
@@ -161,16 +178,17 @@ export function usePuter() {
   // Open app in Puter (e.g., open generated roadmap in text editor)
   const openApp = useCallback(async (appName, args = {}) => {
     try {
+      const puter = await getPuter();
       const result = await puter.ui.launchApp(appName, args);
       return {
         success: true,
-        result
+        result,
       };
     } catch (err) {
       console.error('Puter openApp error:', err);
       return {
         success: false,
-        error: err.message
+        error: err.message,
       };
     }
   }, []);
@@ -178,25 +196,23 @@ export function usePuter() {
   // Show alert/toast notification
   const showAlert = useCallback(async (message, options = {}) => {
     try {
+      const puter = await getPuter();
       await puter.ui.alert(message, options.buttons, options.type);
       return { success: true };
     } catch (err) {
       console.error('Puter showAlert error:', err);
       return {
         success: false,
-        error: err.message
+        error: err.message,
       };
     }
   }, []);
 
   return {
-    // State
     isAuthenticated,
     user,
     isLoading,
     error,
-    
-    // Actions
     signIn,
     signOut,
     writeFile,
@@ -205,9 +221,6 @@ export function usePuter() {
     deleteFile,
     openApp,
     showAlert,
-    
-    // Direct access to puter object for advanced usage
-    puter
   };
 }
 

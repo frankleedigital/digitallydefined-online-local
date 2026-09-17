@@ -4,6 +4,12 @@
 import { config } from '../config/appConfig.js';
 
 export const BACKEND_BASE_URL = config.backendUrl;
+const REQUEST_CACHE = new Map();
+const REQUEST_TIMEOUT_MS = 15000;
+
+function getRequestCacheKey(endpoint, body) {
+  return `${endpoint}:${JSON.stringify(body)}`;
+}
 
 /**
  * Maps each agent/tool to its real backend endpoint.
@@ -121,32 +127,51 @@ export const ENDPOINTS = {
 export async function postBackend(endpoint, body = {}) {
   const url = `${BACKEND_BASE_URL}${endpoint}`;
   const apiKey = config.dashboardApiKey;
+  const cacheKey = getRequestCacheKey(endpoint, body);
+
+  if (REQUEST_CACHE.has(cacheKey)) {
+    return REQUEST_CACHE.get(cacheKey);
+  }
 
   if (!apiKey && import.meta.env.DEV) {
     console.warn('[backend] VITE_DASHBOARD_API_KEY is not set. Backend calls will return 401.');
   }
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(apiKey ? { 'x-api-key': apiKey } : {}),
-    },
-    body: JSON.stringify(body),
-  });
+  const request = (async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-  const raw = await res.text();
-  let json = {};
-  try { json = raw ? JSON.parse(raw) : {}; } catch { json = {}; }
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(apiKey ? { 'x-api-key': apiKey } : {}),
+        },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
 
-  if (!res.ok) {
-    const message = (json && (json.error || json.details)) || `Backend request failed: ${res.status}`;
-    throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
-  }
-  if (json && json.ok === false) {
-    throw new Error(json.error || 'Backend request failed');
-  }
-  return json;
+      const raw = await res.text();
+      let json = {};
+      try { json = raw ? JSON.parse(raw) : {}; } catch { json = {}; }
+
+      if (!res.ok) {
+        const message = (json && (json.error || json.details)) || `Backend request failed: ${res.status}`;
+        throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
+      }
+      if (json && json.ok === false) {
+        throw new Error(json.error || 'Backend request failed');
+      }
+      return json;
+    } finally {
+      clearTimeout(timeoutId);
+      REQUEST_CACHE.delete(cacheKey);
+    }
+  })();
+
+  REQUEST_CACHE.set(cacheKey, request);
+  return request;
 }
 
 /**

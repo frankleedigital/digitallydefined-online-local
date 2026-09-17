@@ -7,66 +7,101 @@ let queue = [];
 let initialized = false;
 let maxScrollDepth = 0;
 let flushLock = false;
+let flushPromise = null;
+let refreshHandle = null;
+let cachedSessionId = null;
+let cachedSessionStart = 0;
+let lastPageViewKey = null;
 
 const getSessionId = () => {
-  let id = null;
+  if (cachedSessionId) return cachedSessionId;
+
   try {
-    id = window.localStorage.getItem(SESSION_KEY);
-    if (!id) {
-      id = `s_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
-      window.localStorage.setItem(SESSION_KEY, id);
-      window.localStorage.setItem(SESSION_START_KEY, String(Date.now()));
+    const stored = window.localStorage.getItem(SESSION_KEY);
+    if (stored) {
+      cachedSessionId = stored;
+      cachedSessionStart = Number(window.localStorage.getItem(SESSION_START_KEY) || Date.now());
+      return cachedSessionId;
     }
-  } catch { id = `s_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`; }
-  return id;
+
+    cachedSessionId = `s_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    cachedSessionStart = Date.now();
+    window.localStorage.setItem(SESSION_KEY, cachedSessionId);
+    window.localStorage.setItem(SESSION_START_KEY, String(cachedSessionStart));
+    return cachedSessionId;
+  } catch {
+    cachedSessionId = `s_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    cachedSessionStart = Date.now();
+    return cachedSessionId;
+  }
 };
 
 export function trackEvent(eventType, metadata = {}) {
+  const page = metadata.page || (typeof window !== 'undefined' ? window.location.pathname : '/');
   const event = {
     event_type: eventType,
-    page: metadata.page || (typeof window !== 'undefined' ? window.location.pathname : '/'),
+    page,
     session_id: getSessionId(),
     url: typeof window !== 'undefined' ? window.location.href : undefined,
     referrer: typeof document !== 'undefined' ? document.referrer || null : null,
     metadata,
     ...(metadata.email ? { email: metadata.email } : {}),
   };
+
+  if (eventType === 'page_view') {
+    const nextKey = `${page}:${window.location.href}`;
+    if (lastPageViewKey === nextKey) return;
+    lastPageViewKey = nextKey;
+  }
+
   queue.push(event);
   if (queue.length >= 8) flush();
 }
 
 export function flush(useBeacon = false) {
-  if (flushLock || !queue.length) return;
+  if (!queue.length || flushLock) return;
+
   flushLock = true;
   const events = queue.splice(0, queue.length);
   const body = JSON.stringify({ action: 'track', events });
-  try {
-    const apiKey = import.meta.env.VITE_DASHBOARD_API_KEY;
-    if (useBeacon && typeof navigator.sendBeacon === 'function') {
-      const beaconSuccess = navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'application/json' }));
-      if (!beaconSuccess) {
+
+  flushPromise = Promise.resolve()
+    .then(() => {
+      try {
+        const apiKey = import.meta.env.VITE_DASHBOARD_API_KEY;
+        const headers = {
+          'Content-Type': 'application/json',
+          ...(apiKey ? { 'x-api-key': apiKey } : {}),
+        };
+
+        if (useBeacon && typeof navigator.sendBeacon === 'function') {
+          const sent = navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'application/json' }));
+          if (!sent) {
+            queue.unshift(...events);
+          }
+          return;
+        }
+
+        const requestSignal = typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(12000) : undefined;
+        return fetch(ENDPOINT, {
+          method: 'POST',
+          headers,
+          body,
+          keepalive: true,
+          ...(requestSignal ? { signal: requestSignal } : {}),
+        }).catch(() => {
+          queue.unshift(...events);
+        });
+      } catch {
         queue.unshift(...events);
+        return null;
       }
-      return;
-    }
-    const requestSignal = typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(12000) : undefined;
-    fetch(ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(apiKey ? { 'x-api-key': apiKey } : {}),
-      },
-      body,
-      keepalive: true,
-      ...(requestSignal ? { signal: requestSignal } : {}),
-    }).catch(() => {
-      queue.unshift(...events);
+    })
+    .finally(() => {
+      flushLock = false;
+      flushPromise = null;
+      if (queue.length >= 8) flush(useBeacon);
     });
-  } catch {
-    queue.unshift(...events);
-  } finally {
-    flushLock = false;
-  }
 }
 
 export function trackPageView(page) {
@@ -85,8 +120,11 @@ export function initTracking() {
   getSessionId();
   trackEvent('session_start', { referrer: document.referrer || null });
   trackPageView();
-  setInterval(() => flush(), 30000);
+
+  if (refreshHandle) window.clearInterval(refreshHandle);
+  refreshHandle = window.setInterval(() => flush(), 30000);
   window.addEventListener('pagehide', () => flush(true));
+  window.addEventListener('beforeunload', () => flush(true));
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') flush(true);
   });

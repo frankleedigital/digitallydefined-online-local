@@ -20,7 +20,9 @@ export const DEFAULT_SITE_CONTENT = {
 
 const SESSION_KEY = 'dd_site_content_cache';
 let cached = null;
+let cachedAt = 0;
 let inflight = null;
+const CACHE_TTL_MS = 5 * 60 * 1000;
 
 function readSessionCache() {
   if (typeof window === 'undefined' || !window.sessionStorage) return null;
@@ -45,11 +47,12 @@ function writeSessionCache(content) {
 }
 
 /**
- * Fetch website content overrides (merged over defaults), cached for the page
- * session. Returns the full content map. Never throws.
+ * Fetch website content overrides (merged over defaults), cached for a short TTL.
+ * Returns the full content map. Never throws.
  */
 export async function getSiteContent() {
-  if (cached) return cached;
+  const now = Date.now();
+  if (cached && now - cachedAt < CACHE_TTL_MS) return cached;
   if (inflight) return inflight;
 
   const sessionCache = readSessionCache();
@@ -80,7 +83,9 @@ export async function getSiteContent() {
     } catch {
       // offline / availability — fall back to defaults
     }
+
     cached = content;
+    cachedAt = Date.now();
     writeSessionCache(content);
     return content;
   })();

@@ -1,9 +1,21 @@
 // puter-adapter.js
-// Safe initialization wrapper for Puter.js
-// The @heyputer/puter.js package exports an already-initialized `puter` singleton,
-// not a `Puter` class. We import it directly and re-export for convenience.
+// Lazily initialize Puter so it does not ship in the initial app bundle unless
+// the cloud filesystem/auth features are actually used.
 
-import puter from "@heyputer/puter.js";
+let puterInstance = null;
+let puterPromise = null;
 
-// Re-export the singleton instance so the rest of the app can use it
-export default puter;
+export async function loadPuter() {
+  if (puterInstance) return puterInstance;
+  if (!puterPromise) {
+    puterPromise = import('@heyputer/puter.js').then((mod) => mod.default ?? mod);
+  }
+  puterInstance = await puterPromise;
+  return puterInstance;
+}
+
+export default {
+  async get() {
+    return loadPuter();
+  },
+};

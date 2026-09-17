@@ -87,6 +87,15 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'analytics-vendor': ['@vercel/analytics/react', '@vercel/speed-insights/react'],
+          'ui-vendor': ['lucide-react'],
+        },
+      },
+    },
   },
   server: {
     port: 3001,

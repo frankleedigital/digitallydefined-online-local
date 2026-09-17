@@ -64,9 +64,10 @@ export default function HomePage() {
         intro="No camera. No followers required. Just one asset you own, with a roadmap that fits how you actually work."
         tone="dark"
         rule="top"
+        className="dd-section--cta-center"
       >
         <div className="action-row">
-          <DDCTA label="Take the Quiz" href="/quiz" variant="primary" />
+          <DDCTA label="Take the Quiz" href="/quiz" variant="primary" style={{ minWidth: 220 }} />
         </div>
       </DDSection>
     </div>

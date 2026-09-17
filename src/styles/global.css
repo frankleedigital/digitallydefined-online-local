@@ -442,6 +442,29 @@ p {
   margin-top: 2rem;
 }
 
+.dd-section--cta-center {
+  text-align: center;
+}
+
+.dd-section--cta-center .dd-section__head {
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+
+.dd-section--cta-center .dd-section__head p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dd-section--cta-center .action-row {
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.dd-section--cta-center .dd-btn {
+  min-width: 220px;
+}
+
 .microcopy,
 .disclaimer {
   margin-top: 1.2rem;
