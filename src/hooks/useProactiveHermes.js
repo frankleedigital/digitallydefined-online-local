@@ -1,4 +1,4 @@
-import { useToolState } from '../context/ToolStateContext.jsx';
+import { useToolState } from '../hooks/useToolState.js';
 import { sendToHermes } from './hermes.js';
 import { useEffect, useRef, useCallback } from 'react';
 

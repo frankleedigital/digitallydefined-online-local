@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
-import { ToolStateProvider } from './context/ToolStateContext.jsx';
-import { initTracking, trackPageView } from './lib/tracking.js';
+import { initTracking, trackPageView } from './utils/analytics.js';
 import './styles/global.css';
 import './styles/tailwind.css';
 
@@ -18,9 +17,8 @@ import puter from './puter-adapter.js';
 // Global Puter availability check
 window.puter = puter;
 
-// DigitallyDefined analytics pipeline (Supabase-backed)
+// DigitallyDefined analytics pipeline
 initTracking();
-// SPA page views on route change
 window.addEventListener('popstate', () => trackPageView());
 const originalPushState = window.history.pushState.bind(window.history);
 window.history.pushState = (...args) => {
@@ -30,14 +28,13 @@ window.history.pushState = (...args) => {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ToolStateProvider>
-      <ErrorBoundary>
-        <BrowserRouter>
-          <App />
-          <Analytics />
-          <SpeedInsights />
-        </BrowserRouter>
-      </ErrorBoundary>
-    </ToolStateProvider>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <App />
+        <Analytics />
+        <SpeedInsights />
+      </BrowserRouter>
+    </ErrorBoundary>
   </React.StrictMode>
 );
+

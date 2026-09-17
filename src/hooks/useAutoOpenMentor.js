@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useToolState } from '../context/ToolStateContext.jsx';
+import { useToolState } from '../hooks/useToolState.js';
 
 export function useAutoOpenMentor(delay = 600) {
   const { toolState } = useToolState();

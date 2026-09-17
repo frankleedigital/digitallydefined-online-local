@@ -3,7 +3,7 @@
 // once per app, returning a stable map. Falls back to defaults until loaded.
 
 import { useEffect, useState } from 'react';
-import { getSiteContent, DEFAULT_SITE_CONTENT } from '../lib/siteContent';
+import { getSiteContent, DEFAULT_SITE_CONTENT } from '../features/home/api/siteContent.js';
 
 export function useSiteContent() {
   const [content, setContent] = useState(DEFAULT_SITE_CONTENT);

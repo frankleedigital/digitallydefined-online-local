@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getHermesStatus } from '../lib/hermes';
+import { getHermesStatus } from '../lib/hermes.js';
 
 const DEFAULT_INTERVAL = 30000;
 

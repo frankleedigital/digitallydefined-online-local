@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import useHermesStatus from '../hooks/useHermesStatus';
-import { sendToHermes } from '../lib/hermes';
+import { sendToHermes } from '../lib/hermes.js';
 
 const GREETING = "I'm here to help you analyze your niche.";
 

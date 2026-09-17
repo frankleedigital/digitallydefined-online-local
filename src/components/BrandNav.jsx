@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { isQuizComplete } from '../hooks/useToolState.js';
 
-// Replace with your Facebook Group URL
-const FACEBOOK_GROUP_URL = 'https://www.facebook.com/groups/YOUR_GROUP_ID';
-
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/quiz', label: 'Quiz' },
-  { href: FACEBOOK_GROUP_URL, label: 'Community', external: true },
-];
+const FACEBOOK_GROUP_URL = 'https://www.facebook.com/groups/digitallydefin1';
 
 export default function BrandNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+
+  useEffect(() => {
+    setUnlocked(isQuizComplete());
+    const handler = () => setUnlocked(isQuizComplete());
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
+
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/quiz', label: 'Quiz' },
+    ...(unlocked ? [{ href: '/roadmap', label: 'Roadmap' }, { href: '/dashboard', label: 'Dashboard' }, { href: '/tools', label: 'Tools' }] : []),
+    { href: FACEBOOK_GROUP_URL, label: 'Community', external: true },
+  ];
 
   return (
     <header className="brand-nav">
@@ -31,14 +40,7 @@ export default function BrandNav() {
           )}
         </nav>
 
-        <button
-          type="button"
-          className="mobile-menu-btn brand-nav__menu"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-navigation"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-        >
+        <button type="button" className="mobile-menu-btn brand-nav__menu" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
           {menuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
@@ -57,4 +59,5 @@ export default function BrandNav() {
     </header>
   );
 }
+
 

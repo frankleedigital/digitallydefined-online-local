@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, Send, Trash2, X } from 'lucide-react';
-import { callSupabaseEdge } from '../lib/supabase-edge';
+import { callSupabaseEdge } from '../api/supabase.js';
 
 export default function ChatWidget({ position = 'bottom-right' }) {
   const [isOpen, setIsOpen] = useState(false);

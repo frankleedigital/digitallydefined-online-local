@@ -1,0 +1,16 @@
+// src/config/modelRouting.json — agent-to-runtime mapping (from agentRegistry.js)
+
+{
+  "fastapi": [
+    "agent.niche", "agent.roadmap", "agent.asset-plan", "agent.offer-architect",
+    "agent.wealth", "agent.product", "agent.domain", "agent.affiliate",
+    "agent.rankrent", "agent.blueprint", "agent.trends"
+  ],
+  "hermes": [
+    "agent.scorecard", "agent.reputation", "agent.quiz",
+    "quiz.complete", "public.chat", "chat", "website.content",
+    "license.verify", "analytics", "intelligence", "subscribe",
+    "quiz.roadmap", "personalize", "events", "optimization",
+    "report", "mentor.dev", "hermes.agent"
+  ]
+}
