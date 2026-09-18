@@ -32,15 +32,25 @@ export const ENDPOINTS = {
   },
   roadmap: {
     path: '/roadmap',
-    build: (i = {}) => ({
-      niche: i.niche || i.nicheName || '',
-      targetAudience: i.targetAudience || i.audience || undefined,
-      goals: i.goals || undefined,
-      timelineWeeks: i.timelineWeeks || undefined,
-      budget: i.budget || undefined,
-      priority: i.priority || undefined,
-      mode: i.mode || undefined,
-    }),
+    build: (i = {}) => {
+      // Quiz context: superpower + profile → construct a meaningful niche
+      const superpower = i.superpower || i.resultKey || '';
+      const personaTitle = i.profile?.title || '';
+      const overview = i.profile?.overview || '';
+      const niche = i.niche || i.nicheName ||
+        (superpower ? `Faceless ${superpower} building digital assets` : 'faceless digital business');
+      return {
+        niche,
+        targetAudience: i.targetAudience || i.audience || undefined,
+        goals: i.goals || (i.goal ? [i.goal] : undefined),
+        timelineWeeks: i.timelineWeeks || 12,
+        budget: i.budget || undefined,
+        priority: i.priority || 'balance',
+        mode: i.mode || 'freeMode',
+        _persona: superpower || undefined,
+        _overview: overview || undefined,
+      };
+    },
     normalize: (d) => ({
       ...d,
       summary: d.summary || d.timeline || '',
