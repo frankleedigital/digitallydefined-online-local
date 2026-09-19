@@ -3,7 +3,7 @@
    https://digitallydefined.online
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM Sans:wght@400;500;700&display=swap');
 
 :root {
   /* Brand Colors - DigitallyDefined Guidelines */
@@ -70,10 +70,11 @@ input:focus-visible {
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 600; /* Semi-bold as requested */
   line-height: 1.15;
   letter-spacing: -0.02em;
   color: var(--color-text);
+  text-align: center; /* Center headings */
 }
 
 h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); }
@@ -84,6 +85,7 @@ p {
   font-family: var(--font-body);
   color: var(--color-text-muted);
   line-height: 1.7;
+  text-align: center; /* Center paragraphs */
 }
 
 /* Eyebrow / Label */
@@ -95,6 +97,7 @@ p {
   text-transform: uppercase;
   color: var(--color-accent);
   margin-bottom: var(--space-sm);
+  text-align: center;
 }
 
 /* Hero Sections */
@@ -176,7 +179,16 @@ p {
   color: var(--color-surface);
 }
 
-/* Cards - Brutalist */
+/* Action Row - Center CTAs */
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Cards - White with thin black frames */
 .card {
   background: var(--color-surface);
   border: var(--border-width) solid var(--color-border);
@@ -216,15 +228,6 @@ p {
 .form-input:focus {
   outline: none;
   box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.12);
-}
-
-/* Action Row */
-.action-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 2rem;
 }
 
 /* Section Spacing */
@@ -396,7 +399,7 @@ p {
 .quiz-signup {
   padding: 2rem;
   border: var(--border-width) solid var(--color-border);
-  background: var(--color-bg);
+  background: var(--color-surface);
   display: grid;
   gap: 0.85rem;
   border-radius: 0;
@@ -476,8 +479,8 @@ p {
   margin: 0 auto 1rem;
   padding: 1rem;
   border: var(--border-width) solid var(--color-border);
-  background: var(--color-text);
-  color: var(--color-surface);
+  background: var(--color-surface);
+  color: var(--color-text);
   font-weight: 800;
   border-radius: 0;
 }
