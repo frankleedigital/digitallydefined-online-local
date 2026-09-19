@@ -1,7 +1,7 @@
 import React from 'react';
 import BrandNav from '../BrandNav';
 import BrandFooter from '../BrandFooter';
-import ChatWidget from '../ChatWidget';
+import MentorWidget from '../MentorWidget';
 
 /**
  * SiteLayout
@@ -19,8 +19,8 @@ export default function Layout({ children }) {
 
       <BrandFooter />
 
-      {/* AI Mentor — available on every page */}
-      <ChatWidget />
+      {/* AI Mentor (Hermes) — available on every page */}
+      <MentorWidget />
     </div>
   );
 }

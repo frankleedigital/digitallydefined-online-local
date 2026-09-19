@@ -16,11 +16,11 @@ function getStoredResult() {
 }
 
 const TOOLS = [
-  { key: 'niche',     name: 'Niche Profitability Scorecard',  desc: 'Score any niche across 6 criteria: demand, competition, monetization, sustainability, ease, and privacy fit.', href: '/tools/niche', icon: '🔍' },
-  { key: 'roadmap',   name: 'Roadmap Builder',                desc: 'Generate a phased strategic roadmap with milestones and next actions.', href: '/tools/roadmap', icon: '🗺️' },
-  { key: 'product',   name: 'Product Designer',               desc: 'Design a product concept with pricing, positioning, and launch strategy.', href: '/tools/product', icon: '📦' },
-  { key: 'social',    name: 'Social Content',                 desc: 'Create platform-optimized social content for your niche.', href: '/tools/social', icon: '📱' },
-  { key: 'trends',    name: 'Trends Explorer',                desc: 'Identify trending topics and emerging opportunities in your space.', href: '/tools/trends', icon: '📈' },
+  { key: 'niche',     name: 'Niche Profitability Scorecard',  desc: 'Score any niche across 6 criteria: demand, competition, monetization, sustainability, ease, and privacy fit.', href: '/tools/niche', icon: '🔍', status: 'active' },
+  { key: 'roadmap',   name: 'Roadmap Builder',                desc: 'Generate a phased strategic roadmap with milestones and next actions.', href: '/tools/roadmap', icon: '🗺️', status: 'coming-soon' },
+  { key: 'product',   name: 'Product Designer',               desc: 'Design a product concept with pricing, positioning, and launch strategy.', href: '/tools/product', icon: '📦', status: 'coming-soon' },
+  { key: 'social',    name: 'Social Content',                 desc: 'Create platform-optimized social content for your niche.', href: '/tools/social', icon: '📱', status: 'coming-soon' },
+  { key: 'trends',    name: 'Trends Explorer',                desc: 'Identify trending topics and emerging opportunities in your space.', href: '/tools/trends', icon: '📈', status: 'coming-soon' },
 ];
 
 export default function ToolsPage() {
@@ -44,12 +44,49 @@ export default function ToolsPage() {
 
       <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
         {TOOLS.map((tool) => (
-          <a key={tool.key} href={tool.href} style={{ border: '1px solid var(--color-border)', padding: '1.25rem', background: 'var(--color-card)', textDecoration: 'none', display: 'flex', gap: '1rem', alignItems: 'flex-start', transition: 'box-shadow 0.15s' }}
-             onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-hover)'}
-             onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}>
+          <a 
+            key={tool.key} 
+            href={tool.href} 
+            style={{ 
+              border: '1px solid var(--color-border)', 
+              padding: '1.25rem', 
+              background: 'var(--color-card)', 
+              textDecoration: 'none', 
+              display: 'flex', 
+              gap: '1rem', 
+              alignItems: 'flex-start',
+              borderRadius: '0',
+              opacity: tool.status === 'coming-soon' ? 0.6 : 1,
+              cursor: tool.status === 'coming-soon' ? 'not-allowed' : 'pointer',
+              transition: 'opacity 0.15s ease'
+            }}
+            onMouseEnter={(e) => {
+              if (tool.status !== 'coming-soon') {
+                e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
             <span style={{ fontSize: '1.5rem' }}>{tool.icon}</span>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem' }}>{tool.name}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                {tool.name}
+                {tool.status === 'coming-soon' && (
+                  <span style={{ 
+                    fontSize: '0.6rem', 
+                    fontWeight: 800, 
+                    padding: '0.2rem 0.4rem', 
+                    border: '1px solid var(--color-border)', 
+                    background: 'var(--color-bg)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em'
+                  }}>
+                    Coming Soon
+                  </span>
+                )}
+              </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{tool.desc}</div>
             </div>
           </a>
