@@ -5,6 +5,7 @@ import RequireUnlock from './components/RequireUnlock.jsx';
 
 const HomePage = lazy(() => import('./features/home/pages/HomePage.jsx'));
 const QuizPage = lazy(() => import('./features/quiz/pages/QuizPage.jsx'));
+const ResultsPage = lazy(() => import('./features/quiz/pages/ResultsPage.jsx'));
 const QuizInboxPage = lazy(() => import('./features/quiz/pages/QuizInboxPage.jsx'));
 const RoadmapPage = lazy(() => import('./features/roadmap/pages/RoadmapPage.jsx'));
 const DashboardPage = lazy(() => import('./features/dashboard/pages/DashboardPage.jsx'));
@@ -28,9 +29,14 @@ function App() {
         <Route path="/quiz" element={<SiteLayout><QuizPage /></SiteLayout>} />
         <Route path="/quiz/inbox" element={<SiteLayout><QuizInboxPage /></SiteLayout>} />
 
-        {/* Personalized roadmap (post-quiz) */}
+        {/* Results: reads the result saved on this device (never route state),
+            so refreshing or bookmarking the page keeps working. */}
+        <Route path="/results" element={<SiteLayout><ResultsPage /></SiteLayout>} />
+
+        {/* Personalized roadmap (post-quiz) + shareable persona roadmaps */}
         <Route path="/roadmap" element={guarded(<RoadmapPage />)} />
-        <Route path="/quiz/results" element={guarded(<RoadmapPage />)} />
+        <Route path="/roadmap/:type" element={<SiteLayout><RoadmapPage /></SiteLayout>} />
+        <Route path="/quiz/results" element={guarded(<ResultsPage />)} />
 
         {/* Private workspace + tools (unlocked after quiz) */}
         <Route path="/dashboard" element={guarded(<DashboardPage />)} />

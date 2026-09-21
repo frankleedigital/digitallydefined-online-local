@@ -1,4 +1,10 @@
-// src/features/quiz/lib/renderRoadmap.js — transforms AI roadmap JSON into UI shape
+// src/features/quiz/lib/renderRoadmap.js — transforms AI-shaped roadmap JSON into a UI shape.
+//
+// NOTE: the primary quiz → results → roadmap flow no longer depends on AI output.
+// Personalization is local and deterministic (see quizLogic.js + personalize.js).
+// This adapter is kept only so a roadmap JSON previously stored in Supabase
+// (quiz_roadmaps.roadmap) can still be read. Do not wire new UI to it.
+
 
 export function renderRoadmap(roadmapJson = {}) {
   const {

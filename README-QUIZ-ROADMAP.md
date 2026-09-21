@@ -4,17 +4,29 @@
 
 This document explains how the Personalized Digital Superpower Quiz connects to the backend and Supabase Edge Functions.
 
+## Personalization (local, deterministic)
+
+Scoring and personalization run entirely in the browser — no AI provider is needed
+to show a result:
+
+- `features/quiz/lib/scoring.js` — weighted tally with fixed tie-breaks (q4/q7 count double)
+- `features/quiz/lib/personalize.js` — strengths, blind spots, niches, build sequence from the answers
+- `features/quiz/lib/quizLogic.js` — builds and persists the result in `localStorage` (`dd-quiz-results`)
+
+The result is saved on every completion, so `/results`, `/roadmap` and `/dashboard`
+always agree and an old persona can never stay stuck on screen.
+
 ## Architecture
 
 ```
 Website (Vite + React)
     │
-    ├── POST /api/hermes → quiz.complete action
+    ├── POST /api/hermes → quiz.complete action (delivery only)
     │   └── Supabase Edge Function (hermes/index.ts)
-    │       ├── Score quiz answers (scoreQuiz)
+    │       ├── Receive name, email, superpower, answers, roadmap
     │       ├── Upsert website_leads in Supabase
-    │       ├── Call AI (OmniRoute → Gemini fallback)
-    │       │   └── Generate personalized roadmap JSON
+    │       ├── (personalization already happened locally on the website)
+    │       │   └── see features/quiz/lib/personalize.js
     │       ├── Store quiz_roadmaps in Supabase
     │       ├── Send email via Brevo
     │       └── Return { persona, confidence, roadmap, emailSent }
@@ -30,25 +42,25 @@ Website (Vite + React)
 ### 1. User takes the quiz
 - Route: `/quiz`
 - Component: `DigitalSuperpowerQuiz.jsx`
-- 7 questions → scoring via `scoreQuiz()` (majority vote)
+- 7 questions → scored locally by `scoreQuizDetailed()` (weighted, deterministic)
 - Email capture → form submission
 
 ### 2. Quiz submission
 - Calls `callSupabaseEdge('quiz.complete', { answers, name, email })`
 - Backend edge function:
-  1. Scores quiz (deterministic, no AI)
+  1. Validates name, email and superpower
   2. Upserts `website_leads` row (email, name, tags)
-  3. Builds prompt for AI roadmap generation
-  4. Calls OmniRoute (primary) → Gemini fallback
-  5. Stores roadmap in `quiz_roadmaps` table
-  6. Sends email via Brevo (async, non-fatal)
-  7. Returns result with persona, confidence, roadmap preview
+  3. Stores the delivered result in `quiz_roadmaps`
+  4. Sends the roadmap email via Brevo (non-fatal)
+  5. Mirrors the completion into Notion (non-fatal)
+  6. Returns { emailMode, emailSent }
+  7. The website never blocks on this call — the result is already on screen
 
 ### 3. Results display
 - Shows persona card (Builder/Creator/Educator/Connector/Strategist)
-- Displays AI-generated roadmap steps
+- Displays the locally personalized result (superpower, strengths, blind spots, niches, build sequence)
 - Shows "Check your inbox" confirmation
-- Links to `/quiz/inbox` and `/dashboard/roadmap`
+- Links to `/quiz/inbox`, `/results` and `/roadmap/:type`
 
 ### 4. Confirmation page
 - Route: `/quiz/inbox?email=...`
@@ -57,16 +69,16 @@ Website (Vite + React)
 - Links back to dashboard or quiz
 
 ### 5. Dashboard roadmap view
-- Route: `/dashboard/roadmap?email=...`
-- Component: `DashboardRoadmap.jsx`
-- Fetches stored roadmap via `quiz.roadmap` action
-- Renders roadmap steps, next 3 steps, recommended tool, CTA
+- Route: `/roadmap` (personalized) and `/roadmap/:type` (shareable)
+- Component: `features/roadmap/pages/RoadmapPage.jsx`
+- Reads the saved result via `loadQuizResult()` (localStorage `dd-quiz-results`)
+- Renders strengths, blind spots, niches, build sequence, tools and the next action
 
 ## API Routes
 
 | Action | Method | Purpose |
 |---|---|---|
-| `quiz.complete` | POST | Submit quiz, generate roadmap, send email |
+| `quiz.complete` | POST | Store lead + result, send the roadmap email |
 | `quiz.roadmap` | GET | Fetch stored roadmap for email |
 
 ## Supabase Tables
@@ -98,11 +110,18 @@ SUPABASE_SERVICE_ROLE_KEY  # Database writes
 
 | File | Change |
 |---|---|
-| `src/pages/Quiz/DigitalSuperpowerQuiz.jsx` | Added inbox/dashboard links after results |
-| `src/pages/Quiz/QuizInbox.jsx` | **NEW** — confirmation page |
-| `src/pages/Dashboard/DashboardPage.jsx` | **NEW** — dashboard entry |
-| `src/pages/Dashboard/DashboardRoadmap.jsx` | **NEW** — roadmap viewer |
-| `src/App.jsx` | Added routes for new pages |
+| `src/features/quiz/lib/scoring.js` | Rewritten — weighted deterministic scoring with fixed tie-breaks |
+| `src/features/quiz/lib/personalize.js` | **NEW** — local personalization (no AI) |
+| `src/features/quiz/lib/quizLogic.js` | **NEW** — result builder + `dd-quiz-results` storage + legacy healing |
+| `src/features/quiz/components/QuizResultCard.jsx` | **NEW** — shared personalized result view |
+| `src/features/quiz/pages/QuizPage.jsx` | Rebuilt — value-first flow, always persists the result |
+| `src/features/quiz/pages/ResultsPage.jsx` | **NEW** — `/results` (and `/quiz/results`) |
+| `src/features/roadmap/pages/RoadmapPage.jsx` | Rebuilt — supports `/roadmap/:type` |
+| `src/features/quiz/api/quizApi.js` | AI personalization removed; email delivery kept as best effort |
+| `src/App.jsx` | Routes: `/results`, `/quiz/results`, `/roadmap`, `/roadmap/:type` |
+| `src/styles/global.css` | Brand-kit classes restored + quiz/result/roadmap components |
+| `scripts/ssr-smoke.jsx` / `.mjs` | Fixed harness; renders lazy routes and asserts copy |
+| `scripts/quiz-logic-check.mjs` | **NEW** — deterministic logic verification |
 
 ## Deploy
 

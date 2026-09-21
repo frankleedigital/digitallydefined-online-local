@@ -1,80 +1,206 @@
 // src/features/roadmap/pages/RoadmapPage.jsx
-// Reads quiz result from localStorage, renders the user's personalized roadmap.
-// Redirects to /quiz if no result found.
+// The personalized roadmap, reachable three ways:
+//   /roadmap            → the result saved on this device
+//   /roadmap/:type      → a shareable link for one of the five superpowers
+//   /quiz/results       → routed here for backwards compatibility
+//
+// Content comes from the same deterministic result the quiz produced, so the
+// roadmap and the result page can never disagree. No AI is involved.
 
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { getRoadmap } from '../../quiz/lib/roadmapData.js';
-import { renderRoadmap } from '../../quiz/lib/renderRoadmap.js';
+import React, { useMemo } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import {
+  loadQuizResult,
+  buildPersonaPreview,
+  resolvePersonaParam,
+} from '../../quiz/lib/quizLogic.js';
+import { PERSONA_KEYS } from '../../quiz/lib/scoring.js';
+import { getPersona } from '../../quiz/lib/personas.js';
 
-const STORAGE_KEY = 'dd-quiz-results';
-
-function getStoredResult() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
+function PersonaPicker({ title, message }) {
+  return (
+    <section className="page-hero">
+      <div className="dd-container">
+        <span className="label label--orange">Roadmap</span>
+        <h1>{title}</h1>
+        <p>{message}</p>
+        <div className="result-explore__grid">
+          {PERSONA_KEYS.map((key) => {
+            const persona = getPersona(key);
+            return (
+              <Link key={key} className="result-explore__card" to={`/roadmap/${key}`}>
+                <span className="label label--orange">{persona.title}</span>
+                <strong>{persona.superpowerName || persona.title}</strong>
+                <span className="result-explore__tagline">{persona.tagline}</span>
+              </Link>
+            );
+          })}
+        </div>
+        <div className="action-row">
+          <Link className="btn btn--primary" to="/quiz">Take the quiz →</Link>
+          <Link className="btn btn--outline" to="/">Back to home</Link>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default function RoadmapPage() {
-  const stored = getStoredResult();
+  const { type } = useParams();
+  const stored = useMemo(() => loadQuizResult(), []);
+  const requested = resolvePersonaParam(type);
 
-  if (!stored) {
-    return <Navigate to="/quiz" replace />;
+  const result = useMemo(() => {
+    if (requested) {
+      if (stored && stored.superpower === requested) return stored;
+      return buildPersonaPreview(requested);
+    }
+    return stored || null;
+  }, [requested, stored]);
+
+  // A bad :type is answered honestly instead of silently redirecting.
+  if (type && !requested) {
+    return (
+      <PersonaPicker
+        title="That is not one of the five superpowers."
+        message="The quiz scores five profiles: Builder, Creator, Educator, Strategist and Connector. Pick one below, or take the quiz to find yours."
+      />
+    );
   }
 
-  const { superpower } = stored;
-  const roadmap = getRoadmap(superpower);
-
-  if (!roadmap) {
-    return <Navigate to="/quiz" replace />;
+  if (!result) {
+    return (
+      <PersonaPicker
+        title="Your roadmap starts with the quiz."
+        message="Answer seven questions and your roadmap is built on this device in about two minutes. No email required to see it."
+      />
+    );
   }
 
-  const rendered = renderRoadmap({});
-  const steps = rendered.steps?.length > 0
-    ? rendered.steps.map((s) => s.description || s.step).filter(Boolean)
-    : roadmap.firstSteps;
-  const nextAction = rendered.nextAction?.action || '';
+  const persona = getPersona(result.superpower);
+  const sequence = result.buildSequence || [];
+  const isPersonalized = result.source !== 'persona-template';
+  const generated = result.generatedAt ? new Date(result.generatedAt) : null;
+  const generatedLabel = generated && !Number.isNaN(generated.getTime())
+    ? generated.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+    : '';
+
+  const heading = result.firstName
+    ? `${result.firstName}, here is your ${persona.title} roadmap.`
+    : `Your ${persona.title} roadmap.`;
+
+  const meta = isPersonalized
+    ? `Scored from ${result.answered} of ${result.total || 7} answers${generatedLabel ? ` on ${generatedLabel}` : ''}. Saved in this browser only.`
+    : 'Overview mode. Take the quiz to personalize this roadmap with your own answers.';
 
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto', padding: '3rem 1.5rem' }}>
-      <span style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-accent)', display: 'block', marginBottom: '0.5rem' }}>
-        YOUR PERSONALIZED ROADMAP
-      </span>
-      <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.5rem', lineHeight: 1.1 }}>
-        {roadmap.title}
-      </h1>
-      <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, marginBottom: '2rem' }}>{roadmap.overview}</p>
+    <>
+      <section className="page-hero page-hero--ink">
+        <div className="dd-container">
+          <span className="label label--blue">{persona.title} / {result.superpowerName}</span>
+          <h1>{heading}</h1>
+          <p>{result.overview}</p>
+          <div className="action-row">
+            {isPersonalized ? (
+              <Link className="btn btn--primary" to="/results">See my result page →</Link>
+            ) : (
+              <Link className="btn btn--primary" to="/quiz">Take the quiz to personalize →</Link>
+            )}
+            <Link className="btn btn--outline" to={`/roadmap/${otherPersona(result.superpower)}`}>
+              Compare another superpower
+            </Link>
+          </div>
+          <p className="hero-note hero-note--ink">{meta}</p>
+        </div>
+      </section>
 
-      <div style={{ display: 'grid', gap: '1.5rem', marginBottom: '2rem' }}>
-        <div style={{ border: '1px solid var(--color-border)', padding: '1.5rem', background: 'var(--color-surface)' }}>
-          <h3 style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem', color: 'var(--color-accent)' }}>Your Strengths</h3>
-          <ul style={{ margin: 0, paddingLeft: '1.25rem', color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
-            {roadmap.strengths.map((s) => <li key={s}>{s}</li>)}
-          </ul>
-        </div>
-        <div style={{ border: '1px solid var(--color-border)', padding: '1.5rem', background: 'var(--color-surface)' }}>
-          <h3 style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem', color: '#F18B25' }}>Build Sequence</h3>
-          <ol style={{ margin: 0, paddingLeft: '1.25rem', color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
-            {steps.map((step, i) => <li key={i}><strong style={{ color: 'var(--color-text)' }}>{i + 1}.</strong> {step}</li>)}
-          </ol>
-          {nextAction && <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'rgba(241,139,37,0.1)', borderLeft: '3px solid var(--color-accent)' }}><strong>Next action:</strong> {nextAction}</div>}
-        </div>
-        <div style={{ border: '1px solid var(--color-border)', padding: '1.5rem', background: 'var(--color-surface)' }}>
-          <h3 style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem', color: 'var(--color-accent)' }}>Recommended Niches</h3>
-          <ul style={{ margin: 0, paddingLeft: '1.25rem', color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
-            {roadmap.recommendedNiches.map((n) => <li key={n}>{n}</li>)}
-          </ul>
-        </div>
-      </div>
+      <section className="story-section story-section--white">
+        <div className="dd-container">
+          <div className="roadmap-grid">
+            <article className="roadmap-panel">
+              <span className="label label--orange">Strengths</span>
+              <h3>What you already do well</h3>
+              <ul className="dd-list">
+                {(result.strengths || []).map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </article>
 
-      <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '1.5rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-        <a href="/dashboard" className="btn btn--primary">Open My Dashboard →</a>
-        <a href="/quiz" className="btn btn--outline">Retake Quiz</a>
-        <a href="/" className="btn btn--outline">Back to Home</a>
-      </div>
-    </div>
+            <article className="roadmap-panel">
+              <span className="label label--blue">Blind spots</span>
+              <h3>Where this profile usually stalls</h3>
+              <ul className="dd-list">
+                {(result.blindSpots || []).map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </article>
+
+            <article className="roadmap-panel">
+              <span className="label label--orange">Best-fit niches</span>
+              <h3>Where your superpower meets demand</h3>
+              <ul className="dd-list">
+                {(result.niches || []).map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </article>
+
+            <article className="roadmap-panel">
+              <span className="label label--blue">Tools to use</span>
+              <h3>In the order you need them</h3>
+              <ul className="dd-list">
+                {(result.tools || []).map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </article>
+          </div>
+
+          <div className="roadmap-plan">
+            <span className="label label--orange">Your personalized build sequence</span>
+            <h2>Phase by phase, without wasted effort.</h2>
+            <p>
+              Each phase produces one thing you can point at.
+              {result.timeframe ? ` Typical window for this profile: ${result.timeframe}.` : ''}
+            </p>
+
+            {sequence.map((step) => (
+              <div className="roadmap-step" key={`${step.step}-${step.title}`}>
+                <span>{String(step.step).padStart(2, '0')}</span>
+                <div>
+                  <h3>{step.title}</h3>
+                  {step.timeframe ? <p className="roadmap-step__meta">Target: {step.timeframe}</p> : null}
+                  {step.metric ? <p className="roadmap-step__meta">Done when: {step.metric}</p> : null}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="truth-bar">
+            <strong>Start here</strong>
+            <span>
+              {result.nextAction}
+              {result.nextActionReason ? ` ${result.nextActionReason}` : ''}
+            </span>
+          </div>
+
+          <div className="roadmap-next">
+            <div>
+              <span className="label label--blue">Step 04 / Build</span>
+              <h2>Keep the roadmap in view while you build.</h2>
+              <p>
+                Your dashboard unlocks after the quiz and holds the tools this sequence points to.
+                Everything stays private to this browser.
+              </p>
+            </div>
+            <div className="action-row">
+              <Link className="btn btn--primary" to="/dashboard">Open my dashboard →</Link>
+              <Link className="btn btn--outline" to="/tools">See the tools</Link>
+              <Link className="btn btn--outline" to="/quiz">Retake the quiz</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
+}
+
+/** The next persona in canonical order — used for the "compare" link. */
+function otherPersona(current) {
+  const index = PERSONA_KEYS.indexOf(current);
+  return PERSONA_KEYS[(index + 1) % PERSONA_KEYS.length];
 }

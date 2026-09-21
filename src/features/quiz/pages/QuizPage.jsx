@@ -1,225 +1,322 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { callAgent } from '../../../api/client.js';
-import { getRoadmap } from '../lib/roadmapData.js';
-import { scoreQuiz } from '../lib/scoring.js';
-import { QUESTIONS, ICONS } from '../lib/questions.js';
-import { submitQuiz, fetchIntelligence } from '../api/quizApi.js';
+// src/features/quiz/pages/QuizPage.jsx
+// Digital Superpower Quiz — value first, personalization local.
+//
+// Flow: intro → seven questions → personalized result → optional email delivery.
+// Scoring and personalization are deterministic and local (lib/quizLogic.js),
+// so the result renders even when every backend is unavailable.
+//
+// Brand rules applied here: no email gate before the value, no countdowns,
+// no hype copy, one question per screen, sharp edges, high contrast.
+
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { QUESTIONS } from '../lib/questions.js';
+import { buildQuizResult, saveQuizResult } from '../lib/quizLogic.js';
+import QuizResultCard from '../components/QuizResultCard.jsx';
+import { submitQuiz } from '../api/quizApi.js';
 import { useToolState } from '../../../hooks/useToolState.js';
-import { trackQuizStart, trackQuizComplete } from '../../../utils/analytics.js';
+import { trackQuizStart, trackQuizComplete, trackFormSubmit } from '../../../utils/analytics.js';
+
+const STAGES = { INTRO: 'intro', QUESTIONS: 'questions', RESULT: 'result' };
+const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
+
+const BENEFITS = [
+  { number: '01', text: 'Your strongest digital superpower, scored across all seven answers.' },
+  { number: '02', text: 'The strengths and blind spots that come with that profile.' },
+  { number: '03', text: 'Best-fit niches where that profile is actually paid.' },
+  { number: '04', text: 'A personalized build sequence, in the order that avoids wasted effort.' },
+];
 
 export default function QuizPage() {
   const { updateToolState } = useToolState();
   const [searchParams] = useSearchParams();
-  const [stage, setStage] = useState('intro');
-  const [contact, setContact] = useState({ name: '', email: '' });
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+
+  const [stage, setStage] = useState(STAGES.INTRO);
+  const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [resultKey, setResultKey] = useState(null);
-  const [personalized, setPersonalized] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [emailMode, setEmailMode] = useState(null);
-  const [intelligenceReady, setIntelligenceReady] = useState(false);
+  const [result, setResult] = useState(null);
+  const [contact, setContact] = useState({ name: '', email: '' });
+  const [delivery, setDelivery] = useState({ state: 'idle', message: '' });
+  const autoStarted = useRef(false);
+
+  const question = QUESTIONS[step];
+  const progress = Math.round((Object.keys(answers).length / QUESTIONS.length) * 100);
+
+  // QA flags that only affect email delivery (existing test links keep working).
+  const isDevMode = searchParams.get('dev') === 'true' || searchParams.get('devMode') === 'true';
+  const isBrevoTest = searchParams.get('brevoTest') === 'true';
+  const isTestEmail = searchParams.get('testEmail') === 'true';
+  const wantsStart = searchParams.get('start') === 'true';
 
   useEffect(() => {
     updateToolState({ quizComplete: false });
     return () => updateToolState({ quizComplete: false });
-  }, []);
+  }, [updateToolState]);
 
+  // Homepage / static fallback CTA: /quiz?start=true goes straight to question 1.
   useEffect(() => {
-    if (searchParams.get('start') === 'true' && stage === 'intro') {
-      setStage('form');
-      setTimeout(() => {
-        const form = document.getElementById('quiz-signup');
-        if (form) form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
+    if (wantsStart && !autoStarted.current) {
+      autoStarted.current = true;
+      trackQuizStart('/quiz');
+      setStage(STAGES.QUESTIONS);
     }
-  }, [searchParams]);
+  }, [wantsStart]);
 
-  const isDevMode = searchParams.get('dev') === 'true' || searchParams.get('devMode') === 'true';
-  const isBrevoTest = searchParams.get('brevoTest') === 'true';
-  const isTestEmail = searchParams.get('testEmail') === 'true';
+  function startQuiz() {
+    trackQuizStart('/quiz');
+    setStage(STAGES.QUESTIONS);
+  }
 
-  const roadmap = resultKey ? getRoadmap(resultKey) : null;
-  const question = QUESTIONS[currentQuestion];
-  const progress = (Object.keys(answers).length / QUESTIONS.length) * 100;
+  /** Send the roadmap — best effort. The result is already on screen and saved. */
+  async function deliver(deliveryResult, recipient) {
+    setDelivery({ state: 'sending', message: 'Sending your roadmap…' });
+    try {
+      await submitQuiz({
+        name: recipient.name,
+        email: recipient.email,
+        superpower: deliveryResult.superpower,
+        answers: deliveryResult.answers,
+        roadmap: { ...deliveryResult },
+        devMode: isDevMode,
+        brevoTest: isBrevoTest,
+        testEmail: isTestEmail,
+      });
+      const sent = { ...deliveryResult, emailSent: true };
+      setResult(sent);
+      saveQuizResult(sent);
+      setDelivery({
+        state: 'sent',
+        message: `Your roadmap is on the way to ${recipient.email}. It can take a few minutes to arrive.`,
+      });
+    } catch {
+      setDelivery({
+        state: 'failed',
+        message: 'The email could not be sent right now. Your roadmap is on this page and saved in this browser.',
+      });
+    }
+  }
 
-  const beginQuiz = (event) => {
-    event.preventDefault();
-    if (!contact.name.trim() || !contact.email.trim()) return;
-    trackQuizStart({ source: '/quiz', email: contact.email.trim() });
-    setStage('quiz');
-  };
+  function finishQuiz(finalAnswers) {
+    const nextResult = buildQuizResult({
+      name: contact.name,
+      email: contact.email,
+      answers: finalAnswers,
+    });
 
-  const chooseAnswer = (value) => {
+    // Persist immediately: /results, /roadmap and /dashboard all read this key.
+    // The old flow only saved on a successful AI call, which is why a stale
+    // persona could stay on screen forever.
+    setResult(nextResult);
+    saveQuizResult(nextResult);
+    trackQuizComplete({ email: contact.email, superpower: nextResult.superpower });
+    updateToolState({
+      quizComplete: true,
+      quizSuperpower: nextResult.superpower,
+      quizAnswers: finalAnswers,
+    });
+    setStage(STAGES.RESULT);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0 });
+    if (contact.email) deliver(nextResult, contact);
+  }
+
+  function selectAnswer(value) {
     const nextAnswers = { ...answers, [question.key]: value };
     setAnswers(nextAnswers);
-    if (currentQuestion < QUESTIONS.length - 1) {
-      setCurrentQuestion((current) => current + 1);
-    } else {
-      finishQuiz(nextAnswers);
+    if (step < QUESTIONS.length - 1) {
+      setStep(step + 1);
+      return;
     }
-  };
+    finishQuiz(nextAnswers);
+  }
 
-  const finishQuiz = async (finalAnswers) => {
-    const key = scoreQuiz(finalAnswers);
-    trackQuizComplete({ email: contact.email.trim(), superpower: key });
-    let intelligenceSuccess = false;
-    let intelligenceError = null;
-    try {
-      const intelResponse = await fetchIntelligence({ userId: contact.email.trim(), answers: finalAnswers });
-      if (intelResponse?.success === true) {
-        intelligenceSuccess = true;
-        localStorage.setItem('dd-quiz-results', JSON.stringify({ userId: contact.email.trim(), answers: finalAnswers, superpower: key }));
-      }
-    } catch (e) {
-      intelligenceError = 'Intelligence analysis failed. Your roadmap is still ready below.';
+  function goBack() {
+    if (step === 0) {
+      setStage(STAGES.INTRO);
+      return;
     }
-    const fallback = getRoadmap(key);
-    setResultKey(key);
-    setStage('result');
-    setLoading(true);
-    setError('');
-    updateToolState({ quizComplete: true, quizSuperpower: key, quizAnswers: finalAnswers });
-    if (intelligenceError) setError(intelligenceError);
-    let aiRoadmap = null;
-    try {
-      const response = await callAgent('roadmap', { name: contact.name.trim(), superpower: key, answers: finalAnswers, profile: fallback, goal: 'Build faceless digital real estate' });
-      aiRoadmap = response.data;
-      setPersonalized(aiRoadmap);
-    } catch (e) {
-      setError('Your core roadmap is ready. AI personalization is temporarily unavailable.');
-    }
-    try {
-      const saveResult = await submitQuiz({ name: contact.name.trim(), email: contact.email.trim(), superpower: key, answers: finalAnswers, roadmap: aiRoadmap || fallback, devMode: isDevMode, brevoTest: isBrevoTest, testEmail: isTestEmail });
-      if (saveResult?.emailMode) setEmailMode(saveResult.emailMode);
-    } catch (e) {
-      setError((prev) => prev || 'Your roadmap is ready, but we could not save it to your profile.');
-    } finally {
-      setLoading(false);
-      setIntelligenceReady(intelligenceSuccess);
-    }
-  };
+    setStep(step - 1);
+  }
 
-  const reset = () => {
-    setStage('intro'); setContact({ name: '', email: '' }); setCurrentQuestion(0);
-    setAnswers({}); setResultKey(null); setPersonalized(null); setError(''); setIntelligenceReady(false);
-  };
+  function handleCapture(event) {
+    event.preventDefault();
+    const recipient = { name: contact.name.trim(), email: contact.email.trim() };
+    if (!recipient.email) return;
+    const personalized = buildQuizResult({ ...recipient, answers });
+    setResult(personalized);
+    saveQuizResult(personalized);
+    trackFormSubmit({ formName: 'quiz_email_capture', email: recipient.email, funnel_step: 'quiz_result' });
+    deliver(personalized, recipient);
+  }
 
-  return (
-    <>
-      {stage === 'intro' && (
-        <>
-          <section className="page-hero">
-            <span className="label label--blue">Digital Superpower Quiz</span>
-            <h1>Find the faceless asset model that fits how you already think.</h1>
-            <p>Enter your name and email, answer seven practical questions, and receive a personalized superpower roadmap.</p>
-            <div className="action-row"><a href="#quiz-signup" className="btn btn--primary">Take the Quiz →</a></div>
-          </section>
-          <section className="story-section story-section--white">
-            <div className="quiz-entry">
-              <div>
-                <span className="label label--orange">What you will receive</span>
-                <h2>A useful result, not just a label.</h2>
-                <div className="quiz-benefits">
-                  <p><strong>01</strong> Your strongest digital superpower.</p>
-                  <p><strong>02</strong> Faceless asset models that fit it.</p>
-                  <p><strong>03</strong> Your first build sequence and tools.</p>
-                  <p><strong>04</strong> A roadmap connected to your email and result.</p>
-                </div>
-              </div>
-              <form className="quiz-signup" onSubmit={beginQuiz} id="quiz-signup">
-                <span className="quiz-step-label">STEP 01 / IDENTIFY YOURSELF</span>
-                <label className="form-label">First Name</label>
-                <input className="form-input" required value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="What should your roadmap call you?" />
-                <label className="form-label">Email Address</label>
-                <input className="form-input" type="email" required value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder="Email for your roadmap and guidance" />
-                <button className="btn btn--primary" type="submit">Start My Assessment →</button>
-                <small>By continuing, you agree to receive your result and related DigitallyDefined guidance. Unsubscribe anytime.</small>
-              </form>
+  function retake() {
+    setStage(STAGES.INTRO);
+    setStep(0);
+    setAnswers({});
+    setResult(null);
+    setContact({ name: '', email: '' });
+    setDelivery({ state: 'idle', message: '' });
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0 });
+  }
+
+  if (stage === STAGES.INTRO) {
+    return (
+      <>
+        <section className="page-hero">
+          <div className="dd-container">
+            <span className="label label--orange">Digital Superpower Quiz</span>
+            <h1>Find the digital asset model that fits how you already think.</h1>
+            <p>Seven practical questions. One superpower. A build sequence you can start this week.</p>
+            <div className="action-row">
+              <button type="button" className="btn btn--primary" onClick={startQuiz}>Start the quiz →</button>
             </div>
-          </section>
-        </>
-      )}
-      {stage === 'form' && (
-        <section className="story-section story-section--white">
-          <div className="quiz-entry">
-            <div>
-              <span className="label label--orange">What you will receive</span>
-              <h2>A useful result, not just a label.</h2>
-              <div className="quiz-benefits">
-                <p><strong>01</strong> Your strongest digital superpower.</p>
-                <p><strong>02</strong> Faceless asset models that fit it.</p>
-                <p><strong>03</strong> Your first build sequence and tools.</p>
-                <p><strong>04</strong> A roadmap connected to your email and result.</p>
-              </div>
-            </div>
-            <form className="quiz-signup" onSubmit={beginQuiz} id="quiz-signup">
-              <span className="quiz-step-label">STEP 01 / IDENTIFY YOURSELF</span>
-              <label className="form-label">First Name</label>
-              <input className="form-input" required value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="What should your roadmap call you?" />
-              <label className="form-label">Email Address</label>
-              <input className="form-input" type="email" required value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder="Email for your roadmap and guidance" />
-              <button className="btn btn--primary" type="submit">Start My Assessment →</button>
-              <small>By continuing, you agree to receive your result and related DigitallyDefined guidance. Unsubscribe anytime.</small>
-            </form>
+            <p className="hero-note">
+              About two minutes. No camera, no follower count, and no email needed to see your result.
+            </p>
           </div>
         </section>
-      )}
-      {stage === 'quiz' && (
-        <section className="quiz-shell">
-          <div className="quiz-progress-copy"><span>STEP 02 / DISCOVER</span><span>Question {currentQuestion + 1} of {QUESTIONS.length}</span></div>
-          <div className="quiz-progress"><span style={{ width: `${progress}%` }} /></div>
-          <div className="quiz-question">
-            <p className="section__eyebrow">{contact.name}, choose the answer that feels most natural.</p>
-            <h1>{question.label}</h1>
-            <div className="quiz-options">
-              {question.options.map(({ value, label }) => (
-                <button key={value} type="button" onClick={() => chooseAnswer(value)}><span>{value.slice(0, 1).toUpperCase()}</span>{label}</button>
+
+        <section className="story-section story-section--white">
+          <div className="dd-container dd-container--narrow">
+            <div className="story-heading">
+              <span className="label label--blue">What you get</span>
+              <h2>A useful result, not a label.</h2>
+              <p>
+                Your answers are scored on this device. You decide afterwards whether you want the
+                roadmap emailed to you.
+              </p>
+            </div>
+            <div className="quiz-benefits">
+              {BENEFITS.map((item) => (
+                <p key={item.number}>
+                  <strong>{item.number}</strong>
+                  <span>{item.text}</span>
+                </p>
               ))}
             </div>
           </div>
         </section>
-      )}
-      {stage === 'result' && roadmap && (
-        <>
-          <section className="page-hero page-hero--ink">
-            <span className="label label--orange">Your result / {ICONS[resultKey]}</span>
-            <h1>{contact.name}, your superpower is <span style={{ color: 'var(--color-blue)' }}>{roadmap.title.replace(' Roadmap', '')}</span>.</h1>
-            <p>{roadmap.overview}</p>
-            <div className="action-row"><a href="/roadmap" className="btn btn--primary">See Your Roadmap →</a></div>
-          </section>
-          <section className="story-section story-section--cream">
-            {loading && <div className="quiz-status">Personalizing your roadmap...</div>}
-            {error && <div className="quiz-status quiz-status--notice">{error}</div>}
-            <div className="roadmap-grid">
-              <article className="roadmap-panel"><span className="label label--blue">Your strengths</span><h3>What you already do well</h3><ul>{roadmap.strengths.map((item) => <li key={item}>{item}</li>)}</ul></article>
-              <article className="roadmap-panel"><span className="label label--orange">Your blind spots</span><h3>Where people like you commonly stall</h3><ul>{roadmap.challenges.map((item) => <li key={item}>{item}</li>)}</ul></article>
-              <article className="roadmap-panel"><span className="label label--blue">Best-fit niches</span><h3>Where your superpower meets demand</h3>{roadmap.recommendedNiches.map((item) => <p key={item}>{item}</p>)}</article>
+      </>
+    );
+  }
+
+  if (stage === STAGES.QUESTIONS && question) {
+    const selectedValue = answers[question.key];
+    return (
+      <section className="quiz-shell">
+        <div className="dd-container dd-container--narrow">
+          <div className="quiz-progress-copy">
+            <span>Step 02 / Discover</span>
+            <span>Question {step + 1} of {QUESTIONS.length}</span>
+          </div>
+          <div
+            className="quiz-progress"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow={progress}
+            aria-label="Quiz progress"
+          >
+            <span style={{ width: `${progress}%` }} />
+          </div>
+
+          <div className="quiz-question">
+            <p className="section__eyebrow">Choose the answer that feels most natural. There is no wrong one.</p>
+            <h1>{question.label}</h1>
+            <div className="quiz-options">
+              {question.options.map((option, index) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={selectedValue === option.value ? 'is-selected' : ''}
+                  aria-pressed={selectedValue === option.value}
+                  onClick={() => selectAnswer(option.value)}
+                >
+                  <span>{OPTION_LETTERS[index] || index + 1}</span>
+                  {option.label}
+                </button>
+              ))}
             </div>
-            <div className="roadmap-plan">
-              <span className="label label--orange">Your personalized build sequence</span>
-              <h2>From superpower to owned digital property.</h2>
-              {(personalized?.steps || roadmap.firstSteps).map((step, index) => (<div className="roadmap-step" key={step}><span>{String(index + 1).padStart(2, '0')}</span><p>{step}</p></div>))}
-              {personalized?.nextAction && <div className="truth-bar"><strong>Your next action</strong><span>{personalized.nextAction}</span></div>}
+            <div className="quiz-actions">
+              <button type="button" className="btn btn--outline" onClick={goBack}>
+                ← {step === 0 ? 'Back to start' : 'Previous question'}
+              </button>
+              <span className="quiz-actions__note">Scored on this device. Nothing is sent until you ask.</span>
             </div>
-            <div className="roadmap-next">
-              <div><span className="label label--blue">STEP 03 / VALIDATE</span><h2>Open your dashboard to continue.</h2><p>Your roadmap is ready. Continue in your private dashboard to unlock tools.</p></div>
-              <div className="action-row">
-                <a href="/dashboard" className="btn btn--primary">Open My Dashboard →</a>
-                <button type="button" onClick={reset} className="btn btn--outline">Retake Quiz</button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="story-section story-section--cream">
+      <div className="dd-container">
+        <QuizResultCard
+          result={result}
+          eyebrow="Step 03 / Your result"
+          actions={
+            <>
+              <Link className="btn btn--primary" to={`/roadmap/${result?.superpower || 'builder'}`}>
+                Open my roadmap →
+              </Link>
+              <Link className="btn btn--outline" to="/results">Full result page</Link>
+              <button type="button" className="btn btn--outline" onClick={retake}>Retake the quiz</button>
+            </>
+          }
+        >
+          {!result?.emailSent && (
+            <form className="quiz-capture" onSubmit={handleCapture}>
+              <span className="label label--orange">Optional</span>
+              <h3>Want this roadmap in your inbox?</h3>
+              <p>
+                Add a first name and an email and we will send the same roadmap you see here.
+                Nothing else is sent unless you ask for it.
+              </p>
+              <div className="quiz-capture__row">
+                <div>
+                  <label className="form-label" htmlFor="quiz-name">First name</label>
+                  <input
+                    id="quiz-name"
+                    className="form-input"
+                    value={contact.name}
+                    onChange={(event) => setContact({ ...contact, name: event.target.value })}
+                    placeholder="What should the roadmap call you?"
+                  />
+                </div>
+                <div>
+                  <label className="form-label" htmlFor="quiz-email">Email address</label>
+                  <input
+                    id="quiz-email"
+                    className="form-input"
+                    type="email"
+                    required
+                    value={contact.email}
+                    onChange={(event) => setContact({ ...contact, email: event.target.value })}
+                    placeholder="you@example.com"
+                  />
+                </div>
               </div>
-            </div>
-            {!isDevMode && !isBrevoTest && !isTestEmail && <div className="quiz-status quiz-status--notice" style={{ marginTop: '20px', textAlign: 'center' }}>✓ Check your inbox for the personalized roadmap email</div>}
-            <div style={{ textAlign: 'center', marginTop: '16px' }}>
-              <a href={`/quiz/inbox?email=${encodeURIComponent(contact.email)}`} className="btn btn--outline" style={{ marginRight: '8px' }}>Check your inbox →</a>
-              <a href="/roadmap" className="btn btn--outline" style={{ marginLeft: '8px' }}>View my roadmap →</a>
-            </div>
-            {intelligenceReady && <div style={{ textAlign: 'center', marginTop: '24px' }}><a href="/dashboard" className="btn btn--outline">Open My Dashboard →</a></div>}
-          </section>
-        </>
-      )}
-    </>
+              <button className="btn btn--primary" type="submit" disabled={delivery.state === 'sending'}>
+                {delivery.state === 'sending' ? 'Sending…' : 'Email my roadmap →'}
+              </button>
+            </form>
+          )}
+
+          {delivery.message ? (
+            <div className={`dd-notice dd-notice--${delivery.state}`}>{delivery.message}</div>
+          ) : null}
+
+          <div className="result-secondary">
+            <Link className="result-secondary__link" to="/dashboard">Open my dashboard →</Link>
+            <Link
+              className="result-secondary__link"
+              to={`/quiz/inbox${contact.email ? `?email=${encodeURIComponent(contact.email)}` : ''}`}
+            >
+              Check my inbox
+            </Link>
+          </div>
+        </QuizResultCard>
+      </div>
+    </section>
   );
 }

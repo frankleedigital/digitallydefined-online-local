@@ -6,18 +6,20 @@
 
 | Route | Component | Purpose |
 |---|---|---|
-| `/quiz` | `DigitalSuperpowerQuiz` | Main quiz flow (intro → questions → email → results) |
-| `/quiz/inbox` | `QuizInbox` | Confirmation page after quiz submission |
-| `/dashboard` | `DashboardPage` | Dashboard entry point |
-| `/dashboard/roadmap` | `DashboardRoadmap` | View stored roadmap by email |
-| `/tool/roadmap` | `RoadmapGenerator` | Standalone roadmap generator tool |
-| `/tool/scorecard` | `NicheProfitabilityScorecard` | Niche scorecard tool |
+| `/quiz` | `features/quiz/pages/QuizPage.jsx` | Quiz flow: intro → questions → personalized result → optional email |
+| `/quiz/inbox` | `features/quiz/pages/QuizInboxPage.jsx` | Confirmation page after quiz submission |
+| `/dashboard` | `features/dashboard/pages/DashboardPage.jsx` | Dashboard entry point |
+| `/results` | `features/quiz/pages/ResultsPage.jsx` | Personalized result — reads the saved result, never route state |
+| `/quiz/results` | `features/quiz/pages/ResultsPage.jsx` | Legacy alias of `/results` (kept for old links) |
+| `/roadmap` | `features/roadmap/pages/RoadmapPage.jsx` | Personalized roadmap from the saved result (requires the quiz) |
+| `/roadmap/:type` | `features/roadmap/pages/RoadmapPage.jsx` | Shareable roadmap for one superpower (builder/creator/educator/strategist/connector) |
+| `/tools` | `features/tools/pages/ToolsPage.jsx` | Tool launcher (requires the quiz) |
 
 ### Supabase Edge Function Actions
 
 | Action | HTTP | Handler | Purpose |
 |---|---|---|---|
-| `quiz.complete` | POST | `hermes/index.ts` | Submit quiz, generate roadmap, send email |
+| `quiz.complete` | POST | `hermes/index.ts` | Store lead + result, send the roadmap email (no AI) |
 | `quiz.roadmap` | GET | `hermes/index.ts` | Fetch stored roadmap by email |
 
 ### Clean Backend Routes (for reference)
@@ -74,29 +76,29 @@ GET /functions/v1/hermes?action=quiz.roadmap&email=jane@example.com
 ## Data Flow
 
 ```
-User → /quiz → answers questions → submit email
+User → /quiz → answers seven questions → scored on the device
          ↓
-    callSupabaseEdge('quiz.complete', {...})
+    buildQuizResult({ answers })  — features/quiz/lib/quizLogic.js
          ↓
-    hermes edge function:
-      1. scoreQuiz(answers) → persona
-      2. upsertLead({email, name, tags})
-      3. callOmniRoute(prompt) → roadmap JSON
-      4. storeRoadmap({email, roadmap})
-      5. sendBrevoEmail({...})
-      6. return result
+    local scoring + personalization (no AI, no network):
+      1. weighted tally + fixed tie-breaks → superpower
+      2. strengths, blind spots, best-fit niches
+      3. personalized build sequence + next action
+      4. save to localStorage (dd-quiz-results) — always, not only on AI success
+      5. optional: deliver the same roadmap by email (quiz.complete, best effort)
+      6. return the saved result to /results and /roadmap
          ↓
-    Website shows results page
+    Website shows the personalized result page
          ↓
     User clicks "Check your inbox" → /quiz/inbox
-    User clicks "View dashboard" → /dashboard/roadmap?email=...
+    User clicks "Open my roadmap" → /roadmap/:type or /roadmap
          ↓
-    Dashboard fetches roadmap:
-      callSupabaseEdge('quiz.roadmap', {email})
+    /roadmap and /results read the same saved result:
+      loadQuizResult() — features/quiz/lib/quizLogic.js
          ↓
-    Returns stored roadmap JSON
+    Returns the saved personalized result
          ↓
-    Renders roadmap display
+    Renders the personalized roadmap (plus public /roadmap/:type previews)
 ```
 
 ## Error Handling
@@ -105,6 +107,6 @@ User → /quiz → answers questions → submit email
 |---|---|---|
 | `Missing quiz answers` | Empty answers object | Prompt user to complete quiz |
 | `Invalid email` | Malformed email format | Show validation error |
-| `AI provider failed` | OmniRoute + Gemini both down | Show error, allow retry |
-| `Email send failed` | Brevo unavailable | Non-fatal — roadmap still stored |
+| `No saved result` | Quiz not finished on this device | `/results` and `/roadmap` show an honest empty state with a link to `/quiz` |
+| `Email send failed` | Brevo / edge unavailable | Non-fatal — the result is already on screen and saved locally |
 | `No roadmap found` | Email not in database | Prompt to retake quiz |

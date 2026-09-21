@@ -8,26 +8,38 @@ import { readdirSync } from 'node:fs';
  * crashes that `vite build` cannot detect (e.g. undefined identifiers).
  * Usage: node scripts/ssr-smoke.mjs
  */
-const ROUTES = ['/', '/quiz', '/tool/niche', '/tool/trends', '/tool/roadmap', '/tool/scorecard', '/tool/product', '/tool/social'];
+const ROUTES = [
+  '/',
+  '/quiz',
+  '/results',
+  '/roadmap/builder',
+  '/roadmap/strategist',
+  '/roadmap/not-a-superpower',
+];
+
+/**
+ * Guarded routes: without a saved quiz result they render <Navigate to="/quiz">.
+ * StaticRouter deliberately ignores that redirect (it is a no-op on the initial
+ * render), so the assertion here is that the shell still renders and the gated
+ * page copy never leaks into the HTML.
+ */
+const GUARDED_ROUTES = ['/roadmap', '/dashboard'];
 
 // Content that must exist on the launcher for it to be "really" rendering.
 const HOME_ASSERTIONS = [
-  'Find Your Superpower',
-  'Find the idea worth building',
-  'Niche Scorecard',
-  'Small decisions. Compounding ownership.',
-  'Open the AI Business Partner',
+  'Faceless Digital Real Estate for Gen X Women',
+  'Take the Quiz',
+  'Quiz → Roadmap → Dashboard → Tools',
 ];
 
 // Distinctive copy per route — proves each path renders ITS OWN page.
 const ROUTE_ASSERTIONS = {
-  '/quiz': ['digital superpower'],
-  '/tool/niche': ['profitable niche'],
-  '/tool/trends': ['ai-assisted trend scanner'],
-  '/tool/roadmap': ['roadmap'],
-  '/tool/scorecard': ['scorecard'],
-  '/tool/product': ['product builder'],
-  '/tool/social': ['automations'],
+  '/quiz': ['digital superpower', 'start the quiz'],
+  '/results': ['no result on this device yet'],
+  '/roadmap/builder': ['builder roadmap', 'digital architect'],
+  '/roadmap/strategist': ['strategist roadmap', 'opportunity scout'],
+  // Unknown persona segment must be answered honestly, not silently redirected.
+  '/roadmap/not-a-superpower': ['not one of the five superpowers'],
 };
 
 /** Find a package's ESM file — root symlink first, then pnpm store. */
@@ -78,7 +90,7 @@ try {
 
   for (const route of ROUTES) {
     try {
-      const html = renderRoute(route);
+      const html = await renderRoute(route);
       if (typeof html !== 'string' || html.length <= 500) {
         failures += 1;
         console.log(`FAIL ${route} (suspiciously short output: len=${html?.length})`);
@@ -101,13 +113,31 @@ try {
     }
   }
 
-  const home = renderRoute('/');
+  const home = await renderRoute('/');
   for (const needle of HOME_ASSERTIONS) {
     if (home.includes(needle)) {
       console.log(`PASS content on / -> "${needle}"`);
     } else {
       failures += 1;
       console.log(`FAIL content on / -> missing "${needle}"`);
+    }
+  }
+
+  // Guarded routes render the site shell; gated copy must not appear.
+  for (const route of GUARDED_ROUTES) {
+    try {
+      const html = await renderRoute(route);
+      const leaked = ['Phase by phase', 'Open my dashboard →', 'Tools that fit this sequence']
+        .some((needle) => html.includes(needle));
+      if (html.length > 2000 && !leaked) {
+        console.log(`PASS ${route} (guarded, shell len=${html.length})`);
+      } else {
+        failures += 1;
+        console.log(`FAIL ${route} (guarded route leaked gated content or failed to render)`);
+      }
+    } catch (err) {
+      failures += 1;
+      console.log(`FAIL ${route}: ${err && err.message ? err.message : err}`);
     }
   }
 } finally {

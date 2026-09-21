@@ -1,6 +1,10 @@
 // src/api/client.js — unified agent client
 // Backend gateway owns: niche, roadmap, scorecard, product, social, trends, chat, dashboard
-// Hermes edge owns: quiz submission/email, intelligence, reputation, website content
+// Hermes edge owns: quiz submission/email, reputation, website content
+//
+// Note: the AI "intelligence" personalization action was retired. Quiz results
+// are now scored and personalized locally (features/quiz/lib/quizLogic.js), so
+// nothing in the product depends on an AI provider being reachable.
 
 import { callAgentEndpoint } from './backend.js';
 import { callSupabaseEdge } from './supabase.js';
@@ -8,7 +12,7 @@ import { callSupabaseEdge } from './supabase.js';
 /**
  * Agent runtime mapping.
  * 'backend' = DigitallyDefined backend gateway (/api/<endpoint>)
- * 'hermes'  = legacy Supabase Hermes edge function (quiz, email, intelligence)
+ * 'hermes'  = legacy Supabase Hermes edge function (quiz email, reputation, content)
  */
 const RUNTIME = {
   'agent.niche': 'backend',
@@ -24,7 +28,6 @@ const RUNTIME = {
   'agent.quiz': 'hermes',
   'quiz.complete': 'hermes',
   'quiz.roadmap': 'hermes',
-  'intelligence': 'hermes',
   'public.chat': 'hermes',
   'chat': 'backend',
   'website.content': 'hermes',

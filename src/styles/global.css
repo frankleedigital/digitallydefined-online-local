@@ -769,6 +769,579 @@ p {
   }
 }
 
+/* =============================================================
+   DIGITALLYDEFINED BRAND KIT — quiz → results → roadmap
+   -------------------------------------------------------------
+   These classes were referenced by pages but missing from the
+   design system (they exist in the deployed production stylesheet).
+   Values follow the brand guidelines:
+     cream #FFFCF9 · white surfaces · 1px black borders · 0 radius
+     orange #F18B25 + aqua #47B7D4 accents · Inter headings ·
+     DM Sans body · generous whitespace · flat, high contrast.
+   ============================================================= */
+
+/* Layout primitives used by every page */
+.dd-container {
+  width: 100%;
+  max-width: var(--content-width, 1100px);
+  margin: 0 auto;
+  padding: 0 var(--space-md, 24px);
+}
+
+.dd-container--narrow,
+.container--narrow {
+  max-width: 800px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.dd-section__head {
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+
+.dd-btn { min-width: 220px; }
+
+/* Label variants — colour only, never a filled chip */
+.label--orange { color: var(--color-accent); }
+.label--blue { color: var(--color-blue); }
+.label--ink { color: var(--color-text); }
+.label--quiet { color: var(--color-text-muted); }
+
+/* Small expectation / privacy caption under a hero CTA */
+.hero-note {
+  margin-top: 1.25rem;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* Ink hero — black ground, white type, aqua label */
+.page-hero--ink {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-bottom: var(--border-width) solid var(--color-text);
+}
+
+.page-hero--ink h1,
+.page-hero--ink h2,
+.page-hero--ink h3 { color: var(--color-surface); }
+
+.page-hero--ink > p { color: rgba(255, 255, 255, 0.8); }
+.page-hero--ink .label { color: var(--color-blue); }
+.page-hero--ink .hero-note,
+.hero-note--ink { color: rgba(255, 255, 255, 0.62); }
+.page-hero--ink .btn--outline { background: transparent; color: var(--color-surface); }
+.page-hero--ink .btn--outline:hover { background: var(--color-surface); color: var(--color-text); }
+
+/* Story sections — contained content blocks, hard black rule between */
+.story-section {
+  max-width: var(--content-width, 1100px);
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 5rem) clamp(1.25rem, 5vw, 3.5rem);
+  border-bottom: var(--border-width) solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.story-section--cream { background: var(--color-bg); }
+.story-section--white { background: var(--color-surface); }
+.story-section--ink { background: var(--color-text); color: var(--color-surface); }
+.story-section--ink h1,
+.story-section--ink h2,
+.story-section--ink h3 { color: var(--color-surface); }
+.story-section--ink p { color: rgba(255, 255, 255, 0.78); }
+.story-section--ink .story-card { background: var(--color-surface); }
+.story-section--ink .story-card h3 { color: var(--color-text); }
+
+.story-heading {
+  max-width: 760px;
+  margin: 0 auto clamp(2rem, 5vw, 3rem);
+  text-align: center;
+}
+
+.story-heading h2 { margin: 1rem 0; }
+.story-heading p { font-size: 1.05rem; }
+
+/* Grids + cards (documented in PAGE_TEMPLATE_GUIDE.md) */
+.story-grid {
+  display: grid;
+  gap: 1rem;
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+.story-grid--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.story-grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.story-grid--four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.story-card {
+  padding: 1.75rem;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 0;
+  background: var(--color-surface);
+  box-shadow: none;
+  text-align: left;
+}
+
+.story-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  text-align: left;
+}
+
+.story-card p,
+.story-card li { text-align: left; }
+
+.story-card__number {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+}
+
+.story-card--orange { background: var(--color-accent); }
+.story-card--blue { background: var(--color-blue); }
+.story-card--ink { background: var(--color-text); color: var(--color-surface); }
+
+/* Lists — square orange markers, flat and readable */
+.dd-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dd-list li {
+  position: relative;
+  padding-left: 1.4rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.65;
+  text-align: left;
+}
+
+.dd-list li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 0.6rem;
+  height: 0.6rem;
+  background: var(--color-accent);
+  border: var(--border-width) solid var(--color-border);
+}
+
+.dd-list li strong { color: var(--color-text); }
+
+/* Truth bar — the single next action, stated plainly */
+.truth-bar {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  max-width: 1050px;
+  margin: 2rem auto 0;
+  padding: 1.25rem;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.truth-bar strong {
+  flex: 0 0 auto;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.truth-bar span {
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  text-align: left;
+}
+
+@media (max-width: 900px) {
+  .story-grid--three,
+  .story-grid--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  .story-grid--two,
+  .story-grid--three,
+  .story-grid--four { grid-template-columns: 1fr; }
+
+  .truth-bar { flex-direction: column; gap: 0.5rem; }
+}
+
+/* Quiz — progress, options, actions, capture */
+.quiz-progress-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 760px;
+  margin: 0 auto;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.quiz-question { margin-top: 3rem; }
+
+.quiz-benefits {
+  max-width: 760px;
+  margin: 0 auto;
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.quiz-benefits p {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  margin: 0;
+  padding: 1rem 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+  color: var(--color-text);
+  font-size: 1rem;
+  text-align: left;
+}
+
+.quiz-benefits strong {
+  flex: 0 0 2.5rem;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  color: var(--color-accent);
+}
+
+.quiz-options button.is-selected {
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 2px var(--color-border);
+}
+
+.quiz-options button:focus-visible {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 2px;
+}
+
+.quiz-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.quiz-actions__note {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-align: left;
+}
+
+.quiz-capture {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 720px;
+  margin: 2rem auto 0;
+  padding: 1.75rem;
+  border: var(--border-width) solid var(--color-border);
+  background: var(--color-bg);
+  text-align: left;
+}
+
+.quiz-capture h3 { margin: 0; font-size: 1.35rem; text-align: left; }
+.quiz-capture p { margin: 0; text-align: left; }
+
+.quiz-capture__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.quiz-capture .btn { justify-self: start; }
+
+@media (max-width: 640px) {
+  .quiz-capture__row { grid-template-columns: 1fr; }
+  .quiz-capture .btn { justify-self: stretch; }
+}
+
+/* Notices — delivery and status messages */
+.dd-notice {
+  max-width: 720px;
+  margin: 1.25rem auto 0;
+  padding: 1rem 1.25rem;
+  border: var(--border-width) solid var(--color-border);
+  border-left-width: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.dd-notice--sending { border-left-color: var(--color-accent); }
+.dd-notice--sent { border-left-color: var(--color-blue); }
+.dd-notice--failed { border-left-color: var(--color-red); color: var(--color-red); }
+
+/* Result view — shared by /quiz (step 3) and /results */
+.result-shell {
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+.result-hero {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  text-align: center;
+}
+
+.result-hero h1 {
+  max-width: 900px;
+  margin: 1rem auto 0.75rem;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.result-hero__name { color: var(--color-accent); }
+
+.result-hero__tagline {
+  margin-bottom: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-blue);
+}
+
+.result-hero__summary {
+  max-width: 760px;
+  margin: 0 auto;
+  font-size: 1.05rem;
+}
+
+.result-meter { max-width: 640px; margin: 1.5rem auto 0; }
+
+.result-meter__track {
+  height: 14px;
+  border: var(--border-width) solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.result-meter__fill { display: block; height: 100%; background: var(--color-accent); }
+
+.result-meter__copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.result-sequence { max-width: 1050px; margin: clamp(3rem, 6vw, 4.5rem) auto 0; }
+.result-sequence h2 { margin: 1rem 0; }
+.result-sequence__intro { max-width: 720px; margin: 0 auto 1.5rem; }
+
+.result-step {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+  text-align: left;
+}
+
+.result-step__index {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--color-accent);
+}
+
+.result-step h3 { margin: 0 0 0.35rem; font-size: 1.15rem; text-align: left; }
+.result-step p { margin: 0; text-align: left; }
+
+.result-step__meta {
+  margin-top: 0.4rem;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.result-tools {
+  max-width: 1050px;
+  margin: clamp(2.5rem, 5vw, 3.5rem) auto 0;
+  padding: 1.5rem;
+  border: var(--border-width) solid var(--color-border);
+  background: var(--color-surface);
+  text-align: left;
+}
+
+.result-tools h3 { margin: 0 0 0.5rem; font-size: 1.15rem; text-align: left; }
+
+.result-evidence {
+  max-width: 1050px;
+  margin: 1.5rem auto 0;
+  padding: 1rem 1.25rem;
+  border: var(--border-width) solid var(--color-border);
+  background: var(--color-surface);
+  text-align: left;
+}
+
+.result-evidence summary {
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.result-evidence p { margin: 0.85rem 0 0; font-size: 0.95rem; text-align: left; }
+
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.result-secondary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.result-secondary__link {
+  padding-bottom: 2px;
+  border-bottom: 2px solid var(--color-accent);
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.result-secondary__link:hover { color: var(--color-accent); }
+
+/* Explore the other four superpowers */
+.result-explore { max-width: 1050px; margin: clamp(3rem, 6vw, 4.5rem) auto 0; }
+
+.result-explore__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.result-explore__card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.25rem;
+  border: var(--border-width) solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: left;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.result-explore__card:hover { background: var(--color-accent); }
+.result-explore__card strong { font-family: var(--font-heading); font-size: 1rem; letter-spacing: -0.02em; }
+.result-explore__tagline { font-size: 0.8rem; color: var(--color-text-muted); }
+.result-explore__card:hover .result-explore__tagline,
+.result-explore__card:hover .label { color: var(--color-text); }
+
+@media (max-width: 1024px) {
+  .result-explore__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .result-explore__grid { grid-template-columns: 1fr; }
+  .result-step { grid-template-columns: 2.5rem 1fr; }
+  .result-meter__copy { flex-direction: column; gap: 0.25rem; }
+}
+
+/* Roadmap page refinements */
+.roadmap-grid { align-items: start; }
+
+.roadmap-panel h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+.roadmap-step {
+  align-items: start;
+  text-align: left;
+}
+
+.roadmap-step h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+  text-align: left;
+}
+
+.roadmap-step p { margin: 0; text-align: left; }
+
+.roadmap-step__meta {
+  margin-top: 0.35rem;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.roadmap-plan h2,
+.roadmap-next h2 { margin: 1rem 0; }
+
+.roadmap-plan p,
+.roadmap-next p { max-width: 760px; margin: 0 auto; }
+
+@media (max-width: 640px) {
+  .roadmap-step { grid-template-columns: 2.5rem 1fr; }
+}
+
+/* Keep long copy inside its frame on every result/roadmap card */
+.story-card,
+.roadmap-panel,
+.result-tools,
+.result-evidence,
+.quiz-capture,
+.truth-bar { overflow-wrap: anywhere; }
+
 /* Print */
 @media print {
   .mentor-widget,
