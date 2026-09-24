@@ -7,16 +7,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        bone: '#F7F4EF',
-        cream: '#F7F4EF',
-        ink: '#000000',
+        bone: '#FFFCF9',
+        cream: '#FFFCF9',
+        ink: '#111111',
         orange: {
-          DEFAULT: '#FF7A00',
+          DEFAULT: '#F18B25',
           dark: '#E56A00',
         },
         blue: {
-          DEFAULT: '#1E4AFF',
-          dark: '#1638CC',
+          DEFAULT: '#47B7D4',
+          dark: '#3AA0B8',
         },
         muted: '#5F5F5F',
       },

@@ -25,7 +25,7 @@ export default function HomePage() {
           <span className="label label--orange">Faceless digital real estate</span>
           <h1>Faceless Digital Real Estate for Gen X Women</h1>
           <p>Discover your Digital Superpower and get your personalized roadmap.</p>
-          <p style={{ fontSize: '0.95rem', color: theme.colors.textMuted, maxWidth: 640 }}>
+          <p style={{ maxWidth: 640 }}>
             Build digital assets quietly, intentionally, and without becoming the brand.
           </p>
           <div className="action-row">
@@ -47,10 +47,8 @@ export default function HomePage() {
           {FLOW.map((item) => (
             <div key={item.step} className="home-path__step">
               <span className="home-path__number">{item.step}</span>
-              <h3 style={{ fontFamily: theme.fonts.heading, fontWeight: 800, letterSpacing: '-0.02em', fontSize: '1.1rem', margin: '0 0 0.35rem' }}>
-                {item.title}
-              </h3>
-              <p style={{ color: theme.colors.textMuted, lineHeight: 1.6, margin: 0 }}>{item.body}</p>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
             </div>
           ))}
         </div>

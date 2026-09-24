@@ -3,6 +3,8 @@
 
 import React from 'react';
 import { Navigate } from 'react-router-dom';
+import DDToolCard from '../../../components/ui/DDToolCard.jsx';
+import DDLabel from '../../../components/ui/DDLabel.jsx';
 
 const STORAGE_KEY = 'dd-quiz-results';
 
@@ -16,11 +18,11 @@ function getStoredResult() {
 }
 
 const TOOLS = [
-  { key: 'niche',     name: 'Niche Profitability Scorecard',  desc: 'Score any niche across 6 criteria: demand, competition, monetization, sustainability, ease, and privacy fit.', href: '/tools/niche', icon: '🔍', status: 'active' },
-  { key: 'roadmap',   name: 'Roadmap Builder',                desc: 'Generate a phased strategic roadmap with milestones and next actions.', href: '/tools/roadmap', icon: '🗺️', status: 'coming-soon' },
-  { key: 'product',   name: 'Product Designer',               desc: 'Design a product concept with pricing, positioning, and launch strategy.', href: '/tools/product', icon: '📦', status: 'coming-soon' },
-  { key: 'social',    name: 'Social Content',                 desc: 'Create platform-optimized social content for your niche.', href: '/tools/social', icon: '📱', status: 'coming-soon' },
-  { key: 'trends',    name: 'Trends Explorer',                desc: 'Identify trending topics and emerging opportunities in your space.', href: '/tools/trends', icon: '📈', status: 'coming-soon' },
+  { key: 'niche',     name: 'Niche Profitability Scorecard',  desc: 'Score any niche across 6 criteria: demand, competition, monetization, sustainability, ease, and privacy fit.', href: '/tools/niche', status: 'active' },
+  { key: 'roadmap',   name: 'Roadmap Builder',                desc: 'Generate a phased strategic roadmap with milestones and next actions.', href: '/tools/roadmap', status: 'coming-soon' },
+  { key: 'product',   name: 'Product Designer',               desc: 'Design a product concept with pricing, positioning, and launch strategy.', href: '/tools/product', status: 'coming-soon' },
+  { key: 'social',    name: 'Social Content',                 desc: 'Create platform-optimized social content for your niche.', href: '/tools/social', status: 'coming-soon' },
+  { key: 'trends',    name: 'Trends Explorer',                desc: 'Identify trending topics and emerging opportunities in your space.', href: '/tools/trends', status: 'coming-soon' },
 ];
 
 export default function ToolsPage() {
@@ -31,10 +33,8 @@ export default function ToolsPage() {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '3rem 1.5rem' }}>
-      <span style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-accent)', display: 'block', marginBottom: '0.5rem' }}>
-        Your Toolset
-      </span>
+    <div className="dd-container" style={{ paddingTop: '3rem', paddingBottom: '3rem' }}>
+      <DDLabel tone="orange" style={{ display: 'block', marginBottom: '0.5rem' }}>Your Toolset</DDLabel>
       <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>
         Tools unlocked after your quiz
       </h1>
@@ -42,58 +42,21 @@ export default function ToolsPage() {
         Superpower: <strong style={{ color: 'var(--color-text)' }}>{stored.superpower}</strong>. Use these tools to validate, plan, and build.
       </p>
 
-      <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
-        {TOOLS.map((tool) => (
-          <a 
-            key={tool.key} 
-            href={tool.href} 
-            style={{ 
-              border: '1px solid var(--color-border)', 
-              padding: '1.25rem', 
-              background: 'var(--color-card)', 
-              textDecoration: 'none', 
-              display: 'flex', 
-              gap: '1rem', 
-              alignItems: 'flex-start',
-              borderRadius: '0',
-              opacity: tool.status === 'coming-soon' ? 0.6 : 1,
-              cursor: tool.status === 'coming-soon' ? 'not-allowed' : 'pointer',
-              transition: 'opacity 0.15s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (tool.status !== 'coming-soon') {
-                e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = 'none';
-            }}
-          >
-            <span style={{ fontSize: '1.5rem' }}>{tool.icon}</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                {tool.name}
-                {tool.status === 'coming-soon' && (
-                  <span style={{ 
-                    fontSize: '0.6rem', 
-                    fontWeight: 800, 
-                    padding: '0.2rem 0.4rem', 
-                    border: '1px solid var(--color-border)', 
-                    background: 'var(--color-bg)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em'
-                  }}>
-                    Coming Soon
-                  </span>
-                )}
-              </div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{tool.desc}</div>
-            </div>
-          </a>
+      <div className="story-grid story-grid--three">
+        {TOOLS.map((tool, index) => (
+          <DDToolCard
+            key={tool.key}
+            step={index + 1}
+            title={tool.name}
+            description={tool.desc}
+            note={tool.status === 'coming-soon' ? 'Coming soon' : undefined}
+            className={tool.status === 'coming-soon' ? 'tool-card--disabled' : ''}
+            style={{ opacity: tool.status === 'coming-soon' ? 0.6 : 1 }}
+          />
         ))}
       </div>
 
-      <div style={{ marginTop: '2rem', borderTop: '1px solid var(--color-border)', paddingTop: '1rem', display: 'flex', gap: '0.75rem' }}>
+      <div style={{ marginTop: '2rem', borderTop: '1px solid var(--color-border)', paddingTop: '1rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
         <a href="/dashboard" className="btn btn--outline" style={{ fontSize: '0.8rem', padding: '6px 12px' }}>Back to Dashboard</a>
         <a href="/roadmap" className="btn btn--outline" style={{ fontSize: '0.8rem', padding: '6px 12px' }}>View My Roadmap</a>
       </div>

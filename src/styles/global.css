@@ -70,11 +70,10 @@ input:focus-visible {
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: 600; /* Semi-bold as requested */
+  font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   color: var(--color-text);
-  text-align: center; /* Center headings */
 }
 
 h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); }
@@ -132,12 +131,12 @@ p {
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1.25rem;
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 0.75rem;
   font-weight: 800;
   text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: none;
+  letter-spacing: -0.01em;
   border: var(--border-width) solid var(--color-border);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -227,7 +226,7 @@ p {
 
 .form-input:focus {
   outline: none;
-  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.12);
+  border-color: var(--color-text);
 }
 
 /* Section Spacing */
@@ -291,9 +290,8 @@ p {
 .brand-logo__name {
   font-family: var(--font-heading);
   font-size: 0.94rem;
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1;
-  text-transform: uppercase;
   letter-spacing: -0.02em;
 }
 
@@ -540,7 +538,13 @@ p {
 
 .tool-card:hover {
   transform: none;
-  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.12);
+  background: var(--color-accent);
+  color: var(--color-text);
+}
+
+.tool-card--disabled {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .tool-card__header {
@@ -570,7 +574,7 @@ p {
   height: 56px;
   padding: 0;
   place-items: center;
-  border: 2px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
   background: var(--color-accent);
   color: var(--color-text);
   cursor: pointer;
@@ -597,7 +601,7 @@ p {
   width: min(400px, calc(100vw - 32px));
   max-height: 560px;
   flex-direction: column;
-  border: 2px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
   background: var(--color-surface);
   border-radius: 0;
   font-family: var(--font-body);
@@ -995,7 +999,7 @@ p {
   margin: 0 auto;
   font-family: var(--font-heading);
   font-size: 0.7rem;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text);
@@ -1357,3 +1361,6 @@ p {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Utility */
+.text-muted { color: var(--color-text-muted); }
