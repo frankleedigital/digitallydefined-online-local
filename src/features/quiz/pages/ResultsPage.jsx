@@ -82,7 +82,6 @@ export default function ResultsPage() {
                   Open my roadmap →
                 </Link>
                 <Link className="btn btn--outline" to="/quiz">Retake the quiz</Link>
-                <Link className="btn btn--outline" to="/dashboard">Open my dashboard →</Link>
               </>
             }
           />

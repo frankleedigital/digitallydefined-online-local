@@ -95,7 +95,7 @@ export default function RoadmapPage() {
 
   return (
     <>
-      <section className="page-hero page-hero--ink">
+      <section className="page-hero">
         <div className="dd-container">
           <span className="label label--blue">{persona.title} / {result.superpowerName}</span>
           <h1>{heading}</h1>
@@ -110,7 +110,7 @@ export default function RoadmapPage() {
               Compare another superpower
             </Link>
           </div>
-          <p className="hero-note hero-note--ink">{meta}</p>
+          <p className="hero-note">{meta}</p>
         </div>
       </section>
 
@@ -183,13 +183,12 @@ export default function RoadmapPage() {
               <span className="label label--blue">Step 04 / Build</span>
               <h2>Keep the roadmap in view while you build.</h2>
               <p>
-                Your dashboard unlocks after the quiz and holds the tools this sequence points to.
+                Your roadmap stays on this device and points to the tools in your private workspace.
                 Everything stays private to this browser.
               </p>
             </div>
             <div className="action-row">
-              <Link className="btn btn--primary" to="/dashboard">Open my dashboard →</Link>
-              <Link className="btn btn--outline" to="/tools">See the tools</Link>
+              <Link className="btn btn--primary" to="/tools">See the tools</Link>
               <Link className="btn btn--outline" to="/quiz">Retake the quiz</Link>
             </div>
           </div>

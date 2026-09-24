@@ -57,7 +57,6 @@ export default function ToolsPage() {
       </div>
 
       <div style={{ marginTop: '2rem', borderTop: '1px solid var(--color-border)', paddingTop: '1rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-        <a href="/dashboard" className="btn btn--outline" style={{ fontSize: '0.8rem', padding: '6px 12px' }}>Back to Dashboard</a>
         <a href="/roadmap" className="btn btn--outline" style={{ fontSize: '0.8rem', padding: '6px 12px' }}>View My Roadmap</a>
       </div>
     </div>

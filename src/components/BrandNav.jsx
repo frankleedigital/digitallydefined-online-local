@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { isQuizComplete } from '../hooks/useToolState.js';
 
@@ -7,6 +6,21 @@ import { isQuizComplete } from '../hooks/useToolState.js';
 // Page: the public Facebook page (handle: digitallydefin1)
 export const FACEBOOK_GROUP_URL = 'https://facebook.com/groups/digitallydefind';
 export const FACEBOOK_PAGE_URL = 'https://facebook.com/digitallydefin1';
+
+const MenuIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
 
 export default function BrandNav() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,7 +36,7 @@ export default function BrandNav() {
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/quiz', label: 'Quiz' },
-    ...(unlocked ? [{ href: '/roadmap', label: 'Roadmap' }, { href: '/dashboard', label: 'Dashboard' }, { href: '/tools', label: 'Tools' }] : []),
+    ...(unlocked ? [{ href: '/roadmap', label: 'Roadmap' }, { href: '/tools', label: 'Tools' }] : []),
     { href: FACEBOOK_GROUP_URL, label: 'Community', external: true },
   ];
 
@@ -44,7 +58,7 @@ export default function BrandNav() {
         </nav>
 
         <button type="button" className="mobile-menu-btn brand-nav__menu" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          {menuOpen ? <CloseIcon /> : <MenuIcon />}
         </button>
       </div>
 
@@ -62,5 +76,6 @@ export default function BrandNav() {
     </header>
   );
 }
+
 
 

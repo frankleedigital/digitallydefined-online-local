@@ -307,7 +307,6 @@ export default function QuizPage() {
           ) : null}
 
           <div className="result-secondary">
-            <Link className="result-secondary__link" to="/dashboard">Open my dashboard →</Link>
             <Link
               className="result-secondary__link"
               to={`/quiz/inbox${contact.email ? `?email=${encodeURIComponent(contact.email)}` : ''}`}
