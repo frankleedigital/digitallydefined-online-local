@@ -6,6 +6,8 @@ import { getRoadmap } from '../../lib/roadmaps';
 import { scoreQuiz } from './QuizLogic';
 import { useToolState } from '../../context/ToolStateContext.jsx';
 import FadeInSection from '../../components/FadeInSection';
+import DDCTA from '../../components/ui/DDCTA';
+import DDLabel from '../../components/ui/DDLabel';
 import { theme, brutalCard, brutalHeading, brutalEyebrow, brutalButtonPrimary, brutalButtonOutline } from '../../config/theme';
 
 const QUESTIONS = [
@@ -214,16 +216,16 @@ export default function DigitalSuperpowerQuiz() {
       {stage === 'intro' && (
         <FadeInSection>
           <section className="page-hero">
-            <span className="label label--blue">Digital Superpower Quiz</span>
+            <DDLabel tone="blue">Digital Superpower Quiz</DDLabel>
             <h1>Find the faceless asset model that fits how you already think.</h1>
-            <p>Enter your name and email, answer seven practical questions, and receive a personalized superpower roadmap for building digital real estate without becoming the face of the brand.</p>
-            <div className="action-row"><a href="#quiz-signup" className="btn btn--primary">Take the Quiz →</a></div>
+            <p style={{ color: theme.colors.muted, fontFamily: theme.fonts.body, maxWidth: 640, margin: '0 auto', lineHeight: 1.6 }}>Enter your name and email, answer seven practical questions, and receive a personalized superpower roadmap for building digital real estate without becoming the face of the brand.</p>
+            <div className="action-row"><DDCTA label="Take the Quiz →" href="#quiz-signup" variant="primary" /></div>
           </section>
           <section className="story-section story-section--white">
             <div className="quiz-entry">
               <div>
-                <span className="label label--orange">What you will receive</span>
-                <h2>A useful result, not just a label.</h2>
+                <DDLabel tone="orange">What you will receive</DDLabel>
+                <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.4rem, 3vw, 2rem)', margin: '0.5rem 0' }}>A useful result, not just a label.</h2>
                 <div className="quiz-benefits">
                   <p><strong>01</strong> Your strongest digital superpower.</p>
                   <p><strong>02</strong> Faceless asset models that fit it.</p>
@@ -232,13 +234,13 @@ export default function DigitalSuperpowerQuiz() {
                 </div>
               </div>
               <form className="quiz-signup" onSubmit={beginQuiz} id="quiz-signup">
-                <span className="quiz-step-label">STEP 01 / IDENTIFY YOURSELF</span>
-                <label className="form-label">First Name</label>
-                <input className="form-input dd-input" required value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="What should your roadmap call you?" />
-                <label className="form-label">Email Address</label>
-                <input className="form-input dd-input" type="email" required value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder="Email for your roadmap and guidance" />
-                <button className="btn btn--primary dd-button dd-button--primary" type="submit">Start My Assessment →</button>
-                <small>By continuing, you agree to receive your result and related DigitallyDefined guidance. Unsubscribe anytime.</small>
+                <span style={{ fontFamily: theme.fonts.heading, fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.12em', color: theme.colors.textPrimary, display: 'block', marginBottom: '0.5rem' }}>STEP 01 / IDENTIFY YOURSELF</span>
+                <label className="form-label" style={{ fontFamily: theme.fonts.body }}>First Name</label>
+                <input className="form-input dd-input" required value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="What should your roadmap call you?" style={{ fontFamily: theme.fonts.body }} />
+                <label className="form-label" style={{ fontFamily: theme.fonts.body }}>Email Address</label>
+                <input className="form-input dd-input" type="email" required value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder="Email for your roadmap and guidance" style={{ fontFamily: theme.fonts.body }} />
+                <DDCTA label="Start My Assessment →" variant="primary" onClick={(e) => { e.preventDefault(); beginQuiz(e); }} style={{ width: '100%' }} />
+                <small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body, display: 'block', marginTop: '0.5rem' }}>By continuing, you agree to receive your result and related DigitallyDefined guidance. Unsubscribe anytime.</small>
               </form>
             </div>
           </section>
@@ -250,8 +252,8 @@ export default function DigitalSuperpowerQuiz() {
           <section className="story-section story-section--white">
             <div className="quiz-entry">
               <div>
-                <span className="label label--orange">What you will receive</span>
-                <h2>A useful result, not just a label.</h2>
+                <DDLabel tone="orange">What you will receive</DDLabel>
+                <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.4rem, 3vw, 2rem)', margin: '0.5rem 0' }}>A useful result, not just a label.</h2>
                 <div className="quiz-benefits">
                   <p><strong>01</strong> Your strongest digital superpower.</p>
                   <p><strong>02</strong> Faceless asset models that fit it.</p>
@@ -260,13 +262,13 @@ export default function DigitalSuperpowerQuiz() {
                 </div>
               </div>
               <form className="quiz-signup" onSubmit={beginQuiz} id="quiz-signup">
-                <span className="quiz-step-label">STEP 01 / IDENTIFY YOURSELF</span>
-                <label className="form-label">First Name</label>
-                <input className="form-input dd-input" required value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="What should your roadmap call you?" />
-                <label className="form-label">Email Address</label>
-                <input className="form-input dd-input" type="email" required value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder="Email for your roadmap and guidance" />
-                <button className="btn btn--primary dd-button dd-button--primary" type="submit">Start My Assessment →</button>
-                <small>By continuing, you agree to receive your result and related DigitallyDefined guidance. Unsubscribe anytime.</small>
+                <span style={{ fontFamily: theme.fonts.heading, fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.12em', color: theme.colors.textPrimary, display: 'block', marginBottom: '0.5rem' }}>STEP 01 / IDENTIFY YOURSELF</span>
+                <label className="form-label" style={{ fontFamily: theme.fonts.body }}>First Name</label>
+                <input className="form-input dd-input" required value={contact.name} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="What should your roadmap call you?" style={{ fontFamily: theme.fonts.body }} />
+                <label className="form-label" style={{ fontFamily: theme.fonts.body }}>Email Address</label>
+                <input className="form-input dd-input" type="email" required value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder="Email for your roadmap and guidance" style={{ fontFamily: theme.fonts.body }} />
+                <DDCTA label="Start My Assessment →" variant="primary" onClick={(e) => { e.preventDefault(); beginQuiz(e); }} style={{ width: '100%' }} />
+                <small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body, display: 'block', marginTop: '0.5rem' }}>By continuing, you agree to receive your result and related DigitallyDefined guidance. Unsubscribe anytime.</small>
               </form>
             </div>
           </section>
@@ -282,12 +284,12 @@ export default function DigitalSuperpowerQuiz() {
             </div>
             <div className="quiz-progress"><span style={{ width: `${progress}%` }} /></div>
             <div className="quiz-question">
-              <p className="section__eyebrow">{contact.name}, choose the answer that feels most natural.</p>
-              <h1>{question[1]}</h1>
+              <p className="section__eyebrow" style={{ color: theme.colors.orange, fontFamily: theme.fonts.heading, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{contact.name}, choose the answer that feels most natural.</p>
+              <h1 style={{ ...brutalHeading, fontSize: 'clamp(2rem, 5vw, 4rem)', margin: '1rem 0 2rem' }}>{question[1]}</h1>
               <div className="quiz-options">
                 {question[2].map(([value, label]) => (
-                  <button key={value} type="button" onClick={() => chooseAnswer(value)} className="dd-button dd-button--outline" style={{ justifyContent: 'flex-start', transition: 'transform 0.2s ease, filter 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.filter = 'brightness(0.96)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.filter = 'brightness(1)'; }}>
-                    <span>{value.slice(0, 1).toUpperCase()}</span>{label}
+                  <button key={value} type="button" onClick={() => chooseAnswer(value)} style={{ ...brutalButtonOutline, justifyContent: 'flex-start', padding: '1rem', fontSize: '1rem', fontFamily: theme.fonts.body, transition: 'transform 0.2s ease, filter 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.filter = 'brightness(0.96)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.filter = 'brightness(1)'; }}>
+                    <span style={{ display: 'grid', width: '2rem', height: '2rem', placeItems: 'center', border: brutalBorder, background: theme.colors.aquaBlue, fontWeight: 900, fontFamily: theme.fonts.heading, color: theme.colors.textPrimary }}>{value.slice(0, 1).toUpperCase()}</span>{label}
                   </button>
                 ))}
               </div>
@@ -300,27 +302,27 @@ export default function DigitalSuperpowerQuiz() {
         <>
           <FadeInSection>
             <section className="page-hero page-hero--ink">
-              <span className="label label--orange">Your result / {ICONS[resultKey]}</span>
-              <h1>{contact.name}, your superpower is <span style={{ color: 'var(--color-blue)' }}>{roadmap.title.replace(' Roadmap', '')}</span>.</h1>
-              <p>{roadmap.overview}</p>
-              <div className="action-row"><a href="/tools/scorecard" className="btn btn--primary dd-button dd-button--primary">Score My Niche →</a></div>
+              <DDLabel tone="orange">Your result / {ICONS[resultKey]}</DDLabel>
+              <h1>{contact.name}, your superpower is <span style={{ color: theme.colors.aquaBlue }}>{roadmap.title.replace(' Roadmap', '')}</span>.</h1>
+              <p style={{ color: 'rgba(255,255,255,0.8)', fontFamily: theme.fonts.body, maxWidth: 640, margin: '0 auto', lineHeight: 1.6 }}>{roadmap.overview}</p>
+              <div className="action-row"><DDCTA label="Score My Niche →" href="/tools/scorecard" variant="primary" /></div>
             </section>
           </FadeInSection>
 
           <FadeInSection delay={100}>
             <section className="story-section story-section--cream">
-              {loading && <div className="quiz-status">Personalizing your faceless digital real estate roadmap...</div>}
-              {error && <div className="quiz-status quiz-status--notice">{error}</div>}
+              {loading && <div className="quiz-status" style={{ fontFamily: theme.fonts.body }}>Personalizing your faceless digital real estate roadmap...</div>}
+              {error && <div className="quiz-status quiz-status--notice" style={{ fontFamily: theme.fonts.body }}>{error}</div>}
               <div className="roadmap-grid">
                 <article style={{ ...brutalCard, padding: '1.25rem', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
-                  <span className="quiz-step-label">WHY THIS FITS YOU</span>
+                  <span style={{ fontFamily: theme.fonts.heading, fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.12em', color: theme.colors.textPrimary, display: 'block', marginBottom: '0.5rem' }}>WHY THIS FITS YOU</span>
                   <h2 style={{ ...brutalHeading, fontSize: '1.15rem', margin: '0.5rem 0' }}>Your built-in advantages</h2>
-                  {roadmap.strengths.map((item) => <p key={item} style={{ margin: '0.25rem 0' }}>✓ {item}</p>)}
+                  {roadmap.strengths.map((item) => <p key={item} style={{ margin: '0.25rem 0', fontFamily: theme.fonts.body }}>✓ {item}</p>)}
                 </article>
-                <article style={{ ...brutalCard, padding: '1.25rem', background: theme.colors.aqua + '18', borderColor: theme.colors.aqua, transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
-                  <span className="quiz-step-label">PROPERTY TYPES TO EXPLORE</span>
+                <article style={{ ...brutalCard, padding: '1.25rem', background: theme.colors.aquaBlue + '18', borderColor: theme.colors.aquaBlue, transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
+                  <span style={{ fontFamily: theme.fonts.heading, fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.12em', color: theme.colors.textPrimary, display: 'block', marginBottom: '0.5rem' }}>PROPERTY TYPES TO EXPLORE</span>
                   <h2 style={{ ...brutalHeading, fontSize: '1.15rem', margin: '0.5rem 0' }}>Where your experience can become an asset</h2>
-                  {roadmap.recommendedNiches.map((item) => <p key={item} style={{ margin: '0.25rem 0' }}>{item}</p>)}
+                  {roadmap.recommendedNiches.map((item) => <p key={item} style={{ margin: '0.25rem 0', fontFamily: theme.fonts.body }}>{item}</p>)}
                 </article>
               </div>
             </section>
@@ -329,13 +331,13 @@ export default function DigitalSuperpowerQuiz() {
           <FadeInSection delay={180}>
             <section className="story-section story-section--white">
               <div className="roadmap-plan">
-                <span className="label label--orange">Your personalized build sequence</span>
+                <DDLabel tone="orange">Your personalized build sequence</DDLabel>
                 <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.4rem, 3vw, 2rem)', margin: '0.5rem 0' }}>From superpower to owned digital property.</h2>
                 <div style={{ display: 'grid', gap: '0.75rem' }}>
                   {(personalized?.steps || roadmap.firstSteps).map((step, index) => (
                     <div key={step} className="roadmap-step" style={{ ...brutalCard, padding: '0.9rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
-                      <span style={{ fontWeight: 900, color: theme.colors.orange }}>{String(index + 1).padStart(2, '0')}</span>
-                      <p style={{ margin: 0 }}>{step}</p>
+                      <span style={{ fontWeight: 900, color: theme.colors.orange, fontFamily: theme.fonts.heading }}>{String(index + 1).padStart(2, '0')}</span>
+                      <p style={{ margin: 0, fontFamily: theme.fonts.body }}>{step}</p>
                     </div>
                   ))}
                 </div>
@@ -353,14 +355,14 @@ export default function DigitalSuperpowerQuiz() {
             <section className="story-section story-section--cream">
               <div className="roadmap-next">
                 <div>
-                  <span className="label label--blue">STEP 03 / VALIDATE</span>
+                  <DDLabel tone="blue">STEP 03 / VALIDATE</DDLabel>
                   <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.3rem, 2.8vw, 1.8rem)', margin: '0.5rem 0' }}>Do not build the whole thing yet.</h2>
-                  <p>Take one of the suggested directions into the scorecard. Test demand, competition, monetization, durability, ease, and privacy fit first.</p>
+                  <p style={{ color: theme.colors.muted, fontFamily: theme.fonts.body, lineHeight: 1.6, maxWidth: 640 }}>Take one of the suggested directions into the scorecard. Test demand, competition, monetization, durability, ease, and privacy fit first.</p>
                 </div>
                 <div className="action-row" style={{ flexDirection: 'wrap' }}>
-                  <a href="/tools/scorecard" className="btn btn--primary dd-button dd-button--primary">Score My Niche →</a>
-                  <a href="/freedom" className="btn btn--outline dd-button dd-button--outline">Model My Freedom Number</a>
-                  <button type="button" onClick={reset} className="btn btn--outline dd-button dd-button--outline">Retake Quiz</button>
+                  <DDCTA label="Score My Niche →" href="/tools/scorecard" variant="primary" />
+                  <DDCTA label="Model My Freedom Number" href="/freedom" variant="outline" />
+                  <button type="button" style={{ ...brutalButtonOutline, padding: '0.5rem 1rem', fontSize: '0.8rem', fontFamily: theme.fonts.body }} onClick={reset}>Retake Quiz</button>
                 </div>
               </div>
             </section>
@@ -383,16 +385,14 @@ export default function DigitalSuperpowerQuiz() {
               )}
 
               {!isDevMode && !isBrevoTest && !isTestEmail && (
-                <div className="quiz-status quiz-status--notice" style={{ marginTop: '20px', textAlign: 'center', ...brutalCard, padding: '1rem' }}>
+                <div className="quiz-status quiz-status--notice" style={{ marginTop: '20px', textAlign: 'center', ...brutalCard, padding: '1rem', fontFamily: theme.fonts.body }}>
                   ✓ Check your inbox for the personalized roadmap email
                 </div>
               )}
 
               {intelligenceReady && (
                 <div style={{ textAlign: 'center', marginTop: '24px' }}>
-                  <a href="https://dashboard.digitallydefined.online/intelligence" target="_blank" rel="noopener noreferrer" className="btn btn--outline dd-button dd-button--outline">
-                    Open My Intelligence Dashboard →
-                  </a>
+                  <DDCTA label="Open My Intelligence Dashboard →" href="https://dashboard.digitallydefined.online/intelligence" variant="outline" target="_blank" />
                 </div>
               )}
             </section>

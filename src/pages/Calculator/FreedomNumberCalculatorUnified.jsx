@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import FadeInSection from '../../components/FadeInSection';
-import { brutalCard, brutalHeading } from '../../config/theme';
+import DDCTA from '../../components/ui/DDCTA';
+import DDLabel from '../../components/ui/DDLabel';
+import { brutalCard, brutalHeading, brutalButtonPrimary, brutalButtonOutline, brutalBorder, theme } from '../../config/theme';
 import { useToolState } from '../../context/ToolStateContext.jsx';
 import { callAgent } from '../../lib/buzz-agents';
 
@@ -53,10 +55,10 @@ export default function FreedomNumberCalculator() {
     <>
       <FadeInSection>
         <section className="page-hero">
-          <span className="label label--blue">Close The Retirement Gap</span>
-          <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>Calculate Your <span style={{ color: '#F18B25' }}>Freedom Number</span></h1>
-          <p className="hero__tagline">Discover how faceless digital real estate can help Gen X women build predictable income, close the retirement gap, and create assets their families can inherit.</p>
-          <div className="action-row"><a href="#calculator-section" className="btn btn--primary dd-button dd-button--primary">Calculate My Freedom Number →</a></div>
+          <DDLabel tone="blue">Close The Retirement Gap</DDLabel>
+          <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>Calculate Your <span style={{ color: theme.colors.orange }}>Freedom Number</span></h1>
+          <p className="hero__tagline" style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Discover how faceless digital real estate can help Gen X women build predictable income, close the retirement gap, and create assets their families can inherit.</p>
+          <div className="action-row"><DDCTA label="Calculate My Freedom Number →" href="#calculator-section" variant="primary" /></div>
         </section>
       </FadeInSection>
 
@@ -65,29 +67,29 @@ export default function FreedomNumberCalculator() {
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
               <div style={{ ...brutalCard, padding: '1.25rem' }}>
-                <span className="label label--orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>01 / Your Target</span>
+                <DDLabel tone="orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>01 / Your Target</DDLabel>
                 <h2 style={{ ...brutalHeading, fontSize: '1.15rem', marginBottom: '0.75rem' }}>Monthly Freedom Goal</h2>
                 <div style={{ marginBottom: '1rem' }}>
-                  <output style={{ fontSize: '1.6rem', fontWeight: 900 }}>{money(freedomGoal)}</output>
+                  <output style={{ fontSize: '1.6rem', fontWeight: 900, fontFamily: theme.fonts.heading }}>{money(freedomGoal)}</output>
                 </div>
-                <input type="range" min="2000" max="25000" step="500" value={freedomGoal} onChange={(event) => setFreedomGoal(Number(event.target.value))} style={{ width: '100%' }} />
+                <input type="range" min="2000" max="25000" step="500" value={freedomGoal} onChange={(event) => setFreedomGoal(Number(event.target.value))} style={{ width: '100%', accentColor: theme.colors.orange }} />
               </div>
 
-              <div style={{ ...brutalCard, padding: '1.25rem', background: '#FFFAF5' }}>
-                <span className="label label--blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>02 / Asset Mix</span>
+              <div style={{ ...brutalCard, padding: '1.25rem', background: theme.colors.panel }}>
+                <DDLabel tone="blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>02 / Asset Mix</DDLabel>
                 <h2 style={{ ...brutalHeading, fontSize: '1.15rem', marginBottom: '0.75rem' }}>Your Digital Real Estate Mix</h2>
                 <div style={{ display: 'grid', gap: '1rem' }}>
                   {ASSETS.map((asset) => (
                     <div key={asset.id} style={{ ...brutalCard, padding: '1rem', border: '1px solid rgba(0,0,0,0.08)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                        <strong>{asset.name}</strong>
-                        <span style={{ color: '#5F5F5F', fontSize: '0.85rem' }}>{asset.range}</span>
+                        <strong style={{ fontFamily: theme.fonts.body }}>{asset.name}</strong>
+                        <span style={{ color: theme.colors.muted, fontSize: '0.85rem', fontFamily: theme.fonts.body }}>{asset.range}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <label style={{ fontSize: '0.85rem' }}>Qty</label>
-                        <input className="form-input dd-input" type="number" min="0" max="10" value={assets[asset.id].qty} onChange={(event) => updateAsset(asset.id, 'qty', event.target.value)} />
-                        <label style={{ fontSize: '0.85rem' }}>Yield</label>
-                        <input className="form-input dd-input" type="number" min={asset.min} max={asset.max} step={asset.step} value={assets[asset.id].yield} onChange={(event) => updateAsset(asset.id, 'yield', event.target.value)} />
+                        <label style={{ fontSize: '0.85rem', fontFamily: theme.fonts.body }}>Qty</label>
+                        <input className="form-input dd-input" type="number" min="0" max="10" value={assets[asset.id].qty} onChange={(event) => updateAsset(asset.id, 'qty', event.target.value)} style={{ fontFamily: theme.fonts.body }} />
+                        <label style={{ fontSize: '0.85rem', fontFamily: theme.fonts.body }}>Yield</label>
+                        <input className="form-input dd-input" type="number" min={asset.min} max={asset.max} step={asset.step} value={assets[asset.id].yield} onChange={(event) => updateAsset(asset.id, 'yield', event.target.value)} style={{ fontFamily: theme.fonts.body }} />
                       </div>
                     </div>
                   ))}
@@ -97,32 +99,32 @@ export default function FreedomNumberCalculator() {
 
             <div style={{ marginTop: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
               <div style={{ ...brutalCard, padding: '1.25rem' }}>
-                <span className="label label--orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>03 / Outcome</span>
+                <DDLabel tone="orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>03 / Outcome</DDLabel>
                 <h2 style={{ ...brutalHeading, fontSize: '1.15rem', marginBottom: '0.75rem' }}>Projected Portfolio Income</h2>
-                <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.5rem' }}>{money(totalMonthlyIncome)}</div>
-                <div style={{ color: goalMet ? '#16A34A' : '#8B1A0A', fontWeight: 700 }}>{goalMet ? '✓ Goal Achieved' : `Gap: ${money(gap)}/mo`}</div>
+                <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.5rem', fontFamily: theme.fonts.heading }}>{money(totalMonthlyIncome)}</div>
+                <div style={{ color: goalMet ? theme.colors.success : theme.colors.darkRed, fontWeight: 700, fontFamily: theme.fonts.body }}>{goalMet ? '✓ Goal Achieved' : `Gap: ${money(gap)}/mo`}</div>
               </div>
 
               <div style={{ ...brutalCard, padding: '1.25rem' }}>
-                <span className="label label--blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>24-Month Projection</span>
+                <DDLabel tone="blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>24-Month Projection</DDLabel>
                 <div style={{ display: 'grid', gap: '0.75rem' }}>
                   <div>
-                    <div style={{ fontSize: '0.8rem', color: '#5F5F5F', textTransform: 'uppercase' }}>Traditional Savings</div>
-                    <div style={{ height: 10, background: '#e5e5e5', border: '1px solid #111111', marginTop: '0.25rem' }}>
-                      <div style={{ height: '100%', width: `${Math.min(100, (24000 / chartMax) * 100)}%`, background: '#8B1A0A' }} />
+                    <div style={{ fontSize: '0.8rem', color: theme.colors.muted, textTransform: 'uppercase', fontFamily: theme.fonts.body }}>Traditional Savings</div>
+                    <div style={{ height: 10, background: '#e5e5e5', border: brutalBorder, marginTop: '0.25rem' }}>
+                      <div style={{ height: '100%', width: `${Math.min(100, (24000 / chartMax) * 100)}%`, background: theme.colors.darkRed, fontFamily: theme.fonts.heading }} />
                     </div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>{money(24000)}</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 700, fontFamily: theme.fonts.body }}>{money(24000)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.8rem', color: '#5F5F5F', textTransform: 'uppercase' }}>Digital Assets</div>
-                    <div style={{ height: 10, background: '#e5e5e5', border: '1px solid #111111', marginTop: '0.25rem' }}>
-                      <div style={{ height: '100%', width: `${Math.min(100, (digital24m / chartMax) * 100)}%`, background: '#47B7D4' }} />
+                    <div style={{ fontSize: '0.8rem', color: theme.colors.muted, textTransform: 'uppercase', fontFamily: theme.fonts.body }}>Digital Assets</div>
+                    <div style={{ height: 10, background: '#e5e5e5', border: brutalBorder, marginTop: '0.25rem' }}>
+                      <div style={{ height: '100%', width: `${Math.min(100, (digital24m / chartMax) * 100)}%`, background: theme.colors.aquaBlue, fontFamily: theme.fonts.heading }} />
                     </div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#47B7D4' }}>{money(digital24m)}</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: theme.colors.aquaBlue, fontFamily: theme.fonts.body }}>{money(digital24m)}</div>
                   </div>
                 </div>
-                <button type="button" className="btn btn--outline dd-button dd-button--outline" style={{ width: '100%', marginTop: '1rem' }} disabled={agentLoading} onClick={askAgent}>{agentLoading ? 'Asking agent…' : 'Ask Hermes to improve this plan'}</button>
-                {agentResult && <div style={{ marginTop: '1rem', ...brutalCard, padding: '1rem' }}>{typeof agentResult === 'string' ? agentResult : JSON.stringify(agentResult, null, 2)}</div>}
+                <button type="button" style={{ ...brutalButtonOutline, width: '100%', marginTop: '1rem', padding: '0.5rem 1rem', fontFamily: theme.fonts.body }} disabled={agentLoading} onClick={askAgent}>{agentLoading ? 'Asking agent…' : 'Ask Hermes to improve this plan'}</button>
+                {agentResult && <div style={{ marginTop: '1rem', ...brutalCard, padding: '1rem', fontFamily: theme.fonts.body }}>{typeof agentResult === 'string' ? agentResult : JSON.stringify(agentResult, null, 2)}</div>}
               </div>
             </div>
           </div>

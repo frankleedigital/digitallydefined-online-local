@@ -1,6 +1,7 @@
 import React from 'react';
 import FadeInSection from '../components/FadeInSection';
 import { brutalHeading } from '../config/theme';
+import DDCTA from '../components/ui/DDCTA';
 
 export default function ComingSoon() {
   return (
@@ -10,7 +11,7 @@ export default function ComingSoon() {
         <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>This page is under construction.</h1>
         <p className="hero__tagline">We are building something useful. Check back soon.</p>
         <div className="action-row">
-          <a href="/" className="btn btn--primary dd-button dd-button--primary">Start Here →</a>
+          <DDCTA label="Start Here →" href="/" variant="primary" />
         </div>
       </section>
     </FadeInSection>

@@ -1,6 +1,9 @@
 import React from 'react';
 import FadeInSection from '../components/FadeInSection';
-import { brutalCard, brutalHeading } from '../config/theme';
+import { theme, brutalCard, brutalHeading } from '../config/theme';
+import DDCTA from '../components/ui/DDCTA';
+import DDLabel from '../components/ui/DDLabel';
+import DDCard from '../components/ui/DDCard';
 
 export default function Products() {
   return (
@@ -8,10 +11,10 @@ export default function Products() {
       <FadeInSection>
         <section className="page-hero">
           <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-            <p className="section__eyebrow">Products</p>
+            <p className="section__eyebrow" style={{ color: theme.colors.orange, fontFamily: theme.fonts.heading, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Products</p>
             <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>Built for privacy-first ownership.</h1>
-            <p className="hero__tagline">Pick a starting point. Every product connects to the calculators, quiz, and roadmap so you can move from exploration to execution.</p>
-            <div className="action-row"><a href="/tools" className="btn btn--primary dd-button dd-button--primary">Explore Tools →</a></div>
+            <p className="hero__tagline" style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Pick a starting point. Every product connects to the calculators, quiz, and roadmap so you can move from exploration to execution.</p>
+            <div className="action-row"><DDCTA label="Explore Tools →" href="/tools" variant="primary" /></div>
           </div>
         </section>
       </FadeInSection>
@@ -30,7 +33,7 @@ export default function Products() {
               ].map((item) => (
                 <article key={item.title} style={{ ...brutalCard, padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
                   <div style={{ ...brutalHeading, fontSize: '1.1rem' }}>{item.title}</div>
-                  <p style={{ color: '#5F5F5F', lineHeight: 1.6, margin: 0 }}>{item.copy}</p>
+                  <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.6, margin: 0 }}>{item.copy}</p>
                   <a href={item.href} className="btn btn--outline dd-button dd-button--outline" style={{ width: 'fit-content', marginTop: '0.25rem' }}>{item.cta}</a>
                 </article>
               ))}

@@ -4,7 +4,8 @@ import { callAgent } from '../../lib/buzz-agents';
 import { useToolState } from '../../context/ToolStateContext.jsx';
 import AiMentorChatBox from '../../components/AiMentorChatBox';
 import FadeInSection from '../../components/FadeInSection';
-import { brutalCard, brutalHeading } from '../../config/theme';
+import { theme, brutalCard, brutalHeading } from '../../config/theme';
+import DDCTA from '../../components/ui/DDCTA';
 
 const CRITERIA_HELP = {
   demand: 'A 7–10 usually means people already search for this. 1–3 means you’ll need to build awareness from scratch.',
@@ -74,7 +75,7 @@ export default function NicheProfitabilityScorecard() {
   };
 
   const allAnswered = CRITERIA.every(c => scores[c.key] != null && scores[c.key] > -1);
-  const tierColor = (tier) => tier === 'A' ? '#15803D' : tier === 'B' ? '#4db6d1' : tier === 'C' ? '#f18b25' : '#c20f0a';
+  const tierColor = (tier) => tier === 'A' ? 'var(--color-success)' : tier === 'B' ? 'var(--color-accent)' : tier === 'C' ? 'var(--color-accent)' : 'var(--color-red)';
 
   if (result) {
     const copy = tierCopy(result.tier);
@@ -85,7 +86,7 @@ export default function NicheProfitabilityScorecard() {
             <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
               <p className="section__eyebrow">Results</p>
               <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>Niche Score for &ldquo;{nicheName || 'your niche'}&rdquo;</h1>
-              <div className="action-row"><a href="#score-results" className="btn btn--primary dd-button dd-button--primary">Review My Score →</a></div>
+              <div className="action-row"><DDCTA label="Review My Score →" href="#score-results" variant="primary" /></div>
             </div>
           </section>
         </FadeInSection>
@@ -98,7 +99,7 @@ export default function NicheProfitabilityScorecard() {
                   {Math.round(result.pct * 100)}%
                 </div>
                 <div style={{ marginTop: '1rem', ...brutalHeading, fontSize: '1.5rem', textTransform: 'uppercase' }}>{copy.title}</div>
-                <p style={{ maxWidth: 480, marginInline: 'auto', color: '#5A5A5A', lineHeight: 1.7 }}>{copy.body}</p>
+                <p style={{ maxWidth: 480, marginInline: 'auto', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>{copy.body}</p>
               </div>
 
               <div style={{ ...brutalCard, padding: '1.25rem', marginBottom: '1.25rem' }}>
@@ -131,16 +132,16 @@ export default function NicheProfitabilityScorecard() {
               </div>
 
               <div style={{ ...brutalCard, padding: '1.25rem', marginBottom: '1.25rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '0.9rem 0', borderBottom: '1px solid rgba(0,0,0,0.08)', ...brutalHeading, fontSize: '0.78rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#9CA3AF' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '0.9rem 0', borderBottom: '1px solid rgba(0,0,0,0.08)', ...brutalHeading, fontSize: '0.78rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>
                   <span>Criterion</span><span>Score</span>
                 </div>
                 {CRITERIA.map(c => (
                   <div key={c.key} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '0.85rem 0', borderBottom: c.key !== 'demand_market' ? '1px solid rgba(0,0,0,0.04)' : 'none' }}>
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{c.label}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>{c.description}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{c.description}</div>
                     </div>
-                    <div style={{ fontWeight: 800, fontSize: '1.2rem', color: '#3B153E' }}>{scores[c.key]} / 10</div>
+                    <div style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--color-text)' }}>{scores[c.key]} / 10</div>
                   </div>
                 ))}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '0.85rem 0', marginTop: '0.5rem', borderTop: '2px solid rgba(0,0,0,0.08)', ...brutalHeading, fontSize: '1rem' }}>
@@ -152,23 +153,23 @@ export default function NicheProfitabilityScorecard() {
               <div style={{ ...brutalCard, padding: '1.25rem', marginBottom: '1.25rem' }}>
                 <p className="section__eyebrow">What Your Score Means</p>
                 <h2 style={{ ...brutalHeading, fontSize: '1.3rem', marginBottom: '0.75rem' }}>A quick way to read your result</h2>
-                <p style={{ color: '#5A5A5A', lineHeight: 1.7, marginBottom: '1rem' }}>Your score is a percentage out of 100. Here&rsquo;s how to think about it before you choose your next step:</p>
-                <ul style={{ color: '#5A5A5A', lineHeight: 1.9, paddingLeft: '1.25rem', margin: 0 }}>
+                <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, marginBottom: '1rem' }}>Your score is a percentage out of 100. Here&rsquo;s how to think about it before you choose your next step:</p>
+                <ul style={{ color: 'var(--color-text-muted)', lineHeight: 1.9, paddingLeft: '1.25rem', margin: 0 }}>
                   <li><strong>0–20</strong> — Low signal. The idea likely needs more market proof before it&rsquo;s worth your time.</li>
                   <li><strong>21–40</strong> — Mixed at best. Look closely at competition and monetization before building.</li>
                   <li><strong>41–60</strong> — Worth exploring. Choose the weakest criteria and dig a little deeper there.</li>
                   <li><strong>61–80</strong> — Strong lean-in. Validate demand, then launch a small first version.</li>
                   <li><strong>81–100</strong> — Excellent. This is close to a build-and-go niche. Protect your positioning early.</li>
                 </ul>
-                <p style={{ color: '#5A5A5A', lineHeight: 1.7, marginTop: '1rem', fontStyle: 'italic' }}>Whatever your number, it&rsquo;s a starting point — not a label on you. One idea scoring low simply means you move on to the next.</p>
+                <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, marginTop: '1rem', fontStyle: 'italic' }}>Whatever your number, it&rsquo;s a starting point — not a label on you. One idea scoring low simply means you move on to the next.</p>
               </div>
 
               <div style={{ textAlign: 'center' }}>
                 <div className="action-row" style={{ justifyContent: 'center' }}>
-                  <a href="/tools/calculator" className="btn btn--primary dd-button dd-button--primary">Calculate My ROI →</a>
-                  <button onClick={() => { setResult(null); setScores({}); setInsight(null); }} className="btn btn--outline dd-button dd-button--outline">Reassess Niche</button>
+                      <DDCTA label="Calculate My ROI →" href="/tools/calculator" variant="primary" />
+                      <button onClick={() => { setResult(null); setScores({}); setInsight(null); }} className="btn btn--outline">Reassess Niche</button>
                 </div>
-                <p style={{ fontSize: '0.82rem', color: '#9CA3AF', marginTop: '1rem' }}>Scores are based on simplified criteria. Use this as a filter, not a final verdict.</p>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: '1rem' }}>Scores are based on simplified criteria. Use this as a filter, not a final verdict.</p>
               </div>
             </div>
           </section>
@@ -195,8 +196,8 @@ export default function NicheProfitabilityScorecard() {
           <div style={{ maxWidth: 900, margin: '0 auto' }}>
             <div style={{ ...brutalCard, padding: '1.25rem', marginBottom: '1.25rem' }}>
               <h2 style={{ ...brutalHeading, fontSize: '1.3rem', marginBottom: '0.75rem' }}>How This Scorecard Works</h2>
-              <p style={{ color: '#5A5A5A', lineHeight: 1.7, marginBottom: '1rem' }}>This tool is a quick, honest first look at a business idea — a filter, not a final verdict. It scores six simple criteria on a scale of 0 to 10 and combines them into one overall percentage.</p>
-              <ul style={{ color: '#5A5A5A', lineHeight: 1.8, paddingLeft: '1.25rem', margin: 0 }}>
+              <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, marginBottom: '1rem' }}>This tool is a quick, honest first look at a business idea — a filter, not a final verdict. It scores six simple criteria on a scale of 0 to 10 and combines them into one overall percentage.</p>
+              <ul style={{ color: 'var(--color-text-muted)', lineHeight: 1.8, paddingLeft: '1.25rem', margin: 0 }}>
                 <li><strong>Rate each criterion from 0 to 10</strong> based on your honest gut and what you already know.</li>
                 <li><strong>Answer every field</strong> — all six are required before your score unlocks.</li>
                 <li><strong>Leave the math to the tool.</strong> You just rate the idea; the weighting is handled for you.</li>
@@ -222,7 +223,7 @@ export default function NicheProfitabilityScorecard() {
                   <div key={criterion.key} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '1rem 0', borderBottom: criterion.key !== 'ease_of_entry' ? '1px solid rgba(0,0,0,0.06)' : 'none' }}>
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: '0.15rem' }}>{criterion.label}</div>
-                      <div style={{ fontSize: '0.82rem', color: '#9CA3AF' }}>{criterion.description}</div>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>{criterion.description}</div>
                       <div style={{ fontSize: '0.8rem', color: '#7A7A7A', marginTop: '0.35rem', lineHeight: 1.55 }}>{CRITERIA_HELP[criterion.key]}</div>
                     </div>
                     <input type="number" min="0" max="10" value={scores[criterion.key] ?? ''} onChange={e => handleScoreChange(criterion.key, e.target.value)} className="form-input dd-input" style={{ width: '5rem', textAlign: 'center', padding: '0.5rem 0.4rem', fontWeight: 800, fontSize: '1.1rem' }} />
@@ -231,8 +232,8 @@ export default function NicheProfitabilityScorecard() {
               </div>
 
               <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-                <button type="submit" disabled={!allAnswered} className="btn btn--primary dd-button dd-button--primary" style={{ opacity: allAnswered ? 1 : 0.5, cursor: allAnswered ? 'pointer' : 'default' }}>Calculate My Score</button>
-                <p style={{ fontSize: '0.82rem', color: '#9CA3AF', marginTop: '0.75rem' }}>Enter a score from 0 to 10 for each item. All fields must be filled to submit.</p>
+                <button type="submit" disabled={!allAnswered} className="btn btn--primary" style={{ opacity: allAnswered ? 1 : 0.5, cursor: allAnswered ? 'pointer' : 'default' }}>Calculate My Score</button>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: '0.75rem' }}>Enter a score from 0 to 10 for each item. All fields must be filled to submit.</p>
               </div>
             </form>
           </div>
@@ -245,17 +246,17 @@ export default function NicheProfitabilityScorecard() {
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
               <p className="section__eyebrow">See It in Action</p>
               <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', marginBottom: '0.5rem' }}>Example Niche Scoring Scenarios</h2>
-              <p style={{ color: '#5A5A5A', lineHeight: 1.7, maxWidth: 720, margin: '0 auto' }}>Not sure what an honest score feels like? Here are three examples showing how different ideas land.</p>
+              <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, maxWidth: 720, margin: '0 auto' }}>Not sure what an honest score feels like? Here are three examples showing how different ideas land.</p>
             </div>
             <div style={{ display: 'grid', gap: '1.25rem', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
               {[
-                { title: 'Strong: Emergency Plumbing in Phoenix', copy: 'Demand 9 · Competition 7 · Monetization 8. People search daily, revenue paths are clear, and it can run discreetly behind the scenes.', tone: '#15803D' },
+                { title: 'Strong: Emergency Plumbing in Phoenix', copy: 'Demand 9 · Competition 7 · Monetization 8. People search daily, revenue paths are clear, and it can run discreetly behind the scenes.', tone: 'var(--color-success)' },
                 { title: 'Worth Testing: Local Food Tours', copy: 'Demand 6 · Competition 5 · Monetization 7. Nice demand and easy to run, but local competition is a question mark.', tone: '#f18b25' },
-                { title: 'Needs Research: AI Chatbots for Everyone', copy: 'Demand 8 · Competition 3 · Monetization 4. Plenty of hype, but heavy competition and a muddy money path bring the score down.', tone: '#c20f0a' },
+                { title: 'Needs Research: AI Chatbots for Everyone', copy: 'Demand 8 · Competition 3 · Monetization 4. Plenty of hype, but heavy competition and a muddy money path bring the score down.', tone: 'var(--color-red)' },
               ].map((item) => (
                 <div key={item.title} style={{ ...brutalCard, padding: '1.25rem', borderLeft: `4px solid ${item.tone}` }}>
                   <h3 style={{ ...brutalHeading, fontSize: '1.05rem', marginBottom: '0.5rem' }}>{item.title}</h3>
-                  <p style={{ color: '#5A5A5A', lineHeight: 1.7, margin: 0 }}>{item.copy}</p>
+                  <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, margin: 0 }}>{item.copy}</p>
                 </div>
               ))}
             </div>
@@ -267,7 +268,7 @@ export default function NicheProfitabilityScorecard() {
         <section className="section">
           <div style={{ maxWidth: 900, margin: '0 auto', ...brutalCard, padding: '1.5rem', background: 'rgba(77, 182, 209, 0.08)', borderLeft: '4px solid #47B7D4' }}>
             <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.2rem, 2.4vw, 1.5rem)', marginBottom: '0.75rem' }}>You&rsquo;ve Got This — Take a Breath</h2>
-            <p style={{ color: '#5A5A5A', lineHeight: 1.8, margin: 0 }}>It&rsquo;s completely normal to feel a little unsure at first. Most people score their first idea either too high or too low — that&rsquo;s part of learning. You don&rsquo;t need to perfect everything today. This score isn&rsquo;t a test of you; it&rsquo;s a gentle compass for your next step.</p>
+            <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.8, margin: 0 }}>It&rsquo;s completely normal to feel a little unsure at first. Most people score their first idea either too high or too low — that&rsquo;s part of learning. You don&rsquo;t need to perfect everything today. This score isn&rsquo;t a test of you; it&rsquo;s a gentle compass for your next step.</p>
           </div>
         </section>
       </FadeInSection>
@@ -277,14 +278,14 @@ export default function NicheProfitabilityScorecard() {
           <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
             <p className="section__eyebrow">What&rsquo;s Next</p>
             <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', marginBottom: '0.5rem' }}>Next Steps After You Score</h2>
-            <p style={{ color: '#5A5A5A', lineHeight: 1.7, maxWidth: 720, margin: '0 auto 1.5rem' }}>A strong score is a great starting point. Move forward at your own pace with these free companion tools.</p>
-            <div className="action-row" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="/tools/calculator" className="btn btn--primary dd-button dd-button--primary">Calculate My ROI →</a>
-              <a href="/quiz" className="btn btn--outline dd-button dd-button--outline">Find My Digital Superpower</a>
-              <a href="/gap" className="btn btn--outline dd-button dd-button--outline">Check My Retirement Gap</a>
-              <a href="/freedom" className="btn btn--outline dd-button dd-button--outline">Model My Freedom Number</a>
+            <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, maxWidth: 720, margin: '0 auto 1.5rem' }}>A strong score is a great starting point. Move forward at your own pace with these free companion tools.</p>
+              <div className="action-row" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
+              <DDCTA label="Calculate My ROI →" href="/tools/calculator" variant="primary" />
+              <DDCTA label="Find My Digital Superpower" href="/quiz" variant="outline" />
+              <DDCTA label="Check My Retirement Gap" href="/gap" variant="outline" />
+              <DDCTA label="Model My Freedom Number" href="/freedom" variant="outline" />
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#9CA3AF', marginTop: '1rem' }}>Everything here stays in your browser. You&rsquo;re never locked in.</p>
+            <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: '1rem' }}>Everything here stays in your browser. You&rsquo;re never locked in.</p>
           </div>
         </section>
       </FadeInSection>

@@ -3,7 +3,11 @@ import EmailSignup from '../components/EmailSignup';
 import { fetchPersonalization } from '../lib/personalization';
 import { callSupabaseEdge } from '../lib/supabase-edge';
 import DDHero from '../components/ui/DDHero';
+import DDCTA from '../components/ui/DDCTA';
+import DDLabel from '../components/ui/DDLabel';
+import DDCard from '../components/ui/DDCard';
 import FadeInSection from '../components/FadeInSection';
+import { theme, brutalCard, brutalHeading, brutalButtonPrimary, brutalButtonOutline } from '../config/theme';
 
 const pressures = [
   ['01', 'The caregiving squeeze', 'You may be helping children launch, supporting aging parents, and trying to protect your own future at the same time.', '/assets/brand/icon-audience.svg'],
@@ -59,50 +63,44 @@ export default function Home() {
   return (
     <>
       <FadeInSection>
-        <section style={{ background: '#FFFCF9', borderBottom: '1px solid #111', padding: 'clamp(2.5rem,6vw,4rem) 0' }}>
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 24px', textAlign: 'center' }}>
-            <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 800, fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#F18B25', marginBottom: '0.75rem', display: 'inline-block' }}>Start here / not everywhere</span>
-            <h1 style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 800, letterSpacing: '-0.03em', fontSize: 'clamp(2.25rem,5vw,3.4rem)', lineHeight: 1.1, margin: '0 0 1rem', color: '#111111' }}>Build Faceless Digital Assets.</h1>
-            <p style={{ fontSize: '1.15rem', lineHeight: 1.6, color: '#5F5F5F', maxWidth: 640, margin: '0 auto 1.5rem' }}>Start your path to freedom-based digital ownership. No camera. No invented urgency. No promise of overnight income.</p>
+        <section style={{ background: theme.colors.background, borderBottom: brutalBorder, padding: 'clamp(3.5rem,8vw,6rem) 0' }}>
+          <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 24px', textAlign: 'center' }}>
+            <DDLabel tone="orange">Start here / not everywhere</DDLabel>
+            <h1 style={{ ...brutalHeading, fontSize: 'clamp(2.4rem,5.5vw,3.8rem)', margin: '0 0 1.25rem' }}>Build Faceless Digital Assets.</h1>
+            <p style={{ fontSize: '1.15rem', lineHeight: 1.6, color: theme.colors.muted, maxWidth: 720, margin: '0 auto 2rem' }}>Start your path to freedom-based digital ownership. No camera. No invented urgency. No promise of overnight income.</p>
             
             {optStatus === 'success' ? (
-              <p style={{ color: '#16A34A', fontWeight: 700, marginBottom: '1rem' }}>You're in. Watch your inbox for your first step.</p>
+              <p style={{ color: theme.colors.success, fontWeight: 700, marginBottom: '1.25rem' }}>You're in. Watch your inbox for your first step.</p>
             ) : (
-              <form onSubmit={handleOptIn} style={{ maxWidth: 480, margin: '0 auto 1.25rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <form onSubmit={handleOptIn} style={{ maxWidth: 520, margin: '0 auto 1.5rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <input
                   type="email"
                   required
                   placeholder="your@email.com"
-                  style={{ flex: '1 1 220px', padding: '0.75rem 1rem', border: '1px solid #111', background: '#FFFFFF', fontSize: '1rem', outline: 'none' }}
+                  style={{ flex: '1 1 220px', padding: '0.75rem 1rem', border: brutalBorder, background: theme.colors.card, fontSize: '1rem', outline: 'none', fontFamily: theme.fonts.body }}
                   value={optEmail}
                   onChange={(e) => setOptEmail(e.target.value)}
                   aria-label="Email address"
                 />
-                <button type="submit" className="btn btn--primary dd-button dd-button--primary" disabled={optStatus === 'submitting'}>
-                  {optStatus === 'submitting' ? 'Starting…' : 'Start Here →'}
-                </button>
+                <DDCTA label={optStatus === 'submitting' ? 'Starting…' : 'Start Here →'} onClick={(e) => { e.preventDefault(); handleOptIn(e); }} disabled={optStatus === 'submitting'} />
               </form>
             )}
 
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <a href="/quiz?start=true" className="btn btn--primary dd-button dd-button--primary">Find Your Superpower First →</a>
-              <a href="/gap" className="btn btn--outline dd-button dd-button--outline">Calculate My Retirement Gap →</a>
+              <DDCTA label="Find Your Superpower First →" href="/quiz?start=true" variant="primary" />
+              <DDCTA label="Calculate My Retirement Gap →" href="/gap" variant="outline" />
             </div>
           </div>
         </section>
       </FadeInSection>
 
-      {optStatus === 'error' && (
-        <p className="optin-hero__error">Something went wrong. Please try again.</p>
-      )}
-
       <FadeInSection delay={80}>
-        <section className="tools-cta" aria-label="Free planning tools">
+        <section className="tools-cta" aria-label="Free planning tools" style={{ marginTop: 0 }}>
           <div className="tools-cta__row">
-            <a className="tools-cta__btn dd-btn dd-btn--outline" href="/freedom">Freedom Number Calculator</a>
-            <a className="tools-cta__btn dd-btn dd-btn--outline" href="/tools">Asset Builder</a>
-            <a className="tools-cta__btn dd-btn dd-btn--outline" href="/roi">10X ROI</a>
-            <a className="tools-cta__btn dd-btn dd-btn--outline" href="/quiz">Digital Superpower Quiz</a>
+            <DDCTA label="Freedom Number Calculator" href="/freedom" variant="outline" />
+            <DDCTA label="Asset Builder" href="/tools" variant="outline" />
+            <DDCTA label="10X ROI" href="/roi" variant="outline" />
+            <DDCTA label="Digital Superpower Quiz" href="/quiz" variant="outline" />
           </div>
         </section>
       </FadeInSection>
@@ -128,7 +126,7 @@ export default function Home() {
               <article className="path-step" key={number}>
                 <span className="path-step__number">{number}</span>
                 <div><h2>{title}</h2><p>{copy}</p></div>
-                <a href={href} className="btn btn--primary">{cta} →</a>
+                <DDCTA label={cta + ' →'} href={href} variant="primary" />
               </article>
             ))}
           </div>
@@ -180,7 +178,7 @@ export default function Home() {
               <span className="label label--blue">Your unfair advantage</span>
               <h2>Gen X is not late to the internet. We are built for this version of it.</h2>
               <p>You do not need to compete with twenty-year-old creators at being twenty. Your advantage is context: knowing how businesses work, what people actually need, and how to keep going when the novelty wears off.</p>
-              <a href="/quiz?start=true" className="text-link">Find your digital superpower →</a>
+              <a href="/quiz?start=true" className="text-link" style={{ fontFamily: theme.fonts.body, fontSize: '0.9rem', fontWeight: 700, color: theme.colors.orange, textDecoration: 'none' }}>Find your digital superpower →</a>
             </div>
             <div className="advantage-list">
               {advantages.map(([title, copy], index) => (
@@ -244,10 +242,10 @@ export default function Home() {
             <p>Generational trauma often includes scarcity, silence, financial confusion, and knowledge that disappears with one person. A documented digital portfolio can hold something different: owned assets, recurring processes, customer relationships, operating instructions, and the confidence that wealth-building is learnable.</p>
           </div>
           <div className="legacy-stack">
-            <div><span>01</span><strong>Build</strong><small>Create useful assets around problems you understand.</small></div>
-            <div><span>02</span><strong>Protect</strong><small>Document ownership, access, revenue, and maintenance.</small></div>
-            <div><span>03</span><strong>Transfer</strong><small>Leave a clear digital inheritance, not a locked account mystery.</small></div>
-            <div><span>04</span><strong>Teach</strong><small>Pass down the system and the belief that assets can be built.</small></div>
+            <div><DDLabel tone="orange">01</DDLabel><strong>Build</strong><small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Create useful assets around problems you understand.</small></div>
+            <div><DDLabel tone="orange">02</DDLabel><strong>Protect</strong><small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Document ownership, access, revenue, and maintenance.</small></div>
+            <div><DDLabel tone="orange">03</DDLabel><strong>Transfer</strong><small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Leave a clear digital inheritance, not a locked account mystery.</small></div>
+            <div><DDLabel tone="orange">04</DDLabel><strong>Teach</strong><small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Pass down the system and the belief that assets can be built.</small></div>
           </div>
         </section>
       </FadeInSection>
@@ -257,8 +255,8 @@ export default function Home() {
           <span className="label label--blue">Your next chapter can own property</span>
           <h2>Start with the truth of your numbers. Then build one useful asset.</h2>
           <div className="action-row">
-            <a href="/gap" className="btn btn--outline">Calculate My Retirement Gap →</a>
-            <a href="/quiz?start=true" className="btn btn--primary btn--large">Find Your Superpower First →</a>
+            <DDCTA label="Calculate My Retirement Gap →" href="/gap" variant="outline" />
+            <DDCTA label="Find Your Superpower First →" href="/quiz?start=true" variant="primary" />
           </div>
           <p className="microcopy">Not sure where to start? Take the 2-minute quiz to find your digital asset superpower.</p>
         </section>

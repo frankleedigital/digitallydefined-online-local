@@ -19,7 +19,7 @@ export default function DDHero({ label, labelTone = 'default', title, tagline, c
         ...style,
       }}
     >
-      <div style={{ maxWidth: narrow ? 720 : 1100, margin: '0 auto', padding: '0 24px' }}>
+      <div style={{ maxWidth: narrow ? 720 : 1100, margin: '0 auto', padding: '0 24px', textAlign: 'center' }}>
         {label ? <DDLabel tone={dark ? 'orange' : labelTone} style={dark ? { color: theme.colors.orange } : undefined}>{label}</DDLabel> : null}
         <h1
           style={{

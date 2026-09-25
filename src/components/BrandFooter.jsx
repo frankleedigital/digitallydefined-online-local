@@ -1,5 +1,6 @@
 import React from 'react';
 import SocialIcons from './SocialIcons';
+import { theme } from '../config/theme';
 
 export default function BrandFooter() {
   return (
@@ -17,7 +18,21 @@ export default function BrandFooter() {
           href="https://facebook.com/groups/digitallydefin1"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn btn--primary"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '14px 20px',
+            background: theme.colors.orange,
+            color: '#111111',
+            border: '1px solid #111111',
+            borderRadius: 0,
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            textDecoration: 'none',
+            marginTop: '1rem',
+          }}
         >
           Join the Community
         </a>

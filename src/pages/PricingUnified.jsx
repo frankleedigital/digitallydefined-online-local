@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import FadeInSection from '../components/FadeInSection';
-import { brutalCard, brutalHeading } from '../config/theme';
+import { theme, brutalCard, brutalHeading, brutalBorder } from '../config/theme';
+import DDCTA from '../components/ui/DDCTA';
+import DDLabel from '../components/ui/DDLabel';
+import DDCard from '../components/ui/DDCard';
 
 export default function Pricing() {
   const [billing, setBilling] = useState('monthly');
@@ -16,10 +19,10 @@ export default function Pricing() {
       <FadeInSection>
         <section className="page-hero">
           <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-            <p className="section__eyebrow">Pricing</p>
-            <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>Leverage Over Burnout. Pick Your System.</h1>
-            <p className="hero__tagline">No hidden fees. No upsells. Just pricing that reflects actual value.</p>
-            <div className="action-row"><a href="#plans" className="btn btn--primary dd-button dd-button--primary">See the Plans →</a></div>
+          <p className="section__eyebrow" style={{ color: theme.colors.orange, fontFamily: theme.fonts.heading, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Pricing</p>
+          <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>Leverage Over Burnout. Pick Your System.</h1>
+          <p className="hero__tagline" style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>No hidden fees. No upsells. Just pricing that reflects actual value.</p>
+          <div className="action-row"><DDCTA label="See the Plans →" href="#plans" variant="primary" /></div>
           </div>
         </section>
       </FadeInSection>
@@ -38,19 +41,19 @@ export default function Pricing() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
               {plans.map(plan => (
-                <div key={plan.name} style={{ ...brutalCard, padding: '2rem', border: plan.highlighted ? '3px solid #F18B25' : '2px solid #111111', display: 'flex', flexDirection: 'column', position: 'relative', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
-                  {plan.highlighted && <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: '#F18B25', color: '#FFFFFF', padding: '0.35rem 1rem', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', border: '2px solid #111111' }}>Most Popular</div>}
+                <div key={plan.name} style={{ ...brutalCard, padding: '2rem', border: plan.highlighted ? `3px solid ${theme.colors.orange}` : brutalBorder, display: 'flex', flexDirection: 'column', position: 'relative', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
+                  {plan.highlighted && <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: theme.colors.orange, color: '#FFFFFF', padding: '0.35rem 1rem', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', border: brutalBorder }}>Most Popular</div>}
                   <div style={{ marginBottom: '1.5rem' }}>
                     <div style={{ ...brutalHeading, fontSize: '1.1rem', marginBottom: '0.75rem' }}>{plan.name}</div>
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem', fontWeight: 900 }}>{plan.price}</div>
-                    <p style={{ color: '#5F5F5F', fontSize: '0.95rem' }}>{plan.desc}</p>
+                    <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem', fontWeight: 900, fontFamily: theme.fonts.heading }}>{plan.price}</div>
+                    <p style={{ color: theme.colors.muted, fontSize: '0.95rem', fontFamily: theme.fonts.body }}>{plan.desc}</p>
                   </div>
                   <ul style={{ listStyle: 'none', flex: 1, marginBottom: '1.5rem' }}>
                     {plan.features.map(f => (
-                      <li key={f} style={{ padding: '0.5rem 0', fontSize: '0.95rem', lineHeight: 1.6, borderBottom: '1px solid rgba(0,0,0,0.08)' }}>✓ {f}</li>
+                      <li key={f} style={{ padding: '0.5rem 0', fontSize: '0.95rem', lineHeight: 1.6, borderBottom: '1px solid rgba(0,0,0,0.08)', fontFamily: theme.fonts.body }}>✓ {f}</li>
                     ))}
                   </ul>
-                  <a href={plan.ctaHref} className={`btn ${plan.ctaClass}`} style={{ width: '100%' }}>{plan.cta}</a>
+                  <DDCTA label={plan.cta} href={plan.ctaHref} variant={plan.ctaClass.includes('outline') ? 'outline' : 'primary'} style={{ width: '100%' }} />
                 </div>
               ))}
             </div>

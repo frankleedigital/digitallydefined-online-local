@@ -1,7 +1,10 @@
 import React from 'react';
 import FadeInSection from '../components/FadeInSection';
-import { brutalCard, brutalHeading } from '../config/theme';
+import { theme, brutalCard, brutalHeading } from '../config/theme';
 import { callAgent } from '../lib/buzz-agents';
+import DDCard from '../components/ui/DDCard';
+import DDLabel from '../components/ui/DDLabel';
+import DDCTA from '../components/ui/DDCTA';
 
 const STEPS = [
   { num: '01', title: 'Capture', desc: 'Visitor lands on your site. Email capture or quiz completion. No face needed.' },
@@ -25,9 +28,9 @@ export default function Automation() {
         <section className="story-section story-section--white">
           <div style={{ maxWidth: 900, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              <span className="label label--blue">Automation</span>
+              <DDLabel tone="blue">Automation</DDLabel>
               <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', margin: '0.5rem 0' }}>Your Faceless Empire. Four Steps.</h2>
-              <p className="section__subtitle" style={{ fontSize: '1.15rem' }}>Configure once. Run forever. No more tool management — just configured systems doing the work.</p>
+              <p style={{ fontSize: '1.15rem', color: theme.colors.muted }}>Configure once. Run forever. No more tool management — just configured systems doing the work.</p>
             </div>
             <div style={{ display: 'grid', gap: '1.25rem' }}>
               {STEPS.map((s) => (
@@ -35,7 +38,7 @@ export default function Automation() {
                   <div style={{ flexShrink: 0, width: '3.5rem', height: '3.5rem', background: '#F18B25', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1.25rem', border: '2px solid #111111' }}>{s.num}</div>
                   <div>
                     <div style={{ ...brutalHeading, fontSize: '1.15rem', marginBottom: '0.5rem' }}>{s.title}</div>
-                    <p style={{ color: '#5F5F5F', lineHeight: 1.7, margin: 0 }}>{s.desc}</p>
+                    <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, margin: 0 }}>{s.desc}</p>
                   </div>
                 </div>
               ))}
@@ -47,14 +50,14 @@ export default function Automation() {
       <FadeInSection delay={140}>
         <section className="story-section story-section--cream">
           <div style={{ maxWidth: 900, margin: '0 auto', ...brutalCard, padding: '1.5rem' }}>
-            <span className="label label--orange">What We're Building</span>
+            <DDLabel tone="orange">What We're Building</DDLabel>
             <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.2rem, 2.4vw, 1.5rem)', margin: '0.5rem 0' }}>Live automation modules</h2>
-            <p style={{ color: '#5F5F5F', lineHeight: 1.7 }}>
+            <p style={{ color: theme.colors.muted, lineHeight: 1.7 }}>
               We're automating the pieces that free you up: lead capture, email sequences, content scheduling, and revenue tracking. Some of these run today; the full system is shipping in stages through our backend.
             </p>
             <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <a href="/tools" className="btn btn--primary dd-button dd-button--primary">Use the Free Tools →</a>
-              <a href="/contact" className="btn btn--outline dd-button dd-button--outline">Ask About Automation</a>
+              <DDCTA label="Use the Free Tools →" href="/tools" variant="primary" />
+              <DDCTA label="Ask About Automation" href="/contact" variant="outline" />
             </div>
           </div>
         </section>

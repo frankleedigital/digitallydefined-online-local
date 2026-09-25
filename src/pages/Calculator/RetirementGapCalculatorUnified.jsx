@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import FadeInSection from '../../components/FadeInSection';
-import { brutalCard, brutalHeading } from '../../config/theme';
+import DDCTA from '../../components/ui/DDCTA';
+import DDLabel from '../../components/ui/DDLabel';
+import DDCard from '../../components/ui/DDCard';
+import { brutalCard, brutalHeading, brutalButtonPrimary, brutalButtonOutline, theme } from '../../config/theme';
 import { callAgent } from '../../lib/buzz-agents';
 
 const fmt = (n) => {
@@ -10,11 +13,11 @@ const fmt = (n) => {
 };
 
 const ASSET_TYPES = [
-  { id: 'templates', name: 'Template Hubs & Printables', icon: '📋', minYield: 50, maxYield: 2000, defaultYield: 500, color: '#F18B25' },
-  { id: 'newsletters', name: 'Paid Newsletters', icon: '✉️', minYield: 500, maxYield: 5000, defaultYield: 1500, color: '#47B7D4' },
-  { id: 'youtube', name: 'YouTube Automation', icon: '🎬', minYield: 300, maxYield: 8000, defaultYield: 1000, color: '#2D3748' },
-  { id: 'rankandrent', name: 'Rank & Rent Sites', icon: '🏠', minYield: 500, maxYield: 5000, defaultYield: 1500, color: '#3B153E' },
-  { id: 'digitalproducts', name: 'Digital Products', icon: '📦', minYield: 100, maxYield: 3000, defaultYield: 500, color: '#F18B25' },
+  { id: 'templates', name: 'Template Hubs & Printables', icon: 'M', minYield: 50, maxYield: 2000, defaultYield: 500, color: '#F18B25' },
+  { id: 'newsletters', name: 'Paid Newsletters', icon: 'E', minYield: 500, maxYield: 5000, defaultYield: 1500, color: '#47B7D4' },
+  { id: 'youtube', name: 'YouTube Automation', icon: 'P', minYield: 300, maxYield: 8000, defaultYield: 1000, color: '#2D3748' },
+  { id: 'rankandrent', name: 'Rank & Rent Sites', icon: 'R', minYield: 500, maxYield: 5000, defaultYield: 1500, color: 'var(--color-text)' },
+  { id: 'digitalproducts', name: 'Digital Products', icon: 'D', minYield: 100, maxYield: 3000, defaultYield: 500, color: '#F18B25' },
 ];
 
 function computeResult(formData, assets, multiplier) {
@@ -76,10 +79,10 @@ export default function RetirementGapCalculator() {
     <>
       <FadeInSection>
         <section className="page-hero">
-          <span className="label label--blue">Retirement Gap Calculator</span>
+          <DDLabel tone="blue">Retirement Gap Calculator</DDLabel>
           <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>How Big Is Your Retirement Gap?</h1>
-          <p className="hero__tagline">Gen X women retire with less than men. Calculate your gap and see how faceless digital assets can close it — in years, not decades.</p>
-          <div className="action-row"><a href="#gap-calculator" className="btn btn--primary dd-button dd-button--primary">Calculate My Gap →</a></div>
+          <p className="hero__tagline" style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Gen X women retire with less than men. Calculate your gap and see how faceless digital assets can close it — in years, not decades.</p>
+          <div className="action-row"><DDCTA label="Calculate My Gap →" href="#gap-calculator" variant="primary" /></div>
         </section>
       </FadeInSection>
 
@@ -87,45 +90,45 @@ export default function RetirementGapCalculator() {
         <section className="section" id="gap-calculator" ref={calculatorRef}>
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
             <div style={{ ...brutalCard, padding: '1.25rem', marginBottom: '1.25rem' }}>
-              <span className="label label--orange" style={{ marginBottom: '0.5rem', display: 'inline-block' }}>Start Here</span>
+              <DDLabel tone="orange" style={{ marginBottom: '0.5rem', display: 'inline-block' }}>Start Here</DDLabel>
               <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.2rem, 2.4vw, 1.5rem)', margin: '0.5rem 0' }}>Your Retirement Gap Isn&rsquo;t a Judgment &mdash; It&rsquo;s a Starting Point.</h2>
-              <p style={{ color: '#5F5F5F', lineHeight: 1.7 }}>This page isn&rsquo;t about judgment. It&rsquo;s about clarity — and clarity is power.</p>
+              <p style={{ color: theme.colors.muted, lineHeight: 1.7, fontFamily: theme.fonts.body }}>This page isn&rsquo;t about judgment. It&rsquo;s about clarity — and clarity is power.</p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
               <div style={{ ...brutalCard, padding: '1.25rem' }}>
-                <span className="label label--blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>01 / Your Numbers</span>
+                <DDLabel tone="blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>01 / Your Numbers</DDLabel>
                 <div style={{ display: 'grid', gap: '1rem' }}>
                   {Object.entries(formData).map(([key, value]) => (
                     <div key={key}>
-                      <label className="form-label">{key}</label>
-                      <input className="form-input dd-input" type="number" value={value} onChange={(e) => handleChange(key, Number(e.target.value))} />
+                      <label className="form-label" style={{ fontFamily: theme.fonts.body }}>{key}</label>
+                      <input className="form-input dd-input" type="number" value={value} onChange={(e) => handleChange(key, Number(e.target.value))} style={{ fontFamily: theme.fonts.body }} />
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div style={{ ...brutalCard, padding: '1.25rem', background: '#FFFAF5' }}>
-                <span className="label label--orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>Live Results</span>
+              <div style={{ ...brutalCard, padding: '1.25rem', background: theme.colors.panel }}>
+                <DDLabel tone="orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>Live Results</DDLabel>
                 <div style={{ marginBottom: '1rem' }}>
-                  <div style={{ fontSize: '0.8rem', color: '#5F5F5F', textTransform: 'uppercase' }}>Retirement Gap</div>
-                  <div style={{ fontSize: '2rem', fontWeight: 900, color: result.isOnTrack ? '#16A34A' : '#111111' }}>{result.isOnTrack ? '✓ ON TRACK' : fmt(result.gap)}</div>
-                  <div style={{ fontSize: '0.9rem', color: '#5F5F5F' }}>{result.isOnTrack ? 'You have enough to retire!' : `Shortfall by age ${formData.retireAge}`}</div>
+                  <div style={{ fontSize: '0.8rem', color: theme.colors.muted, textTransform: 'uppercase', fontFamily: theme.fonts.body }}>Retirement Gap</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 900, color: result.isOnTrack ? theme.colors.success : theme.colors.textPrimary, fontFamily: theme.fonts.heading }}>{result.isOnTrack ? '✓ ON TRACK' : fmt(result.gap)}</div>
+                  <div style={{ fontSize: '0.9rem', color: theme.colors.muted, fontFamily: theme.fonts.body }}>{result.isOnTrack ? 'You have enough to retire!' : `Shortfall by age ${formData.retireAge}`}</div>
                 </div>
                 <div style={{ display: 'grid', gap: '0.75rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: '0.5rem' }}>
-                    <span>Target Nest Egg</span>
-                    <strong>{fmt(result.targetNestEgg)}</strong>
+                    <span style={{ fontFamily: theme.fonts.body }}>Target Nest Egg</span>
+                    <strong style={{ fontFamily: theme.fonts.heading }}>{fmt(result.targetNestEgg)}</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: '0.5rem' }}>
-                    <span>Projected at Retirement</span>
-                    <strong>{fmt(result.totalAtRetirement)}</strong>
+                    <span style={{ fontFamily: theme.fonts.body }}>Projected at Retirement</span>
+                    <strong style={{ fontFamily: theme.fonts.heading }}>{fmt(result.totalAtRetirement)}</strong>
                   </div>
                 </div>
                 {!result.isOnTrack && (
-                  <div style={{ marginTop: '1rem', ...brutalCard, padding: '1rem', borderLeft: '4px solid #F18B25' }}>
-                    <strong>To Close the Gap:</strong>
-                    <div style={{ color: '#5F5F5F', lineHeight: 1.6 }}>You need <strong>{fmt(result.monthlyNeededToClose)}/mo</strong> more in contributions, OR build digital assets generating <strong>{fmt(result.monthlyNeededToClose * 12)}/year</strong> in passive income.</div>
+                  <div style={{ marginTop: '1rem', ...brutalCard, padding: '1rem', borderLeft: `4px solid ${theme.colors.orange}` }}>
+                    <strong style={{ fontFamily: theme.fonts.body }}>To Close the Gap:</strong>
+                    <div style={{ color: theme.colors.muted, lineHeight: 1.6, fontFamily: theme.fonts.body }}>You need <strong>{fmt(result.monthlyNeededToClose)}/mo</strong> more in contributions, OR build digital assets generating <strong>{fmt(result.monthlyNeededToClose * 12)}/year</strong> in passive income.</div>
                   </div>
                 )}
               </div>
@@ -133,26 +136,26 @@ export default function RetirementGapCalculator() {
 
             <div style={{ marginTop: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
               <div style={{ ...brutalCard, padding: '1.25rem' }}>
-                <span className="label label--blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>24-Month Comparison</span>
+                <DDLabel tone="blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>24-Month Comparison</DDLabel>
                 <div style={{ display: 'grid', gap: '0.75rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: '0.5rem' }}>
-                    <span>Traditional Savings</span>
-                    <strong>{fmt(result.traditional24m)}</strong>
+                    <span style={{ fontFamily: theme.fonts.body }}>Traditional Savings</span>
+                    <strong style={{ fontFamily: theme.fonts.heading }}>{fmt(result.traditional24m)}</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: '0.5rem' }}>
-                    <span>Digital Assets (Projected)</span>
-                    <strong style={{ color: '#47B7D4' }}>{fmt(result.digital24m)}</strong>
+                    <span style={{ fontFamily: theme.fonts.body }}>Digital Assets (Projected)</span>
+                    <strong style={{ color: theme.colors.aquaBlue, fontFamily: theme.fonts.heading }}>{fmt(result.digital24m)}</strong>
                   </div>
                 </div>
               </div>
               <div style={{ ...brutalCard, padding: '1.25rem' }}>
-                <span className="label label--orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>Next Steps</span>
+                <DDLabel tone="orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>Next Steps</DDLabel>
                 <div style={{ display: 'grid', gap: '0.75rem' }}>
-                  <a href="/quiz?start=true" className="btn btn--primary dd-button dd-button--primary">Take the Digital Superpower Quiz →</a>
-                  <a href="/tools/scorecard" className="btn btn--outline dd-button dd-button--outline">Score a Niche Idea →</a>
-                  <button type="button" className="btn btn--outline dd-button dd-button--outline" disabled={agentLoading} onClick={askAgent}>{agentLoading ? 'Asking agent…' : 'Ask Hermes for a gap plan'}</button>
+                  <DDCTA label="Take the Digital Superpower Quiz →" href="/quiz?start=true" variant="primary" />
+                  <DDCTA label="Score a Niche Idea →" href="/tools/scorecard" variant="outline" />
+                  <button type="button" style={{ ...brutalButtonOutline, padding: '0.5rem 1rem', fontSize: '0.8rem', fontFamily: theme.fonts.body }} disabled={agentLoading} onClick={askAgent}>{agentLoading ? 'Asking agent…' : 'Ask Hermes for a gap plan'}</button>
                 </div>
-                {agentResult && <div style={{ marginTop: '1rem', ...brutalCard, padding: '1rem' }}>{typeof agentResult === 'string' ? agentResult : JSON.stringify(agentResult, null, 2)}</div>}
+                {agentResult && <div style={{ marginTop: '1rem', ...brutalCard, padding: '1rem', fontFamily: theme.fonts.body }}>{typeof agentResult === 'string' ? agentResult : JSON.stringify(agentResult, null, 2)}</div>}
               </div>
             </div>
           </div>
