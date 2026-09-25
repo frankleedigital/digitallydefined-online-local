@@ -7,12 +7,12 @@ export const tokens = {
     background: "#FFFCF9", // cream
     card: "#FFFFFF", // white surface
     panel: "#FFFAF5", // warm white
-    textPrimary: "#111111", // near-black
+    textPrimary: "#2D3748", // matches HTML reference files
     textInk: "#111111",
-    textMuted: "#5F5F5F",
-    orange: "#F18B25", // primary accent / CTA
-    aqua: "#47B7D4", // secondary / info
-    red: "#8B1A0A", // alerts only
+    textMuted: "#6B7280",   // matches reference files
+    orange: "#F18B25",      // primary accent / CTA
+    aqua: "#47B7D4",        // secondary / info
+    red: "#C20F0A",         // matches reference files
     success: "#16A34A",
     gold: "#EAB308",
   },
@@ -20,9 +20,9 @@ export const tokens = {
   type: {
     heading: "Inter",
     body: "DM Sans",
-    weight: 800,
+    weight: 900,
     headingSpacing: "-0.03em",
-    eyebrowSpace: "0.12em",
+    eyebrowSpace: "0.15em",
     bodyLineHeight: "1.6",
   },
 
@@ -37,15 +37,16 @@ export const tokens = {
   },
 
   geometry: {
-    width: "1px",
+    width: "2px",           // reference files use 2px solid borders
     color: "#111111",
     radius: "0px", // Brutalism: never rounded
   },
 
   shadow: {
-    card: "1px 1px 0px rgba(0, 0, 0, 0.08)", // brutalist subtle depth
-    hover: "2px 2px 0px rgba(0, 0, 0, 0.12)",
-    elevated: "3px 3px 0px rgba(0, 0, 0, 0.15)",
+    card: "none",
+    hard: "4px 4px 0 0 rgba(0,0,0,1)", // true hard shadow from reference files
+    hover: "4px 4px 0 0 rgba(0,0,0,1)",
+    elevated: "4px 4px 0 0 rgba(0,0,0,1)",
     none: "none",
   },
 
@@ -104,37 +105,36 @@ export const brutalHeading = {
   fontFamily: theme.fonts.heading,
   fontWeight: tokens.type.weight,
   fontStyle: "normal",
-  textTransform: "none",
+  textTransform: "uppercase",
   letterSpacing: tokens.type.headingSpacing,
   color: theme.colors.textPrimary,
+  lineHeight: 1.1,
 };
 
 export const brutalEyebrow = {
   fontFamily: theme.fonts.heading,
-  fontSize: "0.72rem",
-  fontWeight: 800,
-  letterSpacing: tokens.type.eyebrow,
+  fontSize: "0.65rem",
+  fontWeight: 700,
+  letterSpacing: "0.15em",
   textTransform: "uppercase",
   margin: 0,
-  color: theme.colors.textPrimary,
+  color: theme.colors.orange,
 };
 
 export const brutalButtonBase = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "0.75rem",
-  padding: "14px 20px",
+  display: "inline-block",
+  fontFamily: theme.fonts.heading,
+  fontWeight: 700,
+  fontSize: "0.8rem",
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
   border: brutalBorder,
   borderRadius: 0,
-  boxShadow: theme.shadows.none,
+  boxShadow: "none",
   textDecoration: "none",
-  textTransform: "none",
-  letterSpacing: "-0.01em",
-  fontWeight: 700,
-  fontSize: "0.85rem",
   cursor: "pointer",
-  fontFamily: theme.fonts.body,
+  padding: "0.9rem 2rem",
+  transition: "background 150ms, color 150ms",
 };
 
 export const brutalButtonPrimary = {
@@ -151,8 +151,16 @@ export const brutalButtonSecondary = {
 
 export const brutalButtonOutline = {
   ...brutalButtonBase,
-  backgroundColor: theme.colors.background,
+  backgroundColor: "transparent",
   color: theme.colors.textPrimary,
+};
+
+// Hard-shadow card — for featured / pitch / revenue cards
+export const brutalCardHard = {
+  border: brutalBorder,
+  borderRadius: 0,
+  boxShadow: "4px 4px 0 0 rgba(0,0,0,1)",
+  backgroundColor: theme.colors.card,
 };
 
 export default theme;
