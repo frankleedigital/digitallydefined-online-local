@@ -1,60 +1,82 @@
 // src/pages/EmpirePage.jsx
 // Empire plan page — for women ready to scale to a full digital real estate portfolio.
 
-import React from 'react';
-import DDLabel from '../components/ui/DDLabel';
-import DDCard from '../components/ui/DDCard';
-import DDCTA from '../components/ui/DDCTA';
+import React, { useMemo } from 'react';
+import DDLabel from '../components/ui/DDLabel.jsx';
+import DDCard from '../components/ui/DDCard.jsx';
+import DDCTA from '../components/ui/DDCTA.jsx';
+import { loadQuizResult } from '../features/quiz/lib/quizLogic.js';
+import { getPersona } from '../features/quiz/lib/personas.js';
 
 const EMPIRE_INCLUDES = [
-  { label: 'Everything in Builder', text: 'Quiz, roadmap, niche scorecard, AI mentor, starter worksheet, and community.' },
-  { label: 'Product Designer Tool', text: 'Design a product concept with pricing, positioning, and a launch strategy — before you build.' },
-  { label: 'Social Content Tool', text: 'Create platform-optimized social content for your niche without showing your face.' },
-  { label: 'Trends Explorer', text: 'Identify trending topics and emerging opportunities in your space before they peak.' },
-  { label: 'Multi-Asset Portfolio Tracker', text: 'Track all your digital properties, income streams, and build progress in one place.' },
-  { label: 'Automation Playbooks', text: 'Step-by-step automation setups for email sequences, content distribution, and passive income flows.' },
-  { label: 'Priority AI Mentor Access', text: 'Faster response times and extended context for the AI Mentor — built for active builders.' },
-  { label: 'Roadmap Builder Tool', text: 'Generate a custom phased strategic roadmap for any niche or product idea.' },
+  { label: 'Everything in Builder', text: 'Diagnostic, 90-day roadmap, Niche Scorecard, Hermes AI Mentor, and community network.' },
+  { label: 'Product Architect Tool', text: 'Design high-converting digital products with automated positioning and pricing models.' },
+  { label: 'Social Engine Tool', text: 'Generate platform-optimized syndication copy without camera or voice recording.' },
+  { label: 'Trends Intelligence', text: 'Identify emerging search velocity spikes and arbitrage opportunities before saturated competition.' },
+  { label: 'Portfolio Ledger', text: 'Unified tracking system for multi-property valuation, monthly yield, and automated pipeline status.' },
+  { label: 'Sovereign Playbooks', text: 'Turnkey automation recipes for lead capture, email nurture sequencing, and passive checkout fulfillment.' },
+  { label: 'Priority AI Mentor Routing', text: 'Sub-second response SLA and extended memory context for high-output builders.' },
+  { label: 'Strategic Roadmap Architect', text: 'Generate multi-phase asset growth blueprints for multiple simultaneous niches.' },
 ];
 
 const WHY_EMPIRE = [
   {
-    label: 'Scale Past One Asset',
-    title: 'Build a portfolio, not just a product.',
-    text: 'The Builder plan gets you to your first asset. Empire is for women who are ready to build a second, third, and fourth — and connect them into a system.',
+    label: 'Portfolio Diversification',
+    title: 'Multi-Asset Digital Real Estate',
+    text: 'Move beyond a single income stream. Build a diversified holding of 3 to 5 faceless digital properties that hedge against algorithmic volatility.',
   },
   {
-    label: 'Automate the Work',
-    title: 'Set it. Let it run.',
-    text: 'Empire includes automation playbooks for every part of the system — from lead capture to content distribution to email sequences. Build once, run while you sleep.',
+    label: 'Autonomous Operations',
+    title: 'Zero-Maintenance Automation',
+    text: 'Implement robust automated workflows for email delivery, lead scoring, and content syndication. Decouple daily operations from personal time entirely.',
   },
   {
-    label: 'Track Everything',
-    title: 'Know what is working.',
-    text: 'The multi-asset portfolio tracker shows every digital property you own, its income stage, and the next action for each one. No spreadsheets required.',
+    label: 'Holistic Intelligence',
+    title: 'Centralized Property Ledger',
+    text: 'Monitor revenue metrics, traffic compounding, and customer retention across all your properties in one authoritative dashboard.',
   },
 ];
 
 export default function EmpirePage() {
+  const stored = useMemo(() => loadQuizResult(), []);
+  const persona = stored?.superpower ? getPersona(stored.superpower) : null;
+
   return (
     <>
       {/* ── HERO ─────────────────────────────────────── */}
       <section className="dd-hero">
         <div className="dd-container dd-container--narrow">
-          <DDLabel tone="orange">Empire Plan</DDLabel>
+          <div className="dd-brand-badge-wrapper" style={{ marginBottom: '1.25rem' }}>
+            <span className="dd-logo-pill">
+              <strong>DIGITALLY</strong><em>DEFINED</em>
+              <span className="dd-pill-divider">/</span>
+              <span className="dd-pill-context">Portfolio Tier</span>
+            </span>
+          </div>
+
+          <DDLabel tone="orange">Empire Tier</DDLabel>
           <h1 className="dd-hero__headline">
-            Build a portfolio of faceless digital income.
+            Scale a Portfolio of Faceless Digital Assets
           </h1>
           <p className="dd-hero__lead">
-            Empire is for women who are past the first asset and ready to scale — multiple income
-            streams, automation, a full digital real estate portfolio, and priority AI Mentor access.
+            The advanced operating system for Gen X women scaling beyond a single property — multi-asset management, autonomous syndication, and private executive AI mentor capabilities.
           </p>
-          <div className="action-row">
-            <DDCTA label="Join the Waitlist →" href="/quiz" variant="primary" wide />
-            <DDCTA label="Start with Builder — Free" href="/builder" variant="outline" />
+
+          <div className="action-row" style={{ marginTop: '2rem' }}>
+            {stored ? (
+              <>
+                <DDCTA label="Go to Workspace Dashboard →" href="/dashboard" variant="primary" />
+                <DDCTA label={`View ${persona?.title || ''} Roadmap`} href="/roadmap" variant="outline" />
+              </>
+            ) : (
+              <>
+                <DDCTA label="Take the Diagnostic Assessment →" href="/quiz" variant="primary" wide />
+                <DDCTA label="Start with Builder ($0)" href="/builder" variant="outline" />
+              </>
+            )}
           </div>
-          <p className="dd-hero__note">
-            Empire is coming soon. Start with the free Builder plan today.
+          <p className="hero-note">
+            Priority access for verified builders · Multi-asset scale
           </p>
         </div>
       </section>
@@ -63,9 +85,9 @@ export default function EmpirePage() {
       <section className="dd-banner-ink">
         <div className="dd-container">
           <div className="dd-banner-ink__inner">
-            <span className="dd-banner-ink__eyebrow">Empire</span>
+            <span className="dd-banner-ink__eyebrow">Enterprise Leverage</span>
             <strong className="dd-banner-ink__claim">
-              Not just more tools. A complete digital real estate operating system.
+              Not just additional tools. A complete digital asset operating company in a box.
             </strong>
           </div>
         </div>
@@ -74,16 +96,21 @@ export default function EmpirePage() {
       <section className="dd-section dd-section--rule">
         <div className="dd-container">
           <div className="dd-section__head">
-            <DDLabel tone="orange">Why Empire</DDLabel>
-            <h2>Built for women ready to scale.</h2>
+            <DDLabel tone="orange">Architecture</DDLabel>
+            <h2>Built for Multi-Asset Portfolio Builders</h2>
+            <p className="dd-section__intro">
+              Engineered to compound digital real estate across multiple high-yield verticals simultaneously.
+            </p>
           </div>
-          <div className="dd-grid dd-grid--three">
+          <div className="dd-grid dd-grid--three" style={{ gap: '1.5rem', marginTop: '1.5rem' }}>
             {WHY_EMPIRE.map((item) => (
               <DDCard key={item.label}>
                 <div className="dd-card__inner">
-                  <DDLabel tone="orange">{item.label}</DDLabel>
-                  <h3 className="dd-card__title">{item.title}</h3>
-                  <p className="dd-card__text">{item.text}</p>
+                  <div style={{ marginBottom: '0.5rem' }}>
+                    <DDLabel tone="blue">{item.label}</DDLabel>
+                  </div>
+                  <h3 className="dd-card__title" style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{item.title}</h3>
+                  <p className="dd-card__text" style={{ fontSize: '0.875rem', lineHeight: '1.6' }}>{item.text}</p>
                 </div>
               </DDCard>
             ))}
@@ -95,19 +122,20 @@ export default function EmpirePage() {
       <section className="dd-section dd-section--alt dd-section--rule">
         <div className="dd-container">
           <div className="dd-section__head">
-            <DDLabel tone="orange">What's Included</DDLabel>
-            <h2>Everything in Empire.</h2>
+            <DDLabel tone="orange">Complete Arsenal</DDLabel>
+            <h2>Everything Included in Empire</h2>
             <p className="dd-section__intro">
-              Empire includes the complete Builder foundation plus the full tool suite, automation
-              playbooks, portfolio tracker, and priority mentor access.
+              The full stack of high-leverage tools, automation blueprints, and priority intelligence.
             </p>
           </div>
-          <div className="dd-grid dd-grid--four">
+          <div className="dd-grid dd-grid--four" style={{ gap: '1.25rem', marginTop: '1.5rem' }}>
             {EMPIRE_INCLUDES.map((item) => (
               <DDCard key={item.label}>
                 <div className="dd-card__inner">
-                  <DDLabel tone="orange">{item.label}</DDLabel>
-                  <p className="dd-card__text">{item.text}</p>
+                  <div style={{ marginBottom: '0.5rem' }}>
+                    <DDLabel tone="orange">{item.label}</DDLabel>
+                  </div>
+                  <p className="dd-card__text" style={{ fontSize: '0.8125rem', lineHeight: '1.5' }}>{item.text}</p>
                 </div>
               </DDCard>
             ))}
@@ -119,39 +147,36 @@ export default function EmpirePage() {
       <section className="dd-section dd-section--rule">
         <div className="dd-container dd-container--narrow">
           <div className="dd-section__head">
-            <DDLabel tone="orange">Pricing</DDLabel>
-            <h2>Empire is coming soon.</h2>
+            <DDLabel tone="orange">Access Status</DDLabel>
+            <h2>Empire Tier Enrollment</h2>
             <p className="dd-section__intro">
-              We are finishing the full tool suite before opening Empire. Take the quiz now to
-              get early access when it launches — and start building with the free Builder plan
-              in the meantime.
+              Full suite access opens to current Builder tier members sequentially. Take the diagnostic to lock in priority queue placement.
             </p>
           </div>
-          <div className="dd-grid dd-grid--two">
+          <div className="dd-grid dd-grid--two" style={{ gap: '1.5rem', marginTop: '1.5rem' }}>
             <DDCard>
-              <div className="dd-card__inner dd-card__inner--pricing">
-                <DDLabel tone="orange">Builder — Now</DDLabel>
+              <div className="dd-card__inner dd-card__inner--pricing" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <DDLabel tone="orange">Builder Tier (Active)</DDLabel>
                 <div className="dd-price">
-                  <span className="dd-price__amount">$0</span>
-                  <span className="dd-price__period">/ forever</span>
+                  <span className="dd-price__amount" style={{ fontSize: '2.5rem', fontWeight: '800' }}>$0</span>
+                  <span className="dd-price__period" style={{ color: 'var(--color-text-muted)' }}> / lifetime</span>
                 </div>
-                <p className="dd-card__text">
-                  Start building your first faceless digital property today. Free. No credit card.
+                <p className="dd-card__text" style={{ fontSize: '0.875rem', lineHeight: '1.6' }}>
+                  Launch your initial faceless property today. Diagnostic assessment, custom roadmap, and core Niche Scorecard included.
                 </p>
-                <DDCTA label="Start Free →" href="/quiz" variant="primary" wide />
+                <DDCTA label="Start Free with Diagnostic →" href="/quiz" variant="primary" wide />
               </div>
             </DDCard>
-            <DDCard tone="ink">
-              <div className="dd-card__inner dd-card__inner--pricing">
-                <DDLabel tone="orange">Empire — Coming Soon</DDLabel>
+            <DDCard tone="ink" className="dd-card--highlight">
+              <div className="dd-card__inner dd-card__inner--pricing" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <DDLabel tone="blue">Empire Tier (Priority Queue)</DDLabel>
                 <div className="dd-price">
-                  <span className="dd-price__amount">TBA</span>
+                  <span className="dd-price__amount" style={{ fontSize: '1.75rem', fontWeight: '800' }}>Private Invitation</span>
                 </div>
-                <p className="dd-card__text">
-                  Full suite. All tools. Automation playbooks. Portfolio tracker. Priority mentor.
-                  Join the waitlist to be first when it opens.
+                <p className="dd-card__text" style={{ fontSize: '0.875rem', lineHeight: '1.6' }}>
+                  Complete automation blueprints, portfolio ledger, and priority AI Mentor context. Early access queue now open.
                 </p>
-                <DDCTA label="Join the Waitlist →" href="/quiz" variant="outline" wide />
+                <DDCTA label="Lock In Priority Queue →" href="/quiz" variant="outline" wide />
               </div>
             </DDCard>
           </div>
@@ -162,16 +187,15 @@ export default function EmpirePage() {
       <section className="dd-section dd-section--alt dd-section--rule">
         <div className="dd-container dd-container--narrow">
           <div className="dd-section__head">
-            <DDLabel tone="orange">Start Now</DDLabel>
-            <h2>Begin with Builder. Scale to Empire.</h2>
+            <DDLabel tone="orange">Begin Execution</DDLabel>
+            <h2>Start with Builder. Scale to Empire.</h2>
             <p className="dd-section__intro">
-              Every Empire user starts with the quiz. Take it now and build your foundation
-              while Empire finishes.
+              Master the first property sequence today with the free diagnostic assessment.
             </p>
           </div>
-          <div className="action-row">
-            <DDCTA label="Take the Free Quiz →" href="/quiz" variant="primary" />
-            <DDCTA label="Compare Plans" href="/builder" variant="outline" />
+          <div className="action-row" style={{ marginTop: '1.5rem' }}>
+            <DDCTA label="Take the Diagnostic →" href="/quiz" variant="primary" />
+            <DDCTA label="Compare Tier Specs" href="/builder" variant="outline" />
           </div>
         </div>
       </section>

@@ -1,51 +1,75 @@
 // src/pages/RetirementGapPage.jsx
 // Gen X Retirement Gap explainer — the problem and the digital real estate solution.
 
-import React from 'react';
-import DDLabel from '../components/ui/DDLabel';
-import DDCard from '../components/ui/DDCard';
-import DDCTA from '../components/ui/DDCTA';
+import React, { useMemo } from 'react';
+import DDLabel from '../components/ui/DDLabel.jsx';
+import DDCard from '../components/ui/DDCard.jsx';
+import DDCTA from '../components/ui/DDCTA.jsx';
+import { loadQuizResult } from '../features/quiz/lib/quizLogic.js';
+import { getPersona } from '../features/quiz/lib/personas.js';
 
 const STATS = [
-  { number: '47%', label: 'of Gen X women have less than $100K saved for retirement' },
-  { number: '30%', label: 'have no retirement savings at all' },
-  { number: '12yr', label: 'average career gap due to caregiving responsibilities' },
-  { number: '$1.1M', label: 'estimated average retirement shortfall for Gen X women' },
+  { number: '47%', label: 'of Gen X women hold less than $100K saved for retirement' },
+  { number: '30%', label: 'possess zero dedicated retirement savings balances' },
+  { number: '12yr', label: 'average career gap due to uncompensated caregiving roles' },
+  { number: '$1.1M', label: 'estimated median retirement shortfall facing Gen X women' },
 ];
 
 const CAUSES = [
-  { label: 'The Wage Gap', text: 'Gen X women earned on average 20–30% less than men throughout their careers. Lower earnings mean lower 401(k) contributions, lower Social Security credits, and less compound growth.' },
-  { label: 'Career Interruptions', text: 'Caregiving for children and aging parents pulled millions of Gen X women out of the workforce for years — breaking retirement contribution streaks and growth trajectories.' },
-  { label: 'The Pension Shift', text: 'Gen X was the first generation to bear full responsibility for their own retirement through 401(k)s and IRAs — with less institutional guidance than prior generations.' },
-  { label: 'Divorce and Single Income', text: 'Higher divorce rates and longer periods of single-income living left many Gen X women planning for retirement alone, without the compounding advantage of a two-income household.' },
+  { label: 'The Historical Wage Gap', text: 'Gen X women earned 20–30% less than male peers over prime earning decades, crippling 401(k) compounding and Social Security bases.' },
+  { label: 'Caregiving Pauses', text: 'Stepping out of the workforce for childrearing and eldercare created multi-year contribution freezes and missed corporate promotion cycles.' },
+  { label: 'The 401(k) Experiment', text: 'Gen X was the inaugural generation pushed from defined-benefit pensions into volatile self-managed market plans with zero safety net.' },
+  { label: 'Single-Income Realities', text: 'Navigating life on a single income or post-divorce eliminates household economies of scale, concentrating retirement burden entirely on one person.' },
 ];
 
 const SOLUTIONS = [
-  { label: 'Digital Products', text: 'Create once, sell repeatedly. Courses, templates, and guides generate income without ongoing labor. No inventory, no shipping, no face required.' },
-  { label: 'Content Assets', text: 'Niche sites, newsletters, and YouTube channels build traffic that converts to affiliate income, ad revenue, and product sales — passively, over time.' },
-  { label: 'Faceless Communities', text: 'Membership sites and paid communities built around a topic — not your identity — generate recurring monthly income with minimal time investment after setup.' },
-  { label: 'Email-First Businesses', text: 'The most durable digital asset. A niche email list you own and control — no algorithm dependency, no platform risk, direct access to an audience.' },
+  { label: 'High-Margin Digital Products', text: 'Engineered once and distributed infinitely via automated checkout. No inventory, zero shipping liability, 85%+ net margins.' },
+  { label: 'Authority Content Properties', text: 'Niche search repositories that compound organic traffic into passive affiliate commissions, sponsor integrations, and lead sales.' },
+  { label: 'Faceless Micro-Circles', text: 'Curated knowledge syndicates centered on shared professional outcomes that yield predictable monthly recurring revenue.' },
+  { label: 'Sovereign Email Networks', text: 'The premier durable asset. Direct audience ledger that cannot be throttled or taxed by shifting third-party social algorithms.' },
 ];
 
 export default function RetirementGapPage() {
+  const stored = useMemo(() => loadQuizResult(), []);
+  const persona = stored?.superpower ? getPersona(stored.superpower) : null;
+
   return (
     <>
       {/* ── HERO ─────────────────────────────────────── */}
       <section className="dd-hero">
         <div className="dd-container dd-container--narrow">
+          <div className="dd-brand-badge-wrapper" style={{ marginBottom: '1.25rem' }}>
+            <span className="dd-logo-pill">
+              <strong>DIGITALLY</strong><em>DEFINED</em>
+              <span className="dd-pill-divider">/</span>
+              <span className="dd-pill-context">Macro Analysis</span>
+            </span>
+          </div>
+
           <DDLabel tone="orange">The Retirement Gap</DDLabel>
           <h1 className="dd-hero__headline">
-            The Gen X retirement gap is real. So is the solution.
+            The Gen X Retirement Deficit & The Sovereign Solution
           </h1>
           <p className="dd-hero__lead">
-            Gen X women face a documented, measurable retirement shortfall — the result of structural
-            inequities that were not their fault. Digital real estate is one of the most accessible
-            paths to closing it. This page explains both.
+            Gen X women carry a documented, systemic retirement shortfall born of historical wage gaps and caregiving pauses. Trading more discrete hours cannot bridge this gap. Building compounding digital real estate can.
           </p>
-          <div className="action-row">
-            <DDCTA label="Find Your Asset Type →" href="/quiz" variant="primary" wide />
-            <DDCTA label="Read the Framework" href="/framework" variant="outline" />
+
+          <div className="action-row" style={{ marginTop: '2rem' }}>
+            {stored ? (
+              <>
+                <DDCTA label="Go to Workspace Dashboard →" href="/dashboard" variant="primary" />
+                <DDCTA label={`View ${persona?.title || ''} Roadmap`} href="/roadmap" variant="outline" />
+              </>
+            ) : (
+              <>
+                <DDCTA label="Discover Your Asset Archetype →" href="/quiz" variant="primary" wide />
+                <DDCTA label="Read the Framework" href="/framework" variant="outline" />
+              </>
+            )}
           </div>
+          <p className="hero-note">
+            Non-speculative · Ownership-based · Evaluated locally in 2 minutes
+          </p>
         </div>
       </section>
 
@@ -53,10 +77,13 @@ export default function RetirementGapPage() {
       <section className="dd-section dd-section--alt dd-section--rule">
         <div className="dd-container">
           <div className="dd-section__head">
-            <DDLabel tone="orange">The Numbers</DDLabel>
-            <h2>The gap by the numbers.</h2>
+            <DDLabel tone="orange">The Evidence</DDLabel>
+            <h2>The Retirement Shortfall by the Numbers</h2>
+            <p className="dd-section__intro">
+              Empirical data revealing the structural savings gap confronting Gen X women.
+            </p>
           </div>
-          <div className="dd-insight-row dd-insight-row--four">
+          <div className="dd-insight-row dd-insight-row--four" style={{ marginTop: '2rem' }}>
             {STATS.map((stat) => (
               <div key={stat.label} className="dd-insight-stat">
                 <span className="dd-insight-stat__number">{stat.number}</span>
@@ -64,9 +91,8 @@ export default function RetirementGapPage() {
               </div>
             ))}
           </div>
-          <p className="dd-section__source">
-            Sources: National Institute on Retirement Security, AARP Research, U.S. Census Bureau.
-            These figures represent averages and estimates — individual situations vary.
+          <p className="dd-section__source" style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
+            Data compiled from National Institute on Retirement Security, AARP Public Policy Institute, and U.S. Census Bureau datasets.
           </p>
         </div>
       </section>
@@ -75,19 +101,20 @@ export default function RetirementGapPage() {
       <section className="dd-section dd-section--rule">
         <div className="dd-container">
           <div className="dd-section__head">
-            <DDLabel tone="orange">Why It Exists</DDLabel>
-            <h2>The causes are structural. Not personal.</h2>
+            <DDLabel tone="orange">Systemic Origins</DDLabel>
+            <h2>Structural Hurdles, Not Individual Failure</h2>
             <p className="dd-section__intro">
-              The retirement gap is not the result of poor financial decisions. It is the result
-              of structural inequities that worked against Gen X women across four decades.
+              This shortfall was created by macroeconomic friction and structural biases across four decades of corporate reality.
             </p>
           </div>
-          <div className="dd-grid dd-grid--two">
+          <div className="dd-grid dd-grid--two" style={{ gap: '1.5rem', marginTop: '1.5rem' }}>
             {CAUSES.map((item) => (
               <DDCard key={item.label}>
                 <div className="dd-card__inner">
-                  <DDLabel tone="orange">{item.label}</DDLabel>
-                  <p className="dd-card__text">{item.text}</p>
+                  <div style={{ marginBottom: '0.5rem' }}>
+                    <DDLabel tone="orange">{item.label}</DDLabel>
+                  </div>
+                  <p className="dd-card__text" style={{ fontSize: '0.9375rem', lineHeight: '1.6' }}>{item.text}</p>
                 </div>
               </DDCard>
             ))}
@@ -99,9 +126,9 @@ export default function RetirementGapPage() {
       <section className="dd-banner-ink">
         <div className="dd-container">
           <div className="dd-banner-ink__inner">
-            <span className="dd-banner-ink__eyebrow">The Opportunity</span>
+            <span className="dd-banner-ink__eyebrow">The Leverage Thesis</span>
             <strong className="dd-banner-ink__claim">
-              Digital real estate compounds. Physical hours do not. That is the asymmetry worth building toward.
+              Discrete hourly labor cannot solve compound shortfalls. Digital assets generate asymmetric, recurring yield that closes the delta.
             </strong>
           </div>
         </div>
@@ -110,20 +137,20 @@ export default function RetirementGapPage() {
       <section className="dd-section dd-section--rule">
         <div className="dd-container">
           <div className="dd-section__head">
-            <DDLabel tone="orange">The Solution</DDLabel>
-            <h2>Four digital asset types that close the gap.</h2>
+            <DDLabel tone="orange">The Solution Model</DDLabel>
+            <h2>Four Sovereign Asset Classes That Bridge the Gap</h2>
             <p className="dd-section__intro">
-              These are not get-rich-quick schemes. They are income assets that compound over time —
-              built once, maintained with minimal ongoing effort, and generating returns without
-              requiring your face or your personal brand.
+              Pragmatic, high-margin digital properties built once and operated quietly with minimal weekly overhead.
             </p>
           </div>
-          <div className="dd-grid dd-grid--two">
+          <div className="dd-grid dd-grid--two" style={{ gap: '1.5rem', marginTop: '1.5rem' }}>
             {SOLUTIONS.map((item) => (
               <DDCard key={item.label}>
                 <div className="dd-card__inner">
-                  <DDLabel tone="orange">{item.label}</DDLabel>
-                  <p className="dd-card__text">{item.text}</p>
+                  <div style={{ marginBottom: '0.5rem' }}>
+                    <DDLabel tone="blue">{item.label}</DDLabel>
+                  </div>
+                  <p className="dd-card__text" style={{ fontSize: '0.9375rem', lineHeight: '1.6' }}>{item.text}</p>
                 </div>
               </DDCard>
             ))}
@@ -135,19 +162,15 @@ export default function RetirementGapPage() {
       <section className="dd-section dd-section--alt dd-section--rule">
         <div className="dd-container dd-container--narrow">
           <div className="dd-section__head">
-            <DDLabel tone="orange">Why Now</DDLabel>
-            <h2>The window is still open. For now.</h2>
+            <DDLabel tone="orange">The Compounding Horizon</DDLabel>
+            <h2>The Strategic Window of Opportunity</h2>
           </div>
           <div className="dd-prose-block">
             <p className="dd-prose">
-              Gen X women are between 44 and 59 years old. The ones who start building digital
-              assets now have 10–20 years of compounding ahead of them before traditional
-              retirement age. That is enough time to build meaningful, sustainable digital income.
+              Gen X women currently sit between ages 44 and 59. Those who establish sovereign digital properties today benefit from a 10 to 15-year compounding runway ahead of traditional retirement benchmarks.
             </p>
             <p className="dd-prose">
-              The ones who wait another five years have a harder problem. Not impossible — but
-              harder. The time to start is not when everything is perfect. It is now, with the
-              information you have and the skills you already own.
+              By packaging existing industry acumen and analytical mastery into faceless digital assets, you convert a lifetime of experience into non-linear recurring equity.
             </p>
           </div>
         </div>
@@ -157,16 +180,15 @@ export default function RetirementGapPage() {
       <section className="dd-section dd-section--rule">
         <div className="dd-container dd-container--narrow">
           <div className="dd-section__head">
-            <DDLabel tone="orange">Start</DDLabel>
-            <h2>Find the asset type that fits your strengths.</h2>
+            <DDLabel tone="orange">Take Action</DDLabel>
+            <h2>Discover Your Highest-Leverage Asset Match</h2>
             <p className="dd-section__intro">
-              The quiz maps your existing skills and thinking style to the digital asset type most
-              likely to work for you. Two minutes. Scored locally. No email required.
+              The diagnostic assessment aligns your cognitive instincts to the property class that offers the highest probability of success.
             </p>
           </div>
-          <div className="action-row">
-            <DDCTA label="Take the Quiz →" href="/quiz" variant="primary" />
-            <DDCTA label="Read the Framework" href="/framework" variant="outline" />
+          <div className="action-row" style={{ marginTop: '1.5rem' }}>
+            <DDCTA label="Take the Diagnostic Assessment →" href="/quiz" variant="primary" />
+            <DDCTA label="Explore the Framework" href="/framework" variant="outline" />
           </div>
         </div>
       </section>

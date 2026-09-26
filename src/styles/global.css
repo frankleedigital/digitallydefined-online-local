@@ -812,6 +812,55 @@ p {
 .label--ink { color: var(--color-text); }
 .label--quiet { color: var(--color-text-muted); }
 
+/* Logo Pill Treatment */
+.dd-brand-badge-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dd-logo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--color-text);
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.05);
+}
+
+.dd-logo-pill strong {
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: 0.08em;
+}
+
+.dd-logo-pill em {
+  font-style: italic;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.dd-pill-divider {
+  color: var(--color-border);
+  font-weight: 300;
+}
+
+.dd-pill-context {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.dd-card--highlight {
+  border: 2px solid var(--color-accent) !important;
+  box-shadow: 4px 4px 0px rgba(241, 139, 37, 0.15) !important;
+  position: relative;
+}
+
 /* Small expectation / privacy caption under a hero CTA */
 .hero-note {
   margin-top: 1.25rem;
