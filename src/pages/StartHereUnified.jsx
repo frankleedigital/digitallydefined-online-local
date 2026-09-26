@@ -1,63 +1,76 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Compass,
   ArrowRight,
-  Sparkles,
+  CheckCircle2,
   Calculator,
   Target,
-  Layers,
-  CheckCircle2,
-  Lock,
-  EyeOff,
-  Flame,
+  Sparkles,
+  Zap,
   Shield,
+  FileText,
+  Clock,
 } from 'lucide-react';
 import { getUserState } from '../lib/userState';
 
 export default function StartHereUnified() {
-  const userState = getUserState();
+  const [userState, setUserState] = useState(getUserState());
 
-  const steps = [
+  useEffect(() => {
+    const handleUpdate = () => setUserState(getUserState());
+    window.addEventListener('dd_user_state_updated', handleUpdate);
+    return () => window.removeEventListener('dd_user_state_updated', handleUpdate);
+  }, []);
+
+  const STEPS = [
     {
-      step: '01',
+      num: '01',
       title: 'Discover Your Digital Superpower',
-      time: '2 minutes',
-      desc: 'Take the 7-question diagnostic to find whether you excel at Content Architecture, Systems Operation, Curation, Knowledge Education, or Community Building.',
-      cta: 'Start Superpower Quiz',
-      href: '/quiz',
+      desc: 'Take the 2-minute diagnostic to reveal your faceless creator archetype and monetize your corporate background.',
+      time: '2 Minutes',
+      status: userState.hasQuiz ? 'Completed' : 'Recommended First Step',
       completed: userState.hasQuiz,
+      route: '/quiz',
+      ctaText: userState.hasQuiz ? 'Retake Superpower Quiz' : 'Start 2-Min Quiz',
+      icon: Compass,
       accent: '#F18B25',
     },
     {
-      step: '02',
+      num: '02',
       title: 'Calculate Your Retirement Gap',
-      time: '3 minutes',
-      desc: 'Use our proprietary calculator to turn vague financial anxiety into a clear monthly target and see exactly how many $500/mo faceless assets you need.',
-      cta: 'Calculate Retirement Gap',
-      href: '/gap',
+      desc: 'Run the numbers to see how many $500/mo faceless digital assets you need to bridge your personal retirement deficit.',
+      time: '3 Minutes',
+      status: userState.hasGap ? 'Completed' : 'Financial Diagnostic',
       completed: userState.hasGap,
-      accent: '#47B7D4',
+      route: '/gap',
+      ctaText: 'Open Gap Calculator',
+      icon: Calculator,
+      accent: '#DC2626',
     },
     {
-      step: '03',
-      title: 'Score Your First Niche Idea',
-      time: '5 minutes',
-      desc: 'Run your topic through the Niche Profitability Scorecard to evaluate demand density, competition, faceless viability, and monetization potential.',
-      cta: 'Launch Niche Scorecard',
-      href: '/scorecard',
-      completed: false,
-      accent: '#16A34A',
+      num: '03',
+      title: 'Score Your First Digital Product Niche',
+      desc: 'Validate buyer pain points, search intent, and commercial demand before creating a single file.',
+      time: '5 Minutes',
+      status: userState.hasScorecard ? 'Completed' : 'Validation Phase',
+      completed: userState.hasScorecard,
+      route: '/scorecard',
+      ctaText: 'Run Niche Scorecard',
+      icon: Target,
+      accent: '#0284C7',
     },
     {
-      step: '04',
-      title: 'Join the Builder Plan & Studio',
+      num: '04',
+      title: 'Select Your Execution Plan',
+      desc: 'Join Builder ($47/mo) for complete DIY templates or Empire ($197/mo) for full automation and 1-on-1 architecture review.',
       time: 'Instant Access',
-      desc: 'Get full access to all design templates, automated workflows, AI prompt systems, private mastermind channels, and weekly asset teardowns.',
-      cta: 'Explore Builder Plan ($47/mo)',
-      href: '/builder',
-      completed: userState.planTier === 'builder' || userState.planTier === 'empire',
-      accent: '#8B5CF6',
+      status: 'Launch Phase',
+      completed: false,
+      route: '/pricing',
+      ctaText: 'Compare Membership Plans',
+      icon: Zap,
+      accent: '#16A34A',
     },
   ];
 
@@ -66,177 +79,176 @@ export default function StartHereUnified() {
       {/* 1. HERO */}
       <section
         style={{
-          borderBottom: '2px solid #111111',
+          borderBottom: '2px solid #1F2937',
           backgroundColor: '#FFFFFF',
-          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem',
+          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
           textAlign: 'center',
         }}
       >
-        <div style={{ maxWidth: '850px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
           <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
             <span
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.4rem',
-                padding: '0.35rem 0.8rem',
+                gap: '0.45rem',
+                padding: '0.35rem 0.85rem',
                 backgroundColor: '#FFFCF9',
-                border: '2px solid #111111',
-                fontFamily: "'Inter', system-ui, sans-serif",
+                border: '2px solid #1F2937',
+                fontFamily: "'Inter', sans-serif",
                 fontSize: '0.7rem',
                 fontWeight: 900,
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: '#111111',
+                color: '#1F2937',
               }}
             >
               <Compass size={14} color="#F18B25" />
-              <span>Official Orientation Guide</span>
+              <span>Step-by-Step Onboarding</span>
             </span>
           </div>
 
           <h1
             style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+              fontFamily: "'Inter', sans-serif",
               fontWeight: 900,
-              textTransform: 'uppercase',
-              letterSpacing: '-0.03em',
-              color: '#111111',
+              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
               lineHeight: 1.1,
-              marginBottom: '1.25rem',
+              letterSpacing: '-0.03em',
+              textTransform: 'uppercase',
+              color: '#1F2937',
+              maxWidth: '850px',
+              margin: '0 auto 1.25rem',
             }}
           >
-            Start Here: Your <span style={{ color: '#F18B25' }}>4-Step</span> Launch Path
+            Start Your <span style={{ color: '#F18B25' }}>Digital Reinvention</span> Here
           </h1>
 
           <p
             style={{
-              fontFamily: "'DM Sans', system-ui, sans-serif",
-              fontSize: 'clamp(1rem, 1.8vw, 1.2rem)',
-              lineHeight: 1.65,
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+              lineHeight: 1.6,
               color: '#4B5563',
-              maxWidth: '680px',
-              margin: '0 auto 2rem',
+              maxWidth: '720px',
+              margin: '0 auto 2.5rem',
             }}
           >
-            Follow this clear, sequential checklist. No guessing what comes next. Built specifically for Gen X women building quiet digital wealth.
+            Follow this 4-step sequence to diagnose your superpower, quantify your freedom number,
+            and build your first faceless cash-flowing digital asset.
           </p>
         </div>
       </section>
 
-      {/* 2. SEQUENTIAL STEP CARDS */}
-      <section style={{ maxWidth: '900px', margin: '3.5rem auto 0', padding: '0 1.25rem' }}>
-        <div style={{ display: 'grid', gap: '1.75rem' }}>
-          {steps.map((s) => (
-            <div
-              key={s.step}
-              style={{
-                backgroundColor: '#FFFFFF',
-                border: '2px solid #111111',
-                padding: '2rem',
-                boxShadow: '4px 4px 0 0 rgba(0,0,0,1)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
+      {/* 2. SEQUENTIAL ROADMAP */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '4rem 1.25rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {STEPS.map((step) => {
+            const StepIcon = step.icon;
+            return (
               <div
+                key={step.num}
                 style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '2px solid #1F2937',
+                  padding: 'clamp(1.5rem, 3vw, 2.25rem)',
+                  boxShadow: '4px 4px 0 0 #1F2937',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  marginBottom: '1rem',
-                  borderBottom: '2px solid #111111',
-                  paddingBottom: '0.75rem',
+                  flexWrap: 'wrap',
+                  gap: '1.5rem',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <span
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem', maxWidth: '580px' }}>
+                  <div
                     style={{
-                      fontFamily: "'Inter', system-ui, sans-serif",
-                      fontSize: '1.25rem',
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: '1.8rem',
                       fontWeight: 900,
-                      color: s.accent,
+                      color: step.accent,
+                      lineHeight: 1,
+                      marginTop: '0.15rem',
                     }}
                   >
-                    STEP {s.step}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "'Inter', system-ui, sans-serif",
-                      fontSize: '0.68rem',
-                      fontWeight: 800,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.1em',
-                      backgroundColor: '#FFFCF9',
-                      border: '1px solid #111111',
-                      padding: '0.2rem 0.5rem',
-                    }}
-                  >
-                    {s.time}
-                  </span>
+                    {step.num}
+                  </div>
+
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+                      <span
+                        style={{
+                          padding: '0.15rem 0.45rem',
+                          backgroundColor: step.completed ? '#DCFCE7' : '#FFFCF9',
+                          color: step.completed ? '#166534' : '#6B7280',
+                          border: '1px solid #1F2937',
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: '0.65rem',
+                          fontWeight: 800,
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {step.status}
+                      </span>
+
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.72rem', color: '#6B7280', fontWeight: 600 }}>
+                        <Clock size={12} /> {step.time}
+                      </span>
+                    </div>
+
+                    <h2
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: '1.25rem',
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
+                        color: '#1F2937',
+                        marginBottom: '0.4rem',
+                      }}
+                    >
+                      {step.title}
+                    </h2>
+
+                    <p
+                      style={{
+                        fontFamily: "'DM Sans', sans-serif",
+                        fontSize: '0.9rem',
+                        lineHeight: 1.55,
+                        color: '#4B5563',
+                        margin: 0,
+                      }}
+                    >
+                      {step.desc}
+                    </p>
+                  </div>
                 </div>
 
-                {s.completed && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#16A34A', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>
-                    <CheckCircle2 size={16} />
-                    <span>Completed</span>
-                  </div>
-                )}
-              </div>
-
-              <h2
-                style={{
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: '1.4rem',
-                  fontWeight: 900,
-                  textTransform: 'uppercase',
-                  letterSpacing: '-0.02em',
-                  color: '#111111',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                {s.title}
-              </h2>
-
-              <p
-                style={{
-                  fontFamily: "'DM Sans', system-ui, sans-serif",
-                  fontSize: '0.92rem',
-                  lineHeight: 1.6,
-                  color: '#4B5563',
-                  marginBottom: '1.5rem',
-                }}
-              >
-                {s.desc}
-              </p>
-
-              <div>
                 <Link
-                  to={s.href}
+                  to={step.route}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.5rem',
-                    padding: '0.85rem 1.75rem',
-                    backgroundColor: s.completed ? '#FFFFFF' : s.accent,
-                    color: '#111111',
-                    border: '2px solid #111111',
-                    fontFamily: "'Inter', system-ui, sans-serif",
-                    fontSize: '0.8rem',
+                    gap: '0.45rem',
+                    padding: '0.85rem 1.6rem',
+                    backgroundColor: step.completed ? '#FFFCF9' : '#F18B25',
+                    color: '#1F2937',
+                    border: '2px solid #1F2937',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '0.78rem',
                     fontWeight: 900,
-                    letterSpacing: '0.1em',
+                    letterSpacing: '0.08em',
                     textTransform: 'uppercase',
                     textDecoration: 'none',
+                    boxShadow: '3px 3px 0 0 #1F2937',
+                    whiteSpace: 'nowrap',
                   }}
                 >
-                  <span>{s.cta}</span>
-                  <ArrowRight size={15} />
+                  <span>{step.ctaText}</span>
+                  <ArrowRight size={14} />
                 </Link>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </div>

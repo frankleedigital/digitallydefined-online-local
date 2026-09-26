@@ -1,342 +1,326 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { brutalBorder, theme } from '../config/theme';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Compass,
+  ArrowRight,
+  ArrowLeft,
+  X,
+  Sparkles,
+  Calculator,
+  Target,
+  Layers,
+  Wrench,
+  CheckCircle2,
+  Eye,
+} from 'lucide-react';
 
-const STORAGE_KEY = 'dd-onboarding-v1';
-
-const STEPS = [
+const TOUR_STEPS = [
   {
-    id: 'welcome',
-    route: '/',
+    step: 1,
     title: 'Welcome to DigitallyDefined',
-    body: "You're in the right place. This is a privacy-first platform built for Gen X women who want to build faceless digital assets — no camera, no overnight promises, no performance.",
-    cta: 'Show me around',
-    skip: true,
-  },
-  {
-    id: 'home',
+    subtitle: 'The Faceless Digital Wealth System for Gen X Women',
     route: '/',
-    title: 'Start with your path',
-    body: "This page lays out the full sequence — from understanding your retirement gap to building your first digital asset. Read through it when you're ready, or jump straight to the first tool.",
-    anchor: '#build-path',
-    cta: 'Next: Calculate my gap',
-    skip: true,
+    desc: 'We help you bridge the retirement gap by transforming your decades of career experience into automated, faceless digital assets without appearing on video.',
+    icon: Compass,
+    actionText: 'Explore The Platform',
   },
   {
-    id: 'gap',
-    route: '/gap',
-    title: 'Step 1 — Face the number',
-    body: 'The Retirement Gap Calculator turns a vague fear into a planning number. Enter your current savings, retirement goals, and expected income. The result is a scenario, not a verdict.',
-    cta: 'Next: Find my superpower',
-    skip: true,
-  },
-  {
-    id: 'quiz',
+    step: 2,
+    title: 'Discover Your Superpower',
+    subtitle: '2-Minute Creator Archetype Diagnostic',
     route: '/quiz',
-    title: 'Step 2 — Find your superpower',
-    body: 'Seven practical questions. Your result is a personalized asset roadmap matched to how you naturally think and work — not a generic label.',
-    cta: 'Next: Score a niche idea',
-    skip: true,
+    desc: 'Identify whether you are a Content Architect, Curator, Systems Builder, or Template Designer, and unlock your personalized asset launch blueprint.',
+    icon: Sparkles,
+    actionText: 'Take The Quiz',
   },
   {
-    id: 'scorecard',
-    route: '/tools/scorecard',
-    title: 'Step 3 — Score a niche',
-    body: 'Rate demand, competition, monetization, durability, ease, and privacy fit for any idea. You get an instant profitability score before you invest a single hour.',
-    cta: 'Next: Model my freedom number',
-    skip: true,
+    step: 3,
+    title: 'Retirement Gap Calculator',
+    subtitle: 'Model Your Freedom Number',
+    route: '/gap',
+    desc: 'Calculate the exact number of $500/mo faceless digital assets needed to replace corporate salary and eliminate retirement shortfall.',
+    icon: Calculator,
+    actionText: 'Calculate Gap',
   },
   {
-    id: 'freedom',
-    route: '/freedom',
-    title: 'Step 4 — Model your freedom number',
-    body: 'Set a monthly income target. Mix asset types and yields until your portfolio covers your gap. See what a realistic plan looks like before you commit to anything.',
-    cta: 'Next: Explore all tools',
-    skip: true,
+    step: 4,
+    title: 'The 4-Tier Framework',
+    subtitle: 'Niche, Build, Distribute, Scale',
+    route: '/framework',
+    desc: 'Understand the end-to-end architecture: how to package, automate, and stack multiple digital assets with zero public identity exposure.',
+    icon: Layers,
+    actionText: 'View The Framework',
   },
   {
-    id: 'tools',
+    step: 5,
+    title: 'The Tools & Agents Hub',
+    subtitle: 'Calculators, Scorecards & Automations',
     route: '/tools',
-    title: 'Step 5 — All your tools',
-    body: "This is your toolkit. Quiz, calculators, scorecard, and builders — all in one place. Come back here any time you need to validate an idea or model a decision.",
-    cta: "Got it — I'm ready to build",
-    skip: false,
-    last: true,
+    desc: 'Access our complete diagnostic suite including Niche Profitability Scorecard, 10X ROI Engine, and Freedom Number calculators.',
+    icon: Wrench,
+    actionText: 'Explore Tools Suite',
+  },
+  {
+    step: 6,
+    title: 'Your 4-Step Action Path',
+    subtitle: 'Start Your Digital Reinvention',
+    route: '/start-here',
+    desc: 'Follow the guided sequence to launch your first digital product in 30 days. You are not behind — you are early in the AI shift.',
+    icon: CheckCircle2,
+    actionText: 'Go to Action Plan',
   },
 ];
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
-}
-
-function saveState(state) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {}
-}
-
 export default function OnboardingTour() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [visible, setVisible] = useState(false);
-  const [stepIndex, setStepIndex] = useState(0);
-  const [dismissed, setDismissed] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
-  // On mount: check localStorage
   useEffect(() => {
-    const state = loadState();
-    if (!state) {
-      // First visit — start tour
-      setStepIndex(0);
-      setVisible(true);
-      saveState({ started: true, stepIndex: 0, completed: false });
-    } else if (state.completed || state.dismissed) {
-      // Already completed or dismissed — never show again
-      setDismissed(true);
-    } else if (state.started && typeof state.stepIndex === 'number') {
-      // Resume from where she left off
-      setStepIndex(state.stepIndex);
-      setVisible(true);
+    const hasSeen = localStorage.getItem('dd_onboarding_completed');
+    if (!hasSeen) {
+      setIsOpen(true);
     }
   }, []);
 
-  const step = STEPS[stepIndex];
+  const handleClose = () => {
+    setIsOpen(false);
+    localStorage.setItem('dd_onboarding_completed', 'true');
+  };
 
-  const advance = useCallback(() => {
-    const next = stepIndex + 1;
-    if (next >= STEPS.length) {
-      // Completed
-      setVisible(false);
-      setDismissed(true);
-      saveState({ started: true, stepIndex: STEPS.length - 1, completed: true });
-      return;
+  const handleNext = () => {
+    if (currentStep < TOUR_STEPS.length - 1) {
+      const nextIdx = currentStep + 1;
+      setCurrentStep(nextIdx);
+      navigate(TOUR_STEPS[nextIdx].route);
+    } else {
+      handleClose();
     }
-    const nextStep = STEPS[next];
-    setStepIndex(next);
-    saveState({ started: true, stepIndex: next, completed: false });
-    // Navigate if we need to change route
-    if (nextStep.route !== location.pathname) {
-      navigate(nextStep.route);
+  };
+
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      const prevIdx = currentStep - 1;
+      setCurrentStep(prevIdx);
+      navigate(TOUR_STEPS[prevIdx].route);
     }
-  }, [stepIndex, location.pathname, navigate]);
+  };
 
-  const dismiss = useCallback(() => {
-    setVisible(false);
-    setDismissed(true);
-    saveState({ started: true, stepIndex, completed: false, dismissed: true });
-  }, [stepIndex]);
+  const handleStepJump = (idx) => {
+    setCurrentStep(idx);
+    navigate(TOUR_STEPS[idx].route);
+  };
 
-  if (dismissed || !visible || !step) return null;
-
-  const progress = ((stepIndex) / (STEPS.length - 1)) * 100;
-
-  return (
-    <>
-      {/* Backdrop */}
-      <div
-        aria-hidden="true"
+  if (!isOpen) {
+    return (
+      <button
+        onClick={() => setIsOpen(true)}
         style={{
           position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.45)',
-          zIndex: 9000,
-        }}
-        onClick={dismiss}
-      />
-
-      {/* Modal card */}
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="onboarding-title"
-        style={{
-          position: 'fixed',
-          bottom: '2rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 9001,
-          width: 'min(520px, calc(100vw - 2rem))',
-          background: '#FFFFFF',
-          border: '1px solid #111111',
-          boxShadow: '4px 4px 0px rgba(0,0,0,0.18)',
-          fontFamily: "'DM Sans', system-ui, sans-serif",
+          bottom: '1.25rem',
+          right: '1.25rem',
+          zIndex: 9999,
+          backgroundColor: '#1F2937',
+          color: '#FFFFFF',
+          border: '2px solid #F18B25',
+          padding: '0.6rem 1.1rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.45rem',
+          fontFamily: "'Inter', sans-serif",
+          fontSize: '0.72rem',
+          fontWeight: 900,
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+          cursor: 'pointer',
+          boxShadow: '4px 4px 0 0 #F18B25',
         }}
       >
-        {/* Progress bar */}
-        <div style={{ height: 3, background: '#e5e5e5', width: '100%' }}>
-          <div
-            style={{
-              height: '100%',
-              width: `${progress}%`,
-              background: '#F18B25',
-              transition: 'width 0.3s ease',
-            }}
-          />
-        </div>
+        <Compass size={14} color="#F18B25" />
+        <span>Site Walkthrough</span>
+      </button>
+    );
+  }
 
-        {/* Header */}
-        <div
+  const active = TOUR_STEPS[currentStep];
+  const StepIcon = active.icon;
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundColor: 'rgba(31, 41, 55, 0.65)',
+        backdropFilter: 'blur(3px)',
+        zIndex: 10000,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1rem',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: '#FFFFFF',
+          border: '2px solid #1F2937',
+          width: '100%',
+          maxWidth: '540px',
+          boxShadow: '8px 8px 0 0 #1F2937',
+          padding: '2rem',
+          position: 'relative',
+        }}
+      >
+        {/* Close */}
+        <button
+          onClick={handleClose}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0.75rem 1.25rem',
-            borderBottom: '1px solid #111',
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#6B7280',
           }}
         >
-          <span
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: '0.62rem',
-              fontWeight: 900,
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              color: '#F18B25',
-            }}
-          >
-            {stepIndex === 0 ? 'Welcome' : `Step ${stepIndex} of ${STEPS.length - 1}`}
-          </span>
+          <X size={20} />
+        </button>
 
-          <button
-            type="button"
-            onClick={dismiss}
-            aria-label="Skip tour"
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              fontFamily: "'DM Sans', system-ui, sans-serif",
-              fontSize: '0.75rem',
-              color: '#5F5F5F',
-              fontWeight: 700,
-              padding: '0.25rem 0.5rem',
-            }}
-          >
-            Skip tour ×
-          </button>
+        {/* Step Indicator */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '1.25rem' }}>
+          {TOUR_STEPS.map((_, idx) => (
+            <div
+              key={idx}
+              onClick={() => handleStepJump(idx)}
+              style={{
+                height: '6px',
+                flex: 1,
+                backgroundColor: idx === currentStep ? '#F18B25' : idx < currentStep ? '#1F2937' : '#E5E7EB',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+            />
+          ))}
         </div>
 
-        {/* Body */}
-        <div style={{ padding: '1.5rem 1.25rem 1.25rem' }}>
-          <h2
-            id="onboarding-title"
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontWeight: 900,
-              fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
-              letterSpacing: '-0.02em',
-              color: '#111111',
-              margin: '0 0 0.75rem',
-              lineHeight: 1.2,
-            }}
-          >
-            {step.title}
-          </h2>
-
-          <p
-            style={{
-              fontSize: '0.95rem',
-              lineHeight: 1.65,
-              color: '#5F5F5F',
-              margin: '0 0 1.5rem',
-            }}
-          >
-            {step.body}
-          </p>
-
-          {/* Step dots */}
+        {/* Icon & Eyebrow */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.75rem' }}>
           <div
             style={{
+              width: '32px',
+              height: '32px',
+              backgroundColor: '#FFFCF9',
+              border: '1.5px solid #1F2937',
               display: 'flex',
-              gap: '0.4rem',
               alignItems: 'center',
-              marginBottom: '1.25rem',
+              justifyContent: 'center',
             }}
           >
-            {STEPS.map((s, i) => (
-              <div
-                key={s.id}
-                style={{
-                  width: i === stepIndex ? 20 : 8,
-                  height: 8,
-                  background: i === stepIndex ? '#F18B25' : i < stepIndex ? '#111111' : '#e5e5e5',
-                  border: '1px solid #111111',
-                  transition: 'all 0.2s ease',
-                  flexShrink: 0,
-                }}
-              />
-            ))}
+            <StepIcon size={16} color="#F18B25" />
           </div>
 
-          {/* CTA row */}
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              onClick={advance}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '12px 20px',
-                background: '#F18B25',
-                color: '#111111',
-                border: '1px solid #111111',
-                borderRadius: 0,
-                fontFamily: "'DM Sans', system-ui, sans-serif",
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                letterSpacing: '-0.01em',
-                flexShrink: 0,
-              }}
-            >
-              {step.cta}
-            </button>
-
-            {step.skip && !step.last && (
-              <button
-                type="button"
-                onClick={dismiss}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontFamily: "'DM Sans', system-ui, sans-serif",
-                  fontSize: '0.82rem',
-                  color: '#5F5F5F',
-                  fontWeight: 600,
-                  padding: 0,
-                  textDecoration: 'underline',
-                  textUnderlineOffset: 3,
-                }}
-              >
-                Explore on my own
-              </button>
-            )}
-          </div>
-
-          {/* Privacy micro */}
-          <p
+          <span
             style={{
-              margin: '1rem 0 0',
-              fontSize: '0.68rem',
-              color: '#9a9a9a',
-              letterSpacing: '0.05em',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '0.7rem',
+              fontWeight: 900,
               textTransform: 'uppercase',
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontWeight: 600,
+              color: '#F18B25',
+              letterSpacing: '0.1em',
             }}
           >
-            No account needed · Progress saved locally · Skip anytime
-          </p>
+            Step {active.step} of {TOUR_STEPS.length}
+          </span>
+        </div>
+
+        <h2
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '1.4rem',
+            fontWeight: 900,
+            textTransform: 'uppercase',
+            color: '#1F2937',
+            margin: '0 0 0.35rem',
+            lineHeight: 1.2,
+          }}
+        >
+          {active.title}
+        </h2>
+
+        <div
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '0.8rem',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            color: '#6B7280',
+            marginBottom: '1rem',
+          }}
+        >
+          {active.subtitle}
+        </div>
+
+        <p
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: '0.92rem',
+            lineHeight: 1.6,
+            color: '#4B5563',
+            marginBottom: '2rem',
+          }}
+        >
+          {active.desc}
+        </p>
+
+        {/* Actions */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
+          <button
+            onClick={handlePrev}
+            disabled={currentStep === 0}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              padding: '0.7rem 1.1rem',
+              backgroundColor: '#FFFCF9',
+              color: currentStep === 0 ? '#9CA3AF' : '#1F2937',
+              border: '2px solid #1F2937',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              cursor: currentStep === 0 ? 'not-allowed' : 'pointer',
+              opacity: currentStep === 0 ? 0.5 : 1,
+            }}
+          >
+            <ArrowLeft size={13} />
+            <span>Back</span>
+          </button>
+
+          <button
+            onClick={handleNext}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              padding: '0.75rem 1.4rem',
+              backgroundColor: '#F18B25',
+              color: '#1F2937',
+              border: '2px solid #1F2937',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '0.75rem',
+              fontWeight: 900,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              boxShadow: '3px 3px 0 0 #1F2937',
+            }}
+          >
+            <span>{currentStep === TOUR_STEPS.length - 1 ? 'Finish Tour' : active.actionText}</span>
+            <ArrowRight size={14} />
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

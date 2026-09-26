@@ -1,91 +1,137 @@
 import React from 'react';
-import FadeInSection from '../components/FadeInSection';
-import { theme, brutalCard, brutalHeading } from '../config/theme';
-import DDCTA from '../components/ui/DDCTA';
-import DDLabel from '../components/ui/DDLabel';
-import DDCard from '../components/ui/DDCard';
+import { Link } from 'react-router-dom';
+import {
+  Shield,
+  ArrowRight,
+  Sparkles,
+  EyeOff,
+  TrendingUp,
+  Cpu,
+  HeartHandshake,
+  CheckCircle2,
+} from 'lucide-react';
 
-export default function About() {
+export default function AboutUnified() {
   return (
-    <>
-      <FadeInSection>
-        <section className="page-hero page-hero--ink">
-          <span className="label label--orange">Why DigitallyDefined exists</span>
-          <h1>Women don’t need visibility to build something valuable.</h1>
-          <p>DigitallyDefined is a privacy‑first platform for Gen X women who want to turn experience into faceless digital real estate, automated income systems, and assets their families can inherit.</p>
-          <div className="action-row">
-            <a href="/gap" className="btn btn--primary dd-button dd-button--primary">Start the Build Path →</a>
+    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
+      {/* 1. HERO */}
+      <section
+        style={{
+          borderBottom: '2px solid #1F2937',
+          backgroundColor: '#FFFFFF',
+          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
+          <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                padding: '0.35rem 0.85rem',
+                backgroundColor: '#FFFCF9',
+                border: '2px solid #1F2937',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.7rem',
+                fontWeight: 900,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: '#1F2937',
+              }}
+            >
+              <HeartHandshake size={14} color="#F18B25" />
+              <span>The Faceless Manifesto</span>
+            </span>
           </div>
-        </section>
-      </FadeInSection>
 
-      <FadeInSection delay={80}>
-        <section className="story-section story-section--cream">
-          <div style={{ ...brutalCard, padding: '1.5rem' }}>
-            <DDLabel tone="blue">The belief</DDLabel>
-            <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', margin: '0.5rem 0' }}>Faceless is a strategy — not a limitation.</h2>
-            <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: theme.colors.muted }}>
-              Ownership should feel safe. It should not require performance, exposure, or constant visibility.
+          <h1
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 900,
+              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.03em',
+              textTransform: 'uppercase',
+              color: '#1F2937',
+              maxWidth: '850px',
+              margin: '0 auto 1.25rem',
+            }}
+          >
+            Built For The Women Who <span style={{ color: '#F18B25' }}>Carried It All</span>
+          </h1>
+
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+              lineHeight: 1.6,
+              color: '#4B5563',
+              maxWidth: '720px',
+              margin: '0 auto 2.5rem',
+            }}
+          >
+            DigitallyDefined is the anti-influencer digital wealth platform. We help Gen X women build privacy-first
+            cashflow engines that restore financial control without personal sacrifice.
+          </p>
+        </div>
+      </section>
+
+      {/* 2. STORY & PILLARS */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '4rem 1.25rem' }}>
+        <div
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: '2px solid #1F2937',
+            padding: 'clamp(2rem, 4vw, 3rem)',
+            boxShadow: '6px 6px 0 0 #1F2937',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2rem',
+          }}
+        >
+          <div>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.4rem', fontWeight: 900, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.75rem' }}>
+              Why We Are Passionate About Gen X
+            </h2>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.95rem', lineHeight: 1.7, color: '#4B5563', margin: 0 }}>
+              Gen X was promised that loyalty, corporate dedication, and a standard 401(k) would guarantee a dignified retirement.
+              Instead, layoffs after 45, rising healthcare costs, caregiving obligations for parents and children, and inflation created a $540,000 median shortfall.
+              We reject the idea that you are "too late." Your lifetime of domain knowledge is the highest-value raw material on the internet.
             </p>
-            <div style={{ marginTop: '1rem', display: 'grid', gap: '1rem' }}>
-              <p>
-                The visible internet rewards noise, speed, and nonstop output. Many capable women looked at that bargain and reasonably decided it wasn’t for them. But choosing privacy should never mean choosing small.
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', paddingTop: '1rem', borderTop: '2px solid #1F2937' }}>
+            <div>
+              <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.05rem', fontWeight: 900, textTransform: 'uppercase', color: '#F18B25', marginBottom: '0.35rem' }}>
+                1. Quiet Power
+              </h3>
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.88rem', color: '#4B5563', margin: 0, lineHeight: 1.55 }}>
+                We believe true authority is delivered through clean, useful tools and systems — not loud social media dances.
               </p>
-              <p>
-                AI lowers the cost of building. It helps you research, structure, draft, repurpose, and maintain — without demanding more of your identity. Your judgment is still the asset. Technology simply lets it travel farther.
+            </div>
+
+            <div>
+              <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.05rem', fontWeight: 900, textTransform: 'uppercase', color: '#47B7D4', marginBottom: '0.35rem' }}>
+                2. Total Privacy
+              </h3>
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.88rem', color: '#4B5563', margin: 0, lineHeight: 1.55 }}>
+                Your personal life belongs to you. Every asset model we teach is designed to function seamlessly without your face or name.
+              </p>
+            </div>
+
+            <div>
+              <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.05rem', fontWeight: 900, textTransform: 'uppercase', color: '#16A34A', marginBottom: '0.35rem' }}>
+                3. Mathematical Certainty
+              </h3>
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.88rem', color: '#4B5563', margin: 0, lineHeight: 1.55 }}>
+                We model income on simple, reliable math: 3 products x 15 sales/mo at $47 = $2,115/mo in passive cashflow.
               </p>
             </div>
           </div>
-        </section>
-      </FadeInSection>
-
-      <FadeInSection delay={120}>
-        <section className="story-section story-section--white">
-          <div className="story-heading">
-            <span className="label label--orange">One practical path</span>
-            <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)' }}>Clarity, property, and systems that can outlive the founder.</h2>
-          </div>
-
-          <div className="story-grid story-grid--three">
-            {[
-              { title: 'Find the number', copy: 'Free calculators and planning tools turn retirement uncertainty into a clear target you can actually work toward.', tone: 'orange' },
-              { title: 'Build the property', copy: 'Choose a niche digital asset that fits your experience, privacy needs, available time, and realistic path to revenue.', tone: 'blue' },
-              { title: 'Document the system', copy: 'Use practical AI and automation to reduce repetitive work, protect the asset, and make it transferable to someone else.', tone: 'orange' },
-            ].map((item, idx) => (
-              <article
-                key={item.title}
-                style={{
-                  ...brutalCard,
-                  padding: '1.25rem',
-                  borderLeft: `4px solid ${item.tone === 'blue' ? '#47B7D4' : '#F18B25'}`,
-                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}
-              >
-                <span style={{ fontWeight: 900, color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{String(idx + 1).padStart(2, '0')}</span>
-                <h3 style={{ ...brutalHeading, fontSize: '1.1rem', margin: '0.4rem 0' }}>{item.title}</h3>
-                <p style={{ margin: 0, color: 'var(--color-text-muted)', lineHeight: 1.6 }}>{item.copy}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </FadeInSection>
-
-      <FadeInSection delay={160}>
-        <section className="legacy-section">
-          <div style={{ ...brutalCard, padding: '1.5rem', maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
-            <DDLabel tone="orange">The larger mission</DDLabel>
-            <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', margin: '0.5rem 0' }}>Close more than a retirement gap.</h2>
-            <p style={{ color: theme.colors.muted, lineHeight: 1.7 }}>
-              We’re building toward a future where families inherit more than bills, passwords, and unfinished plans. They inherit documented assets, operating knowledge, and proof that financial patterns can change.
-            </p>
-            <div style={{ marginTop: '1.25rem' }}>
-              <DDCTA label="Start the Build Path →" href="/gap" variant="primary" />
-            </div>
-          </div>
-        </section>
-      </FadeInSection>
-    </>
+        </div>
+      </section>
+    </div>
   );
 }

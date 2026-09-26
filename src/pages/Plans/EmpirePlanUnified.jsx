@@ -1,222 +1,225 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Shield,
+  Crown,
   ArrowRight,
   CheckCircle2,
   Sparkles,
-  Zap,
+  Shield,
+  Cpu,
+  Database,
   Lock,
-  Layers,
-  FileText,
-  DollarSign,
-  Crown,
+  Zap,
+  Star,
 } from 'lucide-react';
-import { setUserPlanTier } from '../../lib/userState';
 
 export default function EmpirePlanUnified() {
-  const handleSelectPlan = () => {
-    setUserPlanTier('empire');
-  };
-
-  const features = [
-    'Everything in Builder Plan included',
-    'AI Mentor Engine: 24/7 personalized prompt guidance & asset review',
-    'Custom Supabase & Notion Backend Architecture Starter Kits',
-    'Multi-Asset Portfolio Dashboard & Valuation Tracker',
-    'Quarterly 1-on-1 Asset Strategy & Monetization Audit',
-    'Private VIP Empire Mastermind & High-Ticket Referral Network',
-    'Whitelabel Licensing Rights on Select Digital Assets',
-    'Priority 24/7 Direct Concierge Support Channel',
-  ];
+  const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'lifetime'
 
   return (
     <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
       {/* 1. HERO */}
       <section
         style={{
-          borderBottom: '2px solid #111111',
+          borderBottom: '2px solid #1F2937',
           backgroundColor: '#FFFFFF',
-          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem',
+          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
           textAlign: 'center',
         }}
       >
-        <div style={{ maxWidth: '850px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
           <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
             <span
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.4rem',
-                padding: '0.35rem 0.8rem',
-                backgroundColor: '#FFFCF9',
-                border: '2px solid #111111',
-                fontFamily: "'Inter', system-ui, sans-serif",
+                gap: '0.45rem',
+                padding: '0.35rem 0.85rem',
+                backgroundColor: '#FEF3C7',
+                border: '2px solid #F18B25',
+                fontFamily: "'Inter', sans-serif",
                 fontSize: '0.7rem',
                 fontWeight: 900,
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: '#111111',
+                color: '#1F2937',
               }}
             >
-              <Crown size={14} color="#8B5CF6" />
-              <span>For Portfolio Builders & High-Leverage Operators</span>
+              <Crown size={14} color="#F18B25" />
+              <span>Full Automation & Advisory Suite</span>
             </span>
           </div>
 
           <h1
             style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+              fontFamily: "'Inter', sans-serif",
               fontWeight: 900,
-              textTransform: 'uppercase',
-              letterSpacing: '-0.03em',
-              color: '#111111',
+              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
               lineHeight: 1.1,
-              marginBottom: '1rem',
+              letterSpacing: '-0.03em',
+              textTransform: 'uppercase',
+              color: '#1F2937',
+              maxWidth: '850px',
+              margin: '0 auto 1.25rem',
             }}
           >
-            The Empire <span style={{ color: '#8B5CF6' }}>Membership</span>
+            The <span style={{ color: '#F18B25' }}>Empire</span> Tier
           </h1>
 
           <p
             style={{
-              fontFamily: "'DM Sans', system-ui, sans-serif",
-              fontSize: 'clamp(1rem, 1.8vw, 1.2rem)',
-              lineHeight: 1.65,
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+              lineHeight: 1.6,
               color: '#4B5563',
-              maxWidth: '680px',
-              margin: '0 auto 2rem',
+              maxWidth: '720px',
+              margin: '0 auto 2.5rem',
             }}
           >
-            Scale a multi-asset portfolio with dedicated AI automation, whitelabel templates, and VIP masterminds.
+            For Gen X leaders ready to build a multi-asset digital real estate empire ($5k+/mo)
+            with automated backend systems, private architecture reviews, and done-with-you execution.
           </p>
+
+          {/* Billing Toggle */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              backgroundColor: '#FFFCF9',
+              border: '2px solid #1F2937',
+              padding: '0.35rem',
+              boxShadow: '3px 3px 0 0 #1F2937',
+            }}
+          >
+            <button
+              onClick={() => setBillingCycle('monthly')}
+              style={{
+                padding: '0.55rem 1.25rem',
+                backgroundColor: billingCycle === 'monthly' ? '#1F2937' : 'transparent',
+                color: billingCycle === 'monthly' ? '#FFFFFF' : '#1F2937',
+                border: 'none',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.75rem',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+              }}
+            >
+              Monthly ($197/mo)
+            </button>
+            <button
+              onClick={() => setBillingCycle('lifetime')}
+              style={{
+                padding: '0.55rem 1.25rem',
+                backgroundColor: billingCycle === 'lifetime' ? '#1F2937' : 'transparent',
+                color: billingCycle === 'lifetime' ? '#FFFFFF' : '#1F2937',
+                border: 'none',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.75rem',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+              }}
+            >
+              Lifetime Pass ($997)
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* 2. PRICING & BENEFIT CARD */}
-      <section style={{ maxWidth: '850px', margin: '3.5rem auto 0', padding: '0 1.25rem' }}>
+      {/* 2. CARD & DELIVERABLES */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '4rem 1.25rem' }}>
         <div
           style={{
             backgroundColor: '#FFFFFF',
-            border: '2px solid #111111',
+            border: '2px solid #1F2937',
             padding: 'clamp(2rem, 4vw, 3rem)',
-            boxShadow: '6px 6px 0 0 rgba(0,0,0,1)',
+            boxShadow: '6px 6px 0 0 #1F2937',
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'baseline',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              borderBottom: '2px solid #111111',
-              paddingBottom: '1.5rem',
-              marginBottom: '2rem',
-            }}
-          >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', borderBottom: '2px solid #1F2937', paddingBottom: '1.75rem', marginBottom: '2rem' }}>
             <div>
-              <span
-                style={{
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: '0.75rem',
-                  fontWeight: 800,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.12em',
-                  color: '#8B5CF6',
-                }}
-              >
-                VIP Executive Pass
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 900, textTransform: 'uppercase', color: '#F18B25', letterSpacing: '0.1em' }}>
+                Full Empire Partnership
               </span>
-              <div
-                style={{
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: '3.5rem',
-                  fontWeight: 900,
-                  color: '#111111',
-                  lineHeight: 1,
-                  marginTop: '0.25rem',
-                }}
-              >
-                $197 <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#6B7280' }}>/ month</span>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '3rem', fontWeight: 900, color: '#1F2937', lineHeight: 1, marginTop: '0.35rem' }}>
+                {billingCycle === 'monthly' ? '$197' : '$997'}
+                <span style={{ fontSize: '1rem', fontWeight: 700, color: '#6B7280', textTransform: 'none', marginLeft: '0.35rem' }}>
+                  {billingCycle === 'monthly' ? '/ month' : 'one-time payment'}
+                </span>
               </div>
             </div>
 
-            <div style={{ textAlign: 'right', marginTop: '0.5rem' }}>
-              <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#16A34A', textTransform: 'uppercase' }}>
-                ✓ 30-Day Satisfaction Guarantee
-              </div>
-              <div style={{ fontSize: '0.72rem', color: '#6B7280', marginTop: '0.2rem' }}>
-                Direct access to high-tier systems.
-              </div>
-            </div>
-          </div>
-
-          <div style={{ marginBottom: '2.5rem' }}>
-            <h3
-              style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: '0.9rem',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                color: '#111111',
-                marginBottom: '1.25rem',
-              }}
-            >
-              Exclusive Empire Capabilities:
-            </h3>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.85rem' }}>
-              {features.map((feat, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '0.6rem',
-                    fontFamily: "'DM Sans', system-ui, sans-serif",
-                    fontSize: '0.9rem',
-                    color: '#2D3748',
-                    lineHeight: 1.5,
-                  }}
-                >
-                  <CheckCircle2 size={18} color="#8B5CF6" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span>{feat}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ textAlign: 'center' }}>
             <a
-              href="https://facebook.com/groups/digitallydefin1"
+              href="https://buy.stripe.com/test_empire"
               target="_blank"
-              rel="noopener noreferrer"
-              onClick={handleSelectPlan}
+              rel="noreferrer"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                justifyContent: 'center',
                 gap: '0.5rem',
-                width: '100%',
-                maxWidth: '420px',
-                padding: '1.1rem 2rem',
-                backgroundColor: '#8B5CF6',
-                color: '#FFFFFF',
-                border: '2px solid #111111',
-                fontFamily: "'Inter', system-ui, sans-serif",
+                padding: '1rem 2rem',
+                backgroundColor: '#F18B25',
+                color: '#1F2937',
+                border: '2px solid #1F2937',
+                fontFamily: "'Inter', sans-serif",
                 fontSize: '0.85rem',
                 fontWeight: 900,
-                letterSpacing: '0.1em',
+                letterSpacing: '0.08em',
                 textTransform: 'uppercase',
                 textDecoration: 'none',
-                boxShadow: '4px 4px 0 0 rgba(0,0,0,1)',
+                boxShadow: '4px 4px 0 0 #1F2937',
               }}
             >
-              <span>Join Empire Plan ($197/mo)</span>
-              <ArrowRight size={16} />
+              <span>{billingCycle === 'monthly' ? 'Join Empire Tier' : 'Get Empire Lifetime'}</span>
+              <ArrowRight size={15} />
             </a>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.25rem', fontWeight: 900, textTransform: 'uppercase', color: '#1F2937', margin: 0 }}>
+              Everything in Builder, plus:
+            </h2>
+
+            {[
+              {
+                title: 'Private 1-on-1 Product & Niche Architecture Review',
+                desc: 'Direct strategic audit of your digital asset concept, pricing model, and sales funnel before you launch.',
+              },
+              {
+                title: 'Custom Automation Webhook & AI System Blueprints',
+                desc: 'Complete technical blueprints for Supabase edge functions, automated email routing, and AI auto-generation engines.',
+              },
+              {
+                title: 'Multi-Asset Portfolio Scaling Playbook',
+                desc: 'How to manage, cross-sell, and maintain 3–5 complementary faceless brands in under 10 hours per week.',
+              },
+              {
+                title: 'Priority Support & Private Advisory Channel',
+                desc: 'Direct message access to the DigitallyDefined architecture team for fast troubleshooting and strategy pivots.',
+              },
+            ].map((item, idx) => (
+              <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                <CheckCircle2 size={18} color="#16A34A" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', fontWeight: 900, color: '#1F2937', margin: '0 0 0.2rem' }}>
+                    {item.title}
+                  </h3>
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.88rem', color: '#4B5563', margin: 0, lineHeight: 1.5 }}>
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', fontSize: '0.75rem', color: '#6B7280', fontFamily: "'Inter', sans-serif", fontWeight: 800, textTransform: 'uppercase' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Shield size={14} color="#16A34A" /> 30-Day Risk-Free Guarantee
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Star size={14} color="#F18B25" /> Strictly Capped to 25 Active Members
+            </span>
           </div>
         </div>
       </section>

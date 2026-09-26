@@ -12,14 +12,14 @@ export default function BrandFooter() {
     <footer
       style={{
         backgroundColor: '#FFFCF9',
-        borderTop: '2px solid #111111',
+        borderTop: '2px solid #1F2937',
         padding: '3.5rem 1.25rem 2.5rem',
         marginTop: 'auto',
       }}
     >
       <div
         style={{
-          maxWidth: '1200px',
+          maxWidth: '1080px',
           margin: '0 auto',
         }}
       >
@@ -31,7 +31,7 @@ export default function BrandFooter() {
             gap: '2.5rem',
             marginBottom: '3rem',
             paddingBottom: '2.5rem',
-            borderBottom: '2px solid #111111',
+            borderBottom: '2px solid #1F2937',
           }}
         >
           {/* Brand Col */}
@@ -42,7 +42,7 @@ export default function BrandFooter() {
                 fontFamily: "'DM Sans', system-ui, sans-serif",
                 fontSize: '0.92rem',
                 lineHeight: 1.65,
-                color: '#6B7280',
+                color: '#4B5563',
                 maxWidth: '420px',
                 marginTop: '1rem',
               }}
@@ -60,11 +60,13 @@ export default function BrandFooter() {
                   gap: '0.4rem',
                   padding: '0.35rem 0.65rem',
                   backgroundColor: '#FFFFFF',
-                  border: '1px solid #111111',
+                  border: '2px solid #1F2937',
                   fontSize: '0.68rem',
                   fontWeight: 800,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.08em',
+                  color: '#1F2937',
+                  boxShadow: '2px 2px 0 0 #1F2937',
                 }}
               >
                 <EyeOff size={13} color="#F18B25" />
@@ -77,11 +79,13 @@ export default function BrandFooter() {
                   gap: '0.4rem',
                   padding: '0.35rem 0.65rem',
                   backgroundColor: '#FFFFFF',
-                  border: '1px solid #111111',
+                  border: '2px solid #1F2937',
                   fontSize: '0.68rem',
                   fontWeight: 800,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.08em',
+                  color: '#1F2937',
+                  boxShadow: '2px 2px 0 0 #1F2937',
                 }}
               >
                 <Lock size={13} color="#47B7D4" />
@@ -99,7 +103,7 @@ export default function BrandFooter() {
                 fontWeight: 900,
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: '#111111',
+                color: '#1F2937',
                 marginBottom: '1rem',
               }}
             >
@@ -122,7 +126,7 @@ export default function BrandFooter() {
                       fontFamily: "'DM Sans', system-ui, sans-serif",
                       fontSize: '0.88rem',
                       fontWeight: 600,
-                      color: '#2D3748',
+                      color: '#4B5563',
                       textDecoration: 'none',
                     }}
                   >
@@ -142,7 +146,7 @@ export default function BrandFooter() {
                 fontWeight: 900,
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: '#111111',
+                color: '#1F2937',
                 marginBottom: '1rem',
               }}
             >
@@ -165,7 +169,7 @@ export default function BrandFooter() {
                       fontFamily: "'DM Sans', system-ui, sans-serif",
                       fontSize: '0.88rem',
                       fontWeight: 600,
-                      color: '#2D3748',
+                      color: '#4B5563',
                       textDecoration: 'none',
                     }}
                   >
@@ -181,8 +185,9 @@ export default function BrandFooter() {
             <div
               style={{
                 backgroundColor: '#FFFFFF',
-                border: '2px solid #111111',
+                border: '2px solid #1F2937',
                 padding: '1.35rem',
+                boxShadow: '4px 4px 0 0 #1F2937',
               }}
             >
               <h4
@@ -190,9 +195,9 @@ export default function BrandFooter() {
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontSize: '0.85rem',
                   fontWeight: 900,
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  color: '#111111',
+                  color: '#1F2937',
                   marginBottom: '0.5rem',
                 }}
               >
@@ -221,15 +226,16 @@ export default function BrandFooter() {
                   width: '100%',
                   padding: '0.75rem 1rem',
                   backgroundColor: '#F18B25',
-                  color: '#111111',
-                  border: '2px solid #111111',
+                  color: '#1F2937',
+                  border: '2px solid #1F2937',
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontSize: '0.75rem',
                   fontWeight: 900,
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.08em',
                   textTransform: 'uppercase',
                   textDecoration: 'none',
                   boxSizing: 'border-box',
+                  boxShadow: '2px 2px 0 0 #1F2937',
                 }}
               >
                 <span>Join Community</span>

@@ -1,99 +1,423 @@
-import React, { useEffect, useState } from 'react';
-import { fetchPersonalization } from '../lib/personalization';
-import FadeInSection from '../components/FadeInSection';
-import { brutalCard, brutalHeading } from '../config/theme';
-import { callAgent } from '../lib/buzz-agents';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Wrench,
+  Calculator,
+  Compass,
+  TrendingUp,
+  DollarSign,
+  Cpu,
+  Target,
+  ArrowRight,
+  Shield,
+  Zap,
+  CheckCircle2,
+  Sparkles,
+  Layers,
+  Database,
+  Search,
+} from 'lucide-react';
 
-const tools = [
-  { step: '01', title: 'Digital Superpower Quiz', description: 'Answer seven questions to discover how you naturally create value. Your result determines which asset type fits your personality and schedule.', href: '/quiz?start=true', cta: 'Start the Quiz', agent: 'quiz', note: 'Start here if you are not sure where to begin.' },
-  { step: '02', title: 'Retirement Gap Calculator', description: 'Enter your current savings and retirement goals. See exactly how much income you need from digital assets to close your gap.', href: '/gap', cta: 'Calculate My Gap', agent: 'wealth' },
-  { step: '03', title: 'Freedom Number Calculator', description: 'Set your monthly target. Model how many assets at what yield covers your gap. See the path from anxiety to plan.', href: '/freedom', cta: 'Model My Freedom Number', agent: 'wealth' },
-  { step: '04', title: 'Niche & ROI Tools', description: 'Score a niche idea for viability, then model the revenue potential with the 10X ROI Calculator for rank-and-rent properties.', href: '/tools/scorecard', cta: 'Validate My Idea', agent: 'scorecard', subLinks: [ { href: '/tools/scorecard', label: 'Niche Scorecard' }, { href: '/roi', label: 'ROI Calculator' } ] },
+const ECOSYSTEM_TOOLS = [
+  {
+    id: 'gap-calc',
+    title: 'Retirement Gap Calculator',
+    badge: 'Flagship Tool',
+    category: 'Calculators',
+    tagColor: '#DC2626',
+    tagBg: '#FEE2E2',
+    icon: Calculator,
+    desc: 'Model your exact retirement shortfall based on current savings, projected age, and needed monthly income. Calculates the precise number of faceless digital assets required to bridge the gap.',
+    specs: ['Median Gen X Gap Modeling', 'Faceless Asset Equivalent Calculator', 'Instant Monthly Cashflow Targets'],
+    route: '/gap',
+    cta: 'Launch Gap Calculator',
+  },
+  {
+    id: 'superpower-quiz',
+    title: 'Digital Superpower Quiz',
+    badge: 'Personalization Engine',
+    category: 'Assessment',
+    tagColor: '#F18B25',
+    tagBg: '#FEF3C7',
+    icon: Compass,
+    desc: 'A 2-minute diagnostic scoring your career expertise into one of 4 proven faceless archetypes: The Content Architect, The Curator, The Systems Builder, or The Template Designer.',
+    specs: ['4 Proven Gen X Archetypes', 'Zero Tech Jargon', 'Dynamic Next-Step Plan Generation'],
+    route: '/quiz',
+    cta: 'Take Superpower Quiz',
+  },
+  {
+    id: 'niche-scorecard',
+    title: 'Niche Profitability Scorecard',
+    badge: 'Validation Tool',
+    category: 'Validation',
+    tagColor: '#0284C7',
+    tagBg: '#E0F2FE',
+    icon: Target,
+    desc: 'Score any digital product niche from 0 to 100 based on 5 weighted metrics: Audience Pain Point, Spending Power, Search Intent, Evergreen Demand, and Privacy Ease.',
+    specs: ['Weighted 0-100 Scoring Index', 'Immediate Viability Filter', 'Niche Risk Assessment'],
+    route: '/scorecard',
+    cta: 'Run Niche Scorecard',
+  },
+  {
+    id: 'roi-engine',
+    title: '10X ROI Engine',
+    badge: 'ROI Modeler',
+    category: 'Calculators',
+    tagColor: '#16A34A',
+    tagBg: '#DCFCE7',
+    icon: TrendingUp,
+    desc: 'Calculate the exponential return on time and money when building digital assets vs traditional hourly consulting or corporate overtime. Highlights the power of $27-$97 recurring templates.',
+    specs: ['Hours-to-Revenue Multiplier', 'Digital Asset Margin Modeling', 'Break-Even Timelines'],
+    route: '/calculator/roi',
+    cta: 'Launch ROI Engine',
+  },
+  {
+    id: 'freedom-calculator',
+    title: 'Freedom Number Calculator',
+    badge: 'Milestone Planner',
+    category: 'Calculators',
+    tagColor: '#8B5CF6',
+    tagBg: '#EDE9FE',
+    icon: DollarSign,
+    desc: 'Define your absolute baseline freedom number: the exact monthly income required to quit burnout corporate work or subsidize part-time career transitions.',
+    specs: ['Core Expense Floor Analysis', 'Phase-by-Phase Freedom Tiers', 'Asset Allocation Plan'],
+    route: '/calculator/freedom',
+    cta: 'Calculate Freedom Number',
+  },
+  {
+    id: 'automation-studio',
+    title: 'Content & Automation Studio',
+    badge: 'Systems Engine',
+    category: 'Automation',
+    tagColor: '#47B7D4',
+    tagBg: '#E0F2FE',
+    icon: Cpu,
+    desc: 'Explore the automated backend architecture: how Supabase, OmniRoute AI, and scheduled cron jobs manage faceless newsletter generation, content formatting, and customer lead routing.',
+    specs: ['Faceless Content Pipeline', 'Zero-Camera Distribution', 'OmniRoute LLM Infrastructure'],
+    route: '/automation',
+    cta: 'Explore Automation Studio',
+  },
 ];
 
-export default function Tools() {
-  const [personalization, setPersonalization] = useState(null);
-  const [agentStatus, setAgentStatus] = useState({});
+export default function ToolsUnified() {
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    let active = true;
-    fetchPersonalization()
-      .then((data) => { if (active) setPersonalization(data); })
-      .catch(() => { if (active) setPersonalization(null); });
-    return () => { active = false; };
-  }, []);
-
-  const handleAgentAsk = async (agentKey, question) => {
-    setAgentStatus((prev) => ({ ...prev, [agentKey]: 'loading' }));
-    try {
-      await callAgent(agentKey, { question, context: 'tools-page' });
-      setAgentStatus((prev) => ({ ...prev, [agentKey]: 'ready' }));
-    } catch (err) {
-      setAgentStatus((prev) => ({ ...prev, [agentKey]: 'error' }));
-    }
-  };
+  const filteredTools = ECOSYSTEM_TOOLS.filter((tool) => {
+    const matchesCat = selectedCategory === 'All' || tool.category === selectedCategory;
+    const matchesSearch =
+      tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tool.desc.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCat && matchesSearch;
+  });
 
   return (
-    <>
-      <FadeInSection>
-        <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-          <p className="section__eyebrow" style={{ color: theme.colors.orange, fontFamily: theme.fonts.heading, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Tools</p>
-          <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>Make the next decision with clearer numbers.</h1>
-          <p className="hero__tagline" style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Use practical calculators and scorecards to find your starting point, validate an idea, and model an asset before you invest.</p>
-          <div className="action-row"><DDCTA label="See the Tools →" href="#tool-library" variant="primary" /></div>
-        </div>
-      </FadeInSection>
-
-      <FadeInSection delay={100}>
-        <section className="story-section story-section--white" id="tool-library">
-          <div className="story-heading">
-            <DDLabel tone="orange">Know before you build</DDLabel>
-            <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)' }}>Follow the sequence. Or jump to what you need.</h2>
-            <p style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>No account is required. Step 01 is recommended for first-time visitors. The others assume you have already identified your gap or superpower.</p>
+    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
+      {/* 1. HEADER / HERO */}
+      <section
+        style={{
+          borderBottom: '2px solid #1F2937',
+          backgroundColor: '#FFFFFF',
+          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
+          <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                padding: '0.35rem 0.85rem',
+                backgroundColor: '#FFFCF9',
+                border: '2px solid #1F2937',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.7rem',
+                fontWeight: 900,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: '#1F2937',
+              }}
+            >
+              <Wrench size={14} color="#F18B25" />
+              <span>Diagnostic & Execution Suite</span>
+            </span>
           </div>
 
-          <div className="tools-grid">
-            {tools.map(({ step, title, description, href, cta, note, subLinks, agent }) => (
-              <article key={step} style={{ ...brutalCard, padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <span style={{ fontWeight: 900, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>{step}</span>
-                  <div>
-                    <h2 style={{ ...brutalHeading, fontSize: '1.15rem', margin: 0 }}>{title}</h2>
-                    <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.6, margin: 0 }}>{description}</p>
-                    {note && <p style={{ margin: '0.4rem 0 0', color: '#F18B25', fontWeight: 700 }}>{note}</p>}
-                    {subLinks && subLinks.length > 0 && (
-                      <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
-                        {subLinks.map((link, idx) => (
-                          <a key={idx} href={link.href} className="dd-link" style={{ fontSize: '0.9rem' }}>{link.label}</a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <DDCTA label={cta + ' →'} href={href} variant="primary" />
-                  <button type="button" style={{ ...brutalButtonOutline, padding: '0.5rem 1rem', fontSize: '0.8rem' }} disabled={agentStatus[agent] === 'loading'} onClick={() => handleAgentAsk(agent, `Help me with ${title}`)}>
-                    {agentStatus[agent] === 'loading' ? 'Asking agent…' : 'Ask the agent'}
-                  </button>
-                  {agentStatus[agent] === 'ready' && <span style={{ color: theme.colors.success, fontWeight: 700, fontFamily: theme.fonts.body }}>Agent suggestion ready</span>}
-                  {agentStatus[agent] === 'error' && <span style={{ color: theme.colors.darkRed, fontWeight: 700, fontFamily: theme.fonts.body }}>Agent temporarily unavailable</span>}
-                </div>
-              </article>
+          <h1
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 900,
+              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.03em',
+              textTransform: 'uppercase',
+              color: '#1F2937',
+              maxWidth: '850px',
+              margin: '0 auto 1.25rem',
+            }}
+          >
+            Tools, Calculators & <span style={{ color: '#F18B25' }}>Autonomous</span> Engines
+          </h1>
+
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+              lineHeight: 1.6,
+              color: '#4B5563',
+              maxWidth: '720px',
+              margin: '0 auto 2.5rem',
+            }}
+          >
+            Every tool in the DigitallyDefined ecosystem is engineered to eliminate guesswork, validate niche viability,
+            and calculate your fastest mathematical path to retirement freedom.
+          </p>
+
+          {/* Quick Filter Bar */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '0.5rem',
+            }}
+          >
+            {['All', 'Calculators', 'Assessment', 'Validation', 'Automation'].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                style={{
+                  padding: '0.55rem 1.1rem',
+                  backgroundColor: selectedCategory === cat ? '#1F2937' : '#FFFCF9',
+                  color: selectedCategory === cat ? '#FFFFFF' : '#1F2937',
+                  border: '2px solid #1F2937',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                  boxShadow: selectedCategory === cat ? '3px 3px 0 0 #F18B25' : '2px 2px 0 0 #1F2937',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {cat}
+              </button>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div className="tools-footer">
-            {personalization && (
-              <div style={{ ...brutalCard, padding: '1.25rem', marginBottom: '1rem' }}>
-                <h3 style={{ ...brutalHeading, fontSize: '1.05rem', marginBottom: '0.5rem' }}>Recommended for you</h3>
-                <p style={{ margin: 0, color: theme.colors.muted, lineHeight: 1.6, fontFamily: theme.fonts.body }}>{personalization.nicheSuggestion}{personalization.assetSuggestions?.length > 0 ? `: ${personalization.assetSuggestions[0]}` : ''}</p>
-                {personalization.homepageRecommendations?.[0] && <p style={{ margin: '0.5rem 0 0', color: theme.colors.muted, lineHeight: 1.6, fontFamily: theme.fonts.body }}>{personalization.homepageRecommendations[0]}</p>}
+      {/* 2. TOOLS GRID */}
+      <section style={{ maxWidth: '1080px', margin: '0 auto', padding: '4rem 1.25rem' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '2rem',
+          }}
+        >
+          {filteredTools.map((tool) => {
+            const ToolIcon = tool.icon;
+            return (
+              <div
+                key={tool.id}
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '2px solid #1F2937',
+                  padding: '2rem',
+                  boxShadow: '4px 4px 0 0 #1F2937',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                    <span
+                      style={{
+                        padding: '0.2rem 0.55rem',
+                        backgroundColor: tool.tagBg,
+                        color: tool.tagColor,
+                        border: `1.5px solid ${tool.tagColor}`,
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: '0.65rem',
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
+                      {tool.badge}
+                    </span>
+
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        backgroundColor: '#FFFCF9',
+                        border: '1.5px solid #1F2937',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <ToolIcon size={18} color="#1F2937" />
+                    </div>
+                  </div>
+
+                  <h3
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: '1.35rem',
+                      fontWeight: 900,
+                      textTransform: 'uppercase',
+                      color: '#1F2937',
+                      marginBottom: '0.75rem',
+                    }}
+                  >
+                    {tool.title}
+                  </h3>
+
+                  <p
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: '0.9rem',
+                      lineHeight: 1.6,
+                      color: '#4B5563',
+                      marginBottom: '1.5rem',
+                    }}
+                  >
+                    {tool.desc}
+                  </p>
+
+                  <div style={{ marginBottom: '1.75rem' }}>
+                    <div
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: '0.68rem',
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
+                        color: '#6B7280',
+                        marginBottom: '0.5rem',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
+                      Key Capabilities:
+                    </div>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                      {tool.specs.map((s, idx) => (
+                        <li
+                          key={idx}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.45rem',
+                            fontSize: '0.82rem',
+                            color: '#1F2937',
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontWeight: 600,
+                          }}
+                        >
+                          <CheckCircle2 size={13} color="#16A34A" />
+                          <span>{s}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <Link
+                  to={tool.route}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    padding: '0.85rem 1.25rem',
+                    backgroundColor: '#FFFCF9',
+                    color: '#1F2937',
+                    border: '2px solid #1F2937',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '0.78rem',
+                    fontWeight: 900,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    textDecoration: 'none',
+                    boxShadow: '3px 3px 0 0 #1F2937',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <span>{tool.cta}</span>
+                  <ArrowRight size={14} />
+                </Link>
               </div>
-            )}
-            <p>Not sure which tool to use? <a href="/quiz?start=true" className="dd-link" style={{ fontFamily: theme.fonts.body }}>Take the quiz first</a> — it tells you exactly where to start based on how you think.</p>
-          </div>
-        </section>
-      </FadeInSection>
-    </>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 3. NEED A CUSTOM TOOL CTA */}
+      <section style={{ maxWidth: '1080px', margin: '0 auto', padding: '0 1.25rem' }}>
+        <div
+          style={{
+            backgroundColor: '#1F2937',
+            color: '#FFFFFF',
+            border: '2px solid #1F2937',
+            padding: '2.5rem',
+            textAlign: 'center',
+            boxShadow: '6px 6px 0 0 #F18B25',
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '1.65rem',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              color: '#FFFFFF',
+              marginBottom: '0.5rem',
+            }}
+          >
+            Need a Specific Calculator or Generator?
+          </h2>
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: '0.95rem',
+              color: '#D1D5DB',
+              maxWidth: '600px',
+              margin: '0 auto 1.5rem',
+            }}
+          >
+            We are actively engineering tools based on member feedback. Submit your idea through our Community Hub.
+          </p>
+
+          <Link
+            to="/#feedback"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              padding: '0.85rem 1.75rem',
+              backgroundColor: '#F18B25',
+              color: '#1F2937',
+              border: '2px solid #FFFFFF',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '0.8rem',
+              fontWeight: 900,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+              boxShadow: '3px 3px 0 0 #FFFFFF',
+            }}
+          >
+            <span>Request a Custom Tool</span>
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }

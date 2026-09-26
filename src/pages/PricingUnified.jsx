@@ -1,110 +1,286 @@
 import React, { useState } from 'react';
-import FadeInSection from '../components/FadeInSection';
-import { theme, brutalCard, brutalHeading, brutalBorder } from '../config/theme';
-import DDCTA from '../components/ui/DDCTA';
-import DDLabel from '../components/ui/DDLabel';
-import DDCard from '../components/ui/DDCard';
+import { Link } from 'react-router-dom';
+import {
+  Shield,
+  ArrowRight,
+  CheckCircle2,
+  Sparkles,
+  Zap,
+  Crown,
+  Lock,
+} from 'lucide-react';
 
-export default function Pricing() {
-  const [billing, setBilling] = useState('monthly');
+export default function PricingUnified() {
+  const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'lifetime'
 
-  const plans = [
+  const PLANS = [
     {
-      name: 'Starter',
+      id: 'starter',
+      name: 'Starter Tools',
+      badge: 'Free Tier',
+      badgeBg: '#FFFCF9',
+      badgeColor: '#1F2937',
       price: '$0',
-      desc: 'Explore free calculators, identify your superpower, and learn the framework.',
+      period: 'Forever free',
+      desc: 'Essential diagnostics and calculators to benchmark your financial position.',
       features: [
-        'Digital Superpower Diagnostic Quiz',
-        'Retirement Gap & Freedom Calculators',
-        'Niche Profitability Scorecard (0–100%)',
-        '10x ROI Yield Forecaster',
-        'Faceless Digital Real Estate Playbook intro',
+        'Retirement Gap Diagnostic Calculator',
+        'Digital Superpower Quiz (Archetype profile)',
+        'Niche Profitability Scorecard (Basic)',
+        'Weekly Faceless Blueprint Newsletter',
       ],
-      cta: 'Start Free Diagnostic',
-      ctaHref: '/quiz',
-      ctaClass: 'dd-button dd-button--outline',
+      cta: 'Start Free Today',
+      route: '/start-here',
+      primary: false,
     },
     {
-      name: 'Builder',
-      price: billing === 'monthly' ? '$47/mo' : '$470/year',
-      desc: 'The complete launchkit for creating and monetizing your first 1–3 faceless assets.',
+      id: 'builder',
+      name: 'Builder Plan',
+      badge: 'Most Popular',
+      badgeBg: '#F18B25',
+      badgeColor: '#1F2937',
+      price: billingCycle === 'monthly' ? '$47' : '$297',
+      period: billingCycle === 'monthly' ? '/ month' : 'lifetime pass',
+      desc: 'The complete step-by-step operating system to build your first $500–$2k/mo digital asset.',
       features: [
-        'Everything in Free Starter',
-        'All 12+ Faceless Digital Real Estate Playbooks',
-        'Notion Operations System & Asset Tracker',
-        'Standard AI Prompt Engineering System',
-        'Private Community & Bi-Weekly Asset Audits',
-        '14-day 100% money-back guarantee',
+        'Complete 4-Tier Faceless System Video Course',
+        'Notion Digital Asset Operating System',
+        'AI Prompt Chains & Product Blueprint Kits',
+        'Email Automation & Lead Magnet Templates',
+        'Private Gen X Peer Community Access',
       ],
-      cta: 'Join Builder Plan',
-      ctaHref: '/builder',
-      ctaClass: 'dd-button dd-button--primary',
-      highlighted: true,
+      cta: billingCycle === 'monthly' ? 'Join Builder ($47/mo)' : 'Get Lifetime ($297)',
+      route: '/builder',
+      primary: true,
     },
     {
-      name: 'Empire',
-      price: billing === 'monthly' ? '$197/mo' : '$1,970/year',
-      desc: 'For multi-asset portfolio operators scaling automated cashflow systems.',
+      id: 'empire',
+      name: 'Empire Tier',
+      badge: 'Advisory Suite',
+      badgeBg: '#FEF3C7',
+      badgeColor: '#B45309',
+      price: billingCycle === 'monthly' ? '$197' : '$997',
+      period: billingCycle === 'monthly' ? '/ month' : 'lifetime pass',
+      desc: 'For Gen X leaders building a multi-asset portfolio with private architecture review.',
       features: [
         'Everything in Builder Plan',
-        'AI Mentor Engine: 24/7 personalized prompt guidance',
-        'Supabase & Notion Backend Architecture Kits',
-        'Multi-Asset Portfolio Dashboard & Valuation Tracker',
-        'Quarterly 1-on-1 Monetization Review',
-        'Private VIP Mastermind & Whitelabel Rights',
+        'Private 1-on-1 Product & Niche Review',
+        'Custom Automation & Edge Webhook Blueprints',
+        'Multi-Asset Portfolio Scaling Playbook',
+        'Direct Access Advisory Slack / Discord',
       ],
-      cta: 'Join Empire Plan',
-      ctaHref: '/empire',
-      ctaClass: 'dd-button dd-button--primary',
+      cta: billingCycle === 'monthly' ? 'Join Empire ($197/mo)' : 'Get Empire Lifetime ($997)',
+      route: '/empire',
+      primary: false,
     },
   ];
 
   return (
-    <>
-      <FadeInSection>
-        <section className="page-hero">
-          <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-          <p className="section__eyebrow" style={{ color: theme.colors.orange, fontFamily: theme.fonts.heading, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Pricing</p>
-          <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>Leverage Over Burnout. Pick Your System.</h1>
-          <p className="hero__tagline" style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>No hidden fees. No upsells. Just pricing that reflects actual value.</p>
-          <div className="action-row"><DDCTA label="See the Plans →" href="#plans" variant="primary" /></div>
+    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
+      {/* 1. HERO */}
+      <section
+        style={{
+          borderBottom: '2px solid #1F2937',
+          backgroundColor: '#FFFFFF',
+          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
+          <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                padding: '0.35rem 0.85rem',
+                backgroundColor: '#FFFCF9',
+                border: '2px solid #1F2937',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.7rem',
+                fontWeight: 900,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: '#1F2937',
+              }}
+            >
+              <Shield size={14} color="#F18B25" />
+              <span>Transparent & Risk-Free</span>
+            </span>
           </div>
-        </section>
-      </FadeInSection>
 
-      <FadeInSection delay={100}>
-        <section className="section" id="plans" style={{ paddingBottom: '3rem' }}>
-          <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              <p className="section__eyebrow">Pricing</p>
-              <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', maxWidth: 700, margin: '0 auto 1rem' }}>Compare the Plans</h2>
-              <p className="section__subtitle" style={{ fontSize: '1.15rem' }}>Start free. Upgrade when you're ready to scale.</p>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
-              <button onClick={() => setBilling('monthly')} className={`btn ${billing === 'monthly' ? 'btn--primary dd-button dd-button--primary' : 'btn--outline dd-button dd-button--outline'}`}>Monthly</button>
-              <button onClick={() => setBilling('yearly')} className={`btn ${billing === 'yearly' ? 'btn--primary dd-button dd-button--primary' : 'btn--outline dd-button dd-button--outline'}`}>Yearly <span style={{ opacity: 0.9, fontSize: '0.75rem' }}>(Save 17%)</span></button>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
-              {plans.map(plan => (
-                <div key={plan.name} style={{ ...brutalCard, padding: '2rem', border: plan.highlighted ? `3px solid ${theme.colors.orange}` : brutalBorder, display: 'flex', flexDirection: 'column', position: 'relative', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
-                  {plan.highlighted && <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: theme.colors.orange, color: '#FFFFFF', padding: '0.35rem 1rem', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', border: brutalBorder }}>Most Popular</div>}
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <div style={{ ...brutalHeading, fontSize: '1.1rem', marginBottom: '0.75rem' }}>{plan.name}</div>
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem', fontWeight: 900, fontFamily: theme.fonts.heading }}>{plan.price}</div>
-                    <p style={{ color: theme.colors.muted, fontSize: '0.95rem', fontFamily: theme.fonts.body }}>{plan.desc}</p>
-                  </div>
-                  <ul style={{ listStyle: 'none', flex: 1, marginBottom: '1.5rem' }}>
-                    {plan.features.map(f => (
-                      <li key={f} style={{ padding: '0.5rem 0', fontSize: '0.95rem', lineHeight: 1.6, borderBottom: '1px solid rgba(0,0,0,0.08)', fontFamily: theme.fonts.body }}>✓ {f}</li>
-                    ))}
-                  </ul>
-                  <DDCTA label={plan.cta} href={plan.ctaHref} variant={plan.ctaClass.includes('outline') ? 'outline' : 'primary'} style={{ width: '100%' }} />
-                </div>
-              ))}
-            </div>
+          <h1
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 900,
+              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.03em',
+              textTransform: 'uppercase',
+              color: '#1F2937',
+              maxWidth: '850px',
+              margin: '0 auto 1.25rem',
+            }}
+          >
+            Simple, Honest <span style={{ color: '#F18B25' }}>Membership</span> Plans
+          </h1>
+
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+              lineHeight: 1.6,
+              color: '#4B5563',
+              maxWidth: '720px',
+              margin: '0 auto 2.5rem',
+            }}
+          >
+            Every plan comes with a 30-day 100% money-back guarantee. No lock-in contracts. Cancel anytime.
+          </p>
+
+          {/* Toggle */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              backgroundColor: '#FFFCF9',
+              border: '2px solid #1F2937',
+              padding: '0.35rem',
+              boxShadow: '3px 3px 0 0 #1F2937',
+            }}
+          >
+            <button
+              onClick={() => setBillingCycle('monthly')}
+              style={{
+                padding: '0.55rem 1.25rem',
+                backgroundColor: billingCycle === 'monthly' ? '#1F2937' : 'transparent',
+                color: billingCycle === 'monthly' ? '#FFFFFF' : '#1F2937',
+                border: 'none',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.75rem',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+              }}
+            >
+              Monthly Billing
+            </button>
+            <button
+              onClick={() => setBillingCycle('lifetime')}
+              style={{
+                padding: '0.55rem 1.25rem',
+                backgroundColor: billingCycle === 'lifetime' ? '#1F2937' : 'transparent',
+                color: billingCycle === 'lifetime' ? '#FFFFFF' : '#1F2937',
+                border: 'none',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.75rem',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+              }}
+            >
+              Lifetime Pass (Save 40%)
+            </button>
           </div>
-        </section>
-      </FadeInSection>
-    </>
+        </div>
+      </section>
+
+      {/* 2. PLANS GRID */}
+      <section style={{ maxWidth: '1080px', margin: '0 auto', padding: '4rem 1.25rem' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2rem',
+            alignItems: 'stretch',
+          }}
+        >
+          {PLANS.map((plan) => (
+            <div
+              key={plan.id}
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: plan.primary ? '3px solid #1F2937' : '2px solid #1F2937',
+                padding: '2.25rem 1.75rem',
+                boxShadow: plan.primary ? '6px 6px 0 0 #F18B25' : '4px 4px 0 0 #1F2937',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                position: 'relative',
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <span
+                    style={{
+                      padding: '0.2rem 0.55rem',
+                      backgroundColor: plan.badgeBg,
+                      color: plan.badgeColor,
+                      border: '1.5px solid #1F2937',
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: '0.65rem',
+                      fontWeight: 900,
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {plan.badge}
+                  </span>
+                </div>
+
+                <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', color: '#1F2937', margin: '0 0 0.5rem' }}>
+                  {plan.name}
+                </h2>
+
+                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.88rem', color: '#6B7280', margin: '0 0 1.5rem', lineHeight: 1.5 }}>
+                  {plan.desc}
+                </p>
+
+                <div style={{ borderTop: '2px solid #1F2937', borderBottom: '2px solid #1F2937', padding: '1.25rem 0', marginBottom: '1.75rem' }}>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '2.75rem', fontWeight: 900, color: '#1F2937', lineHeight: 1 }}>
+                    {plan.price}
+                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6B7280', textTransform: 'none', marginLeft: '0.35rem' }}>
+                      {plan.period}
+                    </span>
+                  </div>
+                </div>
+
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                  {plan.features.map((feat, idx) => (
+                    <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.45rem', fontSize: '0.85rem', color: '#1F2937', fontFamily: "'DM Sans', sans-serif" }}>
+                      <CheckCircle2 size={15} color="#16A34A" style={{ flexShrink: 0, marginTop: '2px' }} />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <Link
+                to={plan.route}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.45rem',
+                  padding: '0.9rem 1.5rem',
+                  backgroundColor: plan.primary ? '#F18B25' : '#FFFCF9',
+                  color: '#1F2937',
+                  border: '2px solid #1F2937',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '0.8rem',
+                  fontWeight: 900,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  boxShadow: '3px 3px 0 0 #1F2937',
+                }}
+              >
+                <span>{plan.cta}</span>
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }

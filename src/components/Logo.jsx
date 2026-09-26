@@ -8,25 +8,25 @@ export default function Logo({
   size = 'medium', // 'small' | 'medium' | 'large'
 }) {
   const fontSizes = {
-    small: '0.85rem',
-    medium: '1.05rem',
-    large: '1.35rem',
+    small: '0.8rem',
+    medium: '0.95rem',
+    large: '1.2rem',
   };
 
   const paddings = {
-    small: '0.35rem 0.6rem',
-    medium: '0.5rem 0.85rem',
-    large: '0.65rem 1.15rem',
+    small: '0.25rem 0.5rem',
+    medium: '0.35rem 0.65rem',
+    large: '0.5rem 0.9rem',
   };
 
   const frameStyle = {
     display: 'inline-flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: showTagline ? '0.2rem' : '0',
+    gap: showTagline ? '0.15rem' : '0',
     padding: paddings[size] || paddings.medium,
-    border: '2px solid #111111',
-    backgroundColor: '#FFFCF9',
+    border: '2px solid #1F2937',
+    backgroundColor: '#FFFFFF',
     lineHeight: 1,
     whiteSpace: 'nowrap',
     width: 'fit-content',
@@ -39,7 +39,7 @@ export default function Logo({
     fontFamily: "'Inter', system-ui, sans-serif",
     fontSize: fontSizes[size] || fontSizes.medium,
     fontWeight: 900,
-    letterSpacing: '-0.04em',
+    letterSpacing: '-0.03em',
     textTransform: 'uppercase',
   };
 
@@ -53,7 +53,7 @@ export default function Logo({
         <span
           style={{
             ...wordStyle,
-            color: '#111111',
+            color: '#1F2937',
             fontStyle: 'normal',
           }}
         >
@@ -64,7 +64,7 @@ export default function Logo({
             ...wordStyle,
             color: '#F18B25',
             fontStyle: 'italic',
-            marginLeft: '0.05rem',
+            marginLeft: '0.08rem',
           }}
         >
           DEFINED
@@ -77,7 +77,7 @@ export default function Logo({
             fontFamily: "'Inter', system-ui, sans-serif",
             fontSize: '0.55rem',
             fontWeight: 700,
-            letterSpacing: '0.14em',
+            letterSpacing: '0.12em',
             textTransform: 'uppercase',
             color: '#6B7280',
             lineHeight: 1,

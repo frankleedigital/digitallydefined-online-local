@@ -44,18 +44,18 @@ export default function BrandNav() {
         top: 0,
         zIndex: 50,
         backgroundColor: '#FFFCF9',
-        borderBottom: '2px solid #111111',
-        padding: '0.85rem 1.25rem',
+        borderBottom: '2px solid #1F2937',
+        padding: '0.75rem 1.25rem',
       }}
     >
       <div
         style={{
-          maxWidth: '1200px',
+          maxWidth: '1080px',
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '1.25rem',
+          gap: '1rem',
           flexWrap: 'nowrap',
         }}
       >
@@ -69,7 +69,7 @@ export default function BrandNav() {
           style={{
             display: 'none',
             alignItems: 'center',
-            gap: '1.25rem',
+            gap: '1.15rem',
           }}
           className="desktop-nav-menu"
         >
@@ -86,7 +86,7 @@ export default function BrandNav() {
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
                   textDecoration: 'none',
-                  color: isActive ? '#F18B25' : '#2D3748',
+                  color: isActive ? '#F18B25' : '#1F2937',
                   borderBottom: isActive ? '2px solid #F18B25' : '2px solid transparent',
                   paddingBottom: '2px',
                   transition: 'color 150ms ease',
@@ -99,7 +99,7 @@ export default function BrandNav() {
         </nav>
 
         {/* Action CTAs + Personalization Badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
           {userState.hasQuiz && userState.profile ? (
             <Link
               to="/tools/roadmap"
@@ -109,13 +109,14 @@ export default function BrandNav() {
                 gap: '0.4rem',
                 padding: '0.35rem 0.65rem',
                 backgroundColor: '#FFFFFF',
-                border: '2px solid #111111',
+                border: '2px solid #1F2937',
                 fontSize: '0.65rem',
                 fontWeight: 800,
                 textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                color: '#2D3748',
+                letterSpacing: '0.08em',
+                color: '#1F2937',
                 textDecoration: 'none',
+                boxShadow: '2px 2px 0 0 #1F2937',
               }}
               className="user-progress-badge"
             >
@@ -130,17 +131,18 @@ export default function BrandNav() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.4rem',
-              padding: '0.5rem 1rem',
+              padding: '0.45rem 0.95rem',
               backgroundColor: '#F18B25',
-              color: '#111111',
-              border: '2px solid #111111',
+              color: '#1F2937',
+              border: '2px solid #1F2937',
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: '0.72rem',
-              fontWeight: 800,
-              letterSpacing: '0.1em',
+              fontWeight: 900,
+              letterSpacing: '0.08em',
               textTransform: 'uppercase',
               textDecoration: 'none',
               whiteSpace: 'nowrap',
+              boxShadow: '2px 2px 0 0 #1F2937',
             }}
           >
             <span>{userState.hasQuiz ? 'Calculate Gap →' : 'Take Free Quiz →'}</span>
@@ -154,14 +156,14 @@ export default function BrandNav() {
               display: 'none',
               alignItems: 'center',
               gap: '0.4rem',
-              padding: '0.5rem 0.85rem',
+              padding: '0.45rem 0.75rem',
               backgroundColor: '#FFFFFF',
-              color: '#111111',
-              border: '2px solid #111111',
+              color: '#1F2937',
+              border: '2px solid #1F2937',
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: '0.72rem',
               fontWeight: 800,
-              letterSpacing: '0.1em',
+              letterSpacing: '0.08em',
               textTransform: 'uppercase',
               textDecoration: 'none',
               whiteSpace: 'nowrap',
@@ -180,16 +182,17 @@ export default function BrandNav() {
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '38px',
-              height: '38px',
+              width: '36px',
+              height: '36px',
               backgroundColor: '#FFFFFF',
-              border: '2px solid #111111',
+              border: '2px solid #1F2937',
               cursor: 'pointer',
-              color: '#111111',
+              color: '#1F2937',
+              boxShadow: '2px 2px 0 0 #1F2937',
             }}
             className="mobile-toggle-btn"
           >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
@@ -198,9 +201,10 @@ export default function BrandNav() {
       {menuOpen && (
         <div
           style={{
-            marginTop: '0.75rem',
+            maxWidth: '1080px',
+            margin: '0.75rem auto 0',
             paddingTop: '0.75rem',
-            borderTop: '2px solid #111111',
+            borderTop: '2px solid #1F2937',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.65rem',
@@ -213,12 +217,12 @@ export default function BrandNav() {
               onClick={() => setMenuOpen(false)}
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: '0.85rem',
+                fontSize: '0.82rem',
                 fontWeight: 800,
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
                 textDecoration: 'none',
-                color: location.pathname === link.href ? '#F18B25' : '#2D3748',
+                color: location.pathname === link.href ? '#F18B25' : '#1F2937',
                 padding: '0.4rem 0.25rem',
               }}
             >
@@ -232,14 +236,15 @@ export default function BrandNav() {
               style={{
                 flex: 1,
                 textAlign: 'center',
-                padding: '0.6rem',
+                padding: '0.55rem',
                 backgroundColor: '#FFFFFF',
-                border: '2px solid #111111',
+                border: '2px solid #1F2937',
                 fontSize: '0.72rem',
                 fontWeight: 800,
                 textTransform: 'uppercase',
                 textDecoration: 'none',
-                color: '#111111',
+                color: '#1F2937',
+                boxShadow: '2px 2px 0 0 #1F2937',
               }}
             >
               Retirement Gap
@@ -251,9 +256,9 @@ export default function BrandNav() {
               style={{
                 flex: 1,
                 textAlign: 'center',
-                padding: '0.6rem',
-                backgroundColor: '#111111',
-                border: '2px solid #111111',
+                padding: '0.55rem',
+                backgroundColor: '#1F2937',
+                border: '2px solid #1F2937',
                 fontSize: '0.72rem',
                 fontWeight: 800,
                 textTransform: 'uppercase',

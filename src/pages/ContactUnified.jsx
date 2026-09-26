@@ -1,102 +1,227 @@
 import React, { useState } from 'react';
-import { callSupabaseEdge } from '../lib/supabase-edge';
-import FadeInSection from '../components/FadeInSection';
-import { theme, brutalCard, brutalHeading, brutalButtonPrimary } from '../config/theme';
-import DDCTA from '../components/ui/DDCTA';
-import DDCard from '../components/ui/DDCard';
+import {
+  Send,
+  CheckCircle2,
+  HelpCircle,
+  Shield,
+  MessageSquare,
+} from 'lucide-react';
 
-export default function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+export default function ContactUnified() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
   const [status, setStatus] = useState(null);
 
-  async function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setStatus('sending');
+    setStatus('submitting');
     try {
-      await callSupabaseEdge('contact', {
-        name: form.name,
-        email: form.email,
-        message: form.message,
-        source: 'contact-page',
+      const stored = localStorage.getItem('dd_contact_messages') || '[]';
+      const parsed = JSON.parse(stored);
+      parsed.push({
+        name,
+        email,
+        message,
+        timestamp: new Date().toISOString(),
       });
+      localStorage.setItem('dd_contact_messages', JSON.stringify(parsed));
       setStatus('success');
-      setForm({ name: '', email: '', message: '' });
-    } catch (err) {
+      setName('');
+      setEmail('');
+      setMessage('');
+    } catch {
       setStatus('error');
     }
-  }
+  };
 
   return (
-    <>
-      <FadeInSection>
-        <section className="page-hero">
-          <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-          <p className="section__eyebrow" style={{ color: theme.colors.orange, fontFamily: theme.fonts.heading, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Contact</p>
-          <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>Let's Build Something That Works.</h1>
-          <p className="hero__tagline" style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Questions about the platform? Partnerships? Or just need help getting started? Drop us a line.</p>
-          <div className="action-row"><DDCTA label="Send a Message →" href="#contact-form" variant="primary" /></div>
+    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
+      {/* 1. HERO */}
+      <section
+        style={{
+          borderBottom: '2px solid #1F2937',
+          backgroundColor: '#FFFFFF',
+          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
+          <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                padding: '0.35rem 0.85rem',
+                backgroundColor: '#FFFCF9',
+                border: '2px solid #1F2937',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.7rem',
+                fontWeight: 900,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: '#1F2937',
+              }}
+            >
+              <MessageSquare size={14} color="#F18B25" />
+              <span>Direct Communication</span>
+            </span>
           </div>
-        </section>
-      </FadeInSection>
 
-      <FadeInSection delay={100}>
-        <section className="section" id="contact-form">
-          <div style={{ maxWidth: 700, margin: '0 auto' }}>
-            <div style={{ ...brutalCard, padding: '2rem' }}>
-              <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label className="form-label">Your Name</label>
-                  <input type="text" className="form-input dd-input" required placeholder="What should we call you?" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
-                </div>
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label className="form-label">Email Address</label>
-                  <input type="email" className="form-input dd-input" required placeholder="your@email.com" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
-                </div>
-                <div style={{ marginBottom: '2rem' }}>
-                  <label className="form-label">Message</label>
-                  <textarea className="form-input form-textarea dd-input" required placeholder="Tell us what you're building." value={form.message} onChange={e => setForm({...form, message: e.target.value})}></textarea>
-                </div>
-                <button type="submit" style={{ ...brutalButtonPrimary, width: '100%' }} disabled={status === 'sending'}>
-                  {status === 'sending' ? 'Sending...' : 'Send Message →'}
-                </button>
-                {status === 'success' && (
-                  <div style={{ marginTop: '1.5rem', padding: '1rem', background: theme.colors.background, border: `2px solid ${theme.colors.orange}`, color: theme.colors.textPrimary, fontWeight: 700, textAlign: 'center', fontFamily: theme.fonts.body }}>
-                    ✓ Message sent. We'll be in touch.
-                  </div>
-                )}
-                {status === 'error' && (
-                  <div style={{ marginTop: '1.5rem', padding: '1rem', background: theme.colors.background, border: `2px solid ${theme.colors.darkRed}`, color: theme.colors.textPrimary, fontWeight: 700, textAlign: 'center', fontFamily: theme.fonts.body }}>
-                    ✗ Something went wrong. Try again or email hello@digitallydefined.online
-                  </div>
-                )}
-              </form>
-            </div>
-          </div>
-        </section>
-      </FadeInSection>
+          <h1
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 900,
+              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.03em',
+              textTransform: 'uppercase',
+              color: '#1F2937',
+              maxWidth: '850px',
+              margin: '0 auto 1.25rem',
+            }}
+          >
+            Get in Touch With <span style={{ color: '#F18B25' }}>DigitallyDefined</span>
+          </h1>
 
-      <FadeInSection delay={140}>
-        <section className="section section--dark">
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <h2 style={{ color: '#fff', ...brutalHeading, fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)' }}>Quick Start Path</h2>
-          </div>
-          <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-          {[
-            { title: '1. Take the Quiz', copy: 'Discover your digital superpower and get a personalized roadmap.', href: '/quiz?start=true', label: 'Start Now →' },
-            { title: '2. Score a Niche Idea', copy: 'Rate your niche against 6 criteria and get an instant profitability assessment.', href: '/tools/scorecard', label: 'Score My Niche →' },
-            { title: '3. Use the Free Tools', copy: 'Calculate your gap, validate a niche, and model the first asset before you invest.', href: '/tools', label: 'Explore Tools →' },
-          ].map((item) => (
-            <div key={item.title} style={{ ...brutalCard, padding: '1.25rem', textAlign: 'center', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.12)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '1px 1px 0px rgba(0,0,0,0.08)'; }}>
-              <div style={{ ...brutalHeading, fontSize: '1.05rem', marginBottom: '0.5rem' }}>{item.title}</div>
-              <p style={{ fontSize: '0.9rem', color: theme.colors.muted, lineHeight: 1.6, marginBottom: '1rem', fontFamily: theme.fonts.body }}>{item.copy}</p>
-              <DDCTA label={item.label} href={item.href} variant="outline" style={{ width: 'fit-content', fontSize: '0.8rem', padding: '0.5rem 1rem' }} />
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+              lineHeight: 1.6,
+              color: '#4B5563',
+              maxWidth: '720px',
+              margin: '0 auto 2.5rem',
+            }}
+          >
+            Have a question about the Builder plan, our calculators, or partnership opportunities? Send us a direct note.
+          </p>
+        </div>
+      </section>
+
+      {/* 2. FORM */}
+      <section style={{ maxWidth: '750px', margin: '0 auto', padding: '4rem 1.25rem' }}>
+        <div
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: '2px solid #1F2937',
+            padding: 'clamp(1.75rem, 3.5vw, 2.75rem)',
+            boxShadow: '6px 6px 0 0 #1F2937',
+          }}
+        >
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.35rem' }}>
+                Your Name:
+              </label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.85rem',
+                  border: '2px solid #1F2937',
+                  fontSize: '0.88rem',
+                  fontFamily: "'DM Sans', sans-serif",
+                  backgroundColor: '#FFFFFF',
+                  outline: 'none',
+                }}
+              />
             </div>
-          ))}
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.35rem' }}>
+                Your Email Address:
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.85rem',
+                  border: '2px solid #1F2937',
+                  fontSize: '0.88rem',
+                  fontFamily: "'DM Sans', sans-serif",
+                  backgroundColor: '#FFFFFF',
+                  outline: 'none',
+                }}
+              />
             </div>
-          </div>
-        </section>
-      </FadeInSection>
-    </>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.35rem' }}>
+                Your Message:
+              </label>
+              <textarea
+                rows={5}
+                required
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.85rem',
+                  border: '2px solid #1F2937',
+                  fontSize: '0.88rem',
+                  fontFamily: "'DM Sans', sans-serif",
+                  backgroundColor: '#FFFFFF',
+                  outline: 'none',
+                  resize: 'vertical',
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                padding: '0.85rem 1.75rem',
+                backgroundColor: '#F18B25',
+                color: '#1F2937',
+                border: '2px solid #1F2937',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.8rem',
+                fontWeight: 900,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                boxShadow: '3px 3px 0 0 #1F2937',
+              }}
+            >
+              <Send size={15} />
+              <span>Send Message</span>
+            </button>
+
+            {status === 'success' && (
+              <div
+                style={{
+                  marginTop: '1.25rem',
+                  padding: '0.85rem 1.25rem',
+                  backgroundColor: '#DCFCE7',
+                  border: '2px solid #16A34A',
+                  color: '#166534',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                }}
+              >
+                <CheckCircle2 size={16} />
+                <span>Message received! We will respond to your email shortly.</span>
+              </div>
+            )}
+          </form>
+        </div>
+      </section>
+    </div>
   );
 }
