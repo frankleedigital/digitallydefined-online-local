@@ -101,7 +101,7 @@ export default function NicheDiscovery() {
               </div>
               <div className="card" style={{ padding: '2rem', marginBottom: '2rem' }}>
                 <h2 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>Try One of These Instead</h2>
-                <p style={{ color: '#5A5A5A', marginBottom: '1.5rem' }}>
+                <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
                   The AI analyzer is temporarily unavailable. These proven niche starting points work for faceless digital assets.
                 </p>
                 {SAMPLE_NICHES.map((sample) => (

@@ -32,7 +32,7 @@ export default function CommunityCta() {
         ) : (
           <form onSubmit={handleJoin} style={{ display: 'flex', gap: '0.75rem', maxWidth: 450, margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
             <input type="email" required placeholder="Your email" value={email} onChange={e => setEmail(e.target.value)} className="form-input" style={{ flex: 1, minWidth: 200 }} />
-            <button type="submit" className="btn btn--primary">Join Community →</button>
+            <button type="submit" style={{ ...brutalButtonPrimary }}>Join Community →</button>
           </form>
         )}
         

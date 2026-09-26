@@ -126,35 +126,35 @@ export default function DigitalSuperpowerQuiz() {
   const finishQuiz = async (finalAnswers) => {
     const key = scoreQuiz(finalAnswers);
 
-    let intelligenceSuccess = false;
+    let intelligenceSuccess = true;
     let intelligenceError = null;
+    let intelData = null;
     try {
       const intelResponse = await callSupabaseEdge('intelligence', {
         userId: contact.email.trim(),
         answers: finalAnswers
       });
-      if (intelResponse.success === true) {
-        intelligenceSuccess = true;
-        localStorage.setItem('dd-quiz-results', JSON.stringify({
-          userId: contact.email.trim(),
-          answers: finalAnswers,
-          superpower: key
-        }));
+      if (intelResponse.success !== true) {
+        intelligenceSuccess = false;
+        intelligenceError = 'Intelligence analysis is still processing.';
+      } else {
+        intelData = intelResponse.data || null;
       }
     } catch (intelError) {
-      intelligenceError = 'Intelligence analysis failed. Your roadmap is still ready below.';
+      intelligenceSuccess = false;
+      intelligenceError = 'Intelligence analysis is still processing.';
     }
 
     const fallback = getRoadmap(key);
-    setResultKey(key);
+    const superpowerKey = String(intelData?.superpower || key).toLowerCase();
+    setResultKey(superpowerKey);
     setStage('result');
     setLoading(true);
     setError('');
 
-    // Publish results to Hermes
     updateToolState({
       quizComplete: true,
-      quizSuperpower: key,
+      quizSuperpower: superpowerKey,
       quizAnswers: finalAnswers,
     });
 
@@ -162,36 +162,34 @@ export default function DigitalSuperpowerQuiz() {
       setError((current) => current || intelligenceError);
     }
 
-    let aiRoadmap = null;
-    try {
-      const response = await callAgent('roadmap', {
-        name: contact.name.trim(),
-        superpower: key,
-        answers: finalAnswers,
-        profile: fallback,
-        goal: 'Build faceless digital real estate that supports retirement and creates a transferable family asset',
-      });
-      aiRoadmap = response.data;
-      setPersonalized(aiRoadmap);
-    } catch (agentError) {
-      setError('Your core roadmap is ready. AI personalization is temporarily unavailable, so we are showing the proven roadmap for your superpower.');
-    }
+    const personalized = intelData?.personalized || null;
+    const aiRoadmap = personalized || (intelData?.roadmap ? {
+      steps: intelData.roadmap.steps || fallback?.firstSteps || [],
+      estimatedTime: '',
+      tools: intelData.recommendedTools || fallback?.toolsToUse || [],
+      nextAction: intelData.roadmap.nextAction || '',
+      personalizedSteps: personalized?.personalizedSteps || [],
+      personalizedAssets: personalized?.personalizedAssets || [],
+      personalizedNiches: personalized?.personalizedNiches || [],
+      personalizedAutomation: personalized?.personalizedAutomation || [],
+    } : null);
+
+    setPersonalized(aiRoadmap);
 
     try {
       const saveResult = await saveQuizResult({
         name: contact.name.trim(),
         email: contact.email.trim(),
-        superpower: key,
+        superpower: superpowerKey,
         answers: finalAnswers,
         roadmap: aiRoadmap || fallback,
         source: 'digital-superpower-quiz',
-        // Email routing flags
         devMode: isDevMode,
         brevoTest: isBrevoTest,
         testEmail: isTestEmail,
+        roadmapId: intelData?.roadmapId || `${superpowerKey}-roadmap`,
       });
 
-      // Capture email mode from backend response
       if (saveResult?.emailMode) {
         setEmailMode(saveResult.emailMode);
       }
@@ -323,13 +321,45 @@ export default function DigitalSuperpowerQuiz() {
             <div className="roadmap-plan">
               <span className="label label--orange">Your personalized build sequence</span>
               <h2>From superpower to owned digital property.</h2>
-              {(personalized?.steps || roadmap.firstSteps).map((step, index) => (
+              {(personalized?.personalizedSteps || personalized?.steps || roadmap.firstSteps).map((step, index) => (
                 <div className="roadmap-step" key={step}>
                   <span>{String(index + 1).padStart(2, '0')}</span><p>{step}</p>
                 </div>
               ))}
-              {personalized?.nextAction && <div className="truth-bar"><strong>Your next action</strong><span>{personalized.nextAction}</span></div>}
+              {(personalized?.nextAction || roadmap?.nextAction) && (
+                <div className="truth-bar"><strong>Your next action</strong><span>{personalized.nextAction || roadmap.nextAction}</span></div>
+              )}
             </div>
+
+            {personalized?.personalizedAssets?.length ? (
+              <div className="roadmap-plan" style={{ marginTop: '1.25rem' }}>
+                <span className="label label--blue">Assets built for you</span>
+                <h2>Digital assets matched to your experience.</h2>
+                {personalized.personalizedAssets.map((asset) => (
+                  <div key={asset} className="roadmap-step"><span>{asset}</span></div>
+                ))}
+              </div>
+            ) : null}
+
+            {personalized?.personalizedNiches?.length ? (
+              <div className="roadmap-plan" style={{ marginTop: '1.25rem' }}>
+                <span className="label label--orange">Niche directions</span>
+                <h2>Where your strengths can become ownership.</h2>
+                {personalized.personalizedNiches.map((niche) => (
+                  <div key={niche} className="roadmap-step"><span>{niche}</span></div>
+                ))}
+              </div>
+            ) : null}
+
+            {personalized?.personalizedAutomation?.length ? (
+              <div className="roadmap-plan" style={{ marginTop: '1.25rem' }}>
+                <span className="label label--blue">Automation leverage</span>
+                <h2>Workflows that run without you.</h2>
+                {personalized.personalizedAutomation.map((item) => (
+                  <div key={item} className="roadmap-step"><span>{item}</span></div>
+                ))}
+              </div>
+            ) : null}
             <div className="roadmap-next">
               <div><span className="label label--blue">STEP 03 / VALIDATE</span><h2>Do not build the whole thing yet.</h2><p>Take one of the suggested directions into the scorecard. Test demand, competition, monetization, durability, ease, and privacy fit first.</p></div>
               <div className="action-row">
@@ -339,24 +369,21 @@ export default function DigitalSuperpowerQuiz() {
               </div>
             </div>
 
-            {/* Email Mode Indicator - shows which mode is active for testing */}
+            {/* Email delivery status */}
             {emailMode && (
               <div className="quiz-status quiz-status--info" style={{ marginTop: '20px', textAlign: 'center' }}>
-                <strong>Email Mode:</strong> {emailMode === 'dev' && '⚠️ DEV MODE — Email skipped (no Brevo quota used)'}
-                {emailMode === 'test' && '🧪 TEST MODE — Sent with X-Brevo-Test header (sandbox, no delivery)'}
-                {emailMode === 'blackhole' && '🕳️ BLACKHOLE MODE — Sent to blackhole@brevo.com (accepts, no delivery)'}
-                {emailMode === 'live' && '✅ LIVE MODE — Real email sent via Brevo'}
+                <strong>Your roadmap is ready.</strong>
                 <br />
                 <small style={{ opacity: 0.8 }}>
-                  {emailMode !== 'live' && 'Check your inbox (or Brevo logs) for the roadmap email.'}
                   {emailMode === 'live' && 'Your roadmap email has been sent.'}
+                  {emailMode !== 'live' && 'If you do not see it shortly, check your spam folder or resubmit from the form above.'}
                 </small>
               </div>
             )}
 
-            {!isDevMode && !isBrevoTest && !isTestEmail && (
+            {!emailMode && (
               <div className="quiz-status quiz-status--notice" style={{ marginTop: '20px', textAlign: 'center' }}>
-                ✓ Check your inbox for the personalized roadmap email
+                Your roadmap is ready. If you submitted your email, your personalized guidance will arrive shortly.
               </div>
             )}
 

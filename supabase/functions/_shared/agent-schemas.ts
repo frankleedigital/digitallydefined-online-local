@@ -7,12 +7,15 @@ export type AgentSchema = {
 export const AGENT_SCHEMAS: Record<string, AgentSchema> = {
   quiz: {
     title: "Digital Superpower Result",
-    required: ["superpowerName", "superpowerDescription", "recommendedPathways", "confidenceScore"],
+    required: ["superpower", "score", "strengths", "weaknesses", "recommendedTools", "roadmapId", "email"],
     properties: {
-      superpowerName: { type: "string" },
-      superpowerDescription: { type: "string" },
-      recommendedPathways: { type: "array" },
-      confidenceScore: { type: "number" },
+      superpower: { type: "string" },
+      score: { type: "number" },
+      strengths: { type: "array" },
+      weaknesses: { type: "array" },
+      recommendedTools: { type: "array" },
+      roadmapId: { type: "string" },
+      email: { type: "string" },
     },
   },
   niche: {
@@ -28,12 +31,33 @@ export const AGENT_SCHEMAS: Record<string, AgentSchema> = {
   },
   roadmap: {
     title: "Personalized Faceless Asset Roadmap",
-    required: ["steps", "estimatedTime", "tools", "nextAction"],
+    required: ["steps", "estimatedTime", "tools", "nextAction", "personalizedSteps", "personalizedAssets", "personalizedNiches", "personalizedAutomation"],
     properties: {
       steps: { type: "array" },
       estimatedTime: { type: "string" },
       tools: { type: "array" },
       nextAction: { type: "string" },
+      personalizedSteps: { type: "array" },
+      personalizedAssets: { type: "array" },
+      personalizedNiches: { type: "array" },
+      personalizedAutomation: { type: "array" },
+    },
+  },
+  "personalize-roadmap": {
+    title: "Personalized Roadmap Enrichment",
+    required: ["superpower", "score", "strengths", "weaknesses", "recommendedTools", "roadmapId", "email", "personalizedSteps", "personalizedAssets", "personalizedNiches", "personalizedAutomation"],
+    properties: {
+      superpower: { type: "string" },
+      score: { type: "number" },
+      strengths: { type: "array" },
+      weaknesses: { type: "array" },
+      recommendedTools: { type: "array" },
+      roadmapId: { type: "string" },
+      email: { type: "string" },
+      personalizedSteps: { type: "array" },
+      personalizedAssets: { type: "array" },
+      personalizedNiches: { type: "array" },
+      personalizedAutomation: { type: "array" },
     },
   },
   reputation: {

@@ -20,7 +20,7 @@ export default function Products() {
         <div className="container container--narrow" style={{ textAlign: 'center', padding: '3rem 0' }}>
           <div className="card" style={{ maxWidth: 680, margin: '0 auto' }}>
           <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Your Faceless Toolbox</h2>
-          <p style={{ fontSize: '1.1rem', color: '#5A5A5A', maxWidth: 600, margin: '0 auto 2rem', lineHeight: 1.7 }}>
+          <p style={{ fontSize: '1.1rem', color: 'var(--color-text-muted)', maxWidth: 600, margin: '0 auto 2rem', lineHeight: 1.7 }}>
             Start free with the tools that map your path — then get notified when the paid systems launch.
           </p>
           <div className="grid-3" style={{ marginBottom: '2rem', textAlign: 'left' }}>
@@ -41,7 +41,7 @@ export default function Products() {
             </div>
           </div>
           <a href="/contact" className="btn btn--primary">Get Notified When Paid Systems Launch →</a>
-          <p style={{ fontSize: '0.85rem', color: '#9CA3AF', marginTop: '2rem' }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginTop: '2rem' }}>
             Join the waitlist to be first when products launch.
           </p>
           </div>

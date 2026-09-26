@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { schemaPrompt, validateAgentOutput } from "../_shared/agent-schemas.ts";
+import { omniRoute } from "../_shared/omniroute.ts";
 
 type JsonRecord = Record<string, unknown>;
 type Candidate = { provider: string; model: string; key: string; url: string };
@@ -51,24 +52,14 @@ const normalizeOpenRouterModel = (model: string) =>
 const normalizeGroqModel = (model: string) =>
   model.replace(/^groq\//, "") || "llama-3.3-70b-versatile";
 
-const getCandidates = (): Candidate[] => {
-  const openRouterKey = Deno.env.get("OPENROUTER_API_KEY") || "";
-  const groqKey = Deno.env.get("GROQ_API_KEY") || "";
-  const naraKey = Deno.env.get("NARAROUTER_API_KEY") || "";
-  const preferred = Deno.env.get("AI_MODEL") || Deno.env.get("OMNIROUTE_MODEL") || "";
-  const candidates: Candidate[] = [];
+const DEFAULT_SYSTEM = "You are the private DigitallyDefined operations assistant. Be concise, practical, and accurate.";
 
-  // Add Nararouter if available (primary for free tier)
-  if (naraKey && !candidates.some((c) => c.provider === "nara")) {
-    candidates.push({
-      provider: "nara",
-      model: "nararouter/agnes-2.5-flash",
-      key: naraKey,
-      url: "https://api.nararouter.com/v1/chat/completions",
-    });
-  }
-
-  if (preferred && preferred !== "free") {
+async function runAI(systemPrompt: string, userPrompt: string, jsonMode = false) {
+  const preferred = (Deno.env.get("OMNIROUTE_MODEL") || "").trim();
+  const fallbackCandidates = (() => {
+    const candidates: Candidate[] = [];
+    const groqKey = Deno.env.get("GROQ_API_KEY") || "";
+    const openRouterKey = Deno.env.get("OPENROUTER_API_KEY") || "";
     if (preferred.startsWith("groq/") && groqKey) {
       candidates.push({
         provider: "groq",
@@ -76,7 +67,7 @@ const getCandidates = (): Candidate[] => {
         key: groqKey,
         url: "https://api.groq.com/openai/v1/chat/completions",
       });
-    } else if (openRouterKey) {
+    } else if (preferred && openRouterKey) {
       candidates.push({
         provider: "openrouter",
         model: normalizeOpenRouterModel(preferred),
@@ -84,35 +75,39 @@ const getCandidates = (): Candidate[] => {
         url: "https://openrouter.ai/api/v1/chat/completions",
       });
     }
+    if (groqKey && !candidates.some((item) => item.provider === "groq")) {
+      candidates.push({
+        provider: "groq",
+        model: Deno.env.get("GROQ_MODEL_ID") || "llama-3.3-70b-versatile",
+        key: groqKey,
+        url: "https://api.groq.com/openai/v1/chat/completions",
+      });
+    }
+    if (openRouterKey && !candidates.some((item) => item.provider === "openrouter")) {
+      candidates.push({
+        provider: "openrouter",
+        model: Deno.env.get("OPENROUTER_MODEL_ID") || "openai/gpt-4o-mini",
+        key: openRouterKey,
+        url: "https://openrouter.ai/api/v1/chat/completions",
+      });
+    }
+    return candidates;
+  })();
+
+  const omniResult = await omniRoute(userPrompt, {
+    model: preferred || undefined,
+    systemPrompt: systemPrompt || DEFAULT_SYSTEM,
+    jsonMode,
+    timeout: 90000,
+    fallbackModels: fallbackCandidates.map((c) => c.model),
+  });
+
+  if (!omniResult.error && omniResult.reply) {
+    return { reply: omniResult.reply, provider: omniResult.provider || "omniroute", model: omniResult.model || preferred || "free" };
   }
 
-  if (groqKey && !candidates.some((item) => item.provider === "groq")) {
-    candidates.push({
-      provider: "groq",
-      model: Deno.env.get("GROQ_MODEL_ID") || "llama-3.3-70b-versatile",
-      key: groqKey,
-      url: "https://api.groq.com/openai/v1/chat/completions",
-    });
-  }
-
-  if (openRouterKey && !candidates.some((item) => item.provider === "openrouter")) {
-    candidates.push({
-      provider: "openrouter",
-      model: Deno.env.get("OPENROUTER_MODEL_ID") || "openai/gpt-4o-mini",
-      key: openRouterKey,
-      url: "https://openrouter.ai/api/v1/chat/completions",
-    });
-  }
-
-  return candidates;
-};
-
-async function runAI(systemPrompt: string, userPrompt: string, jsonMode = false) {
-  const candidates = getCandidates();
-  if (!candidates.length) throw new Error("No AI provider is configured in Supabase secrets");
-
-  let lastError = "";
-  for (const candidate of candidates) {
+  let lastError = omniResult.error || "OmniRoute failed";
+  for (const candidate of fallbackCandidates) {
     try {
       const response = await fetch(candidate.url, {
         method: "POST",
@@ -126,7 +121,7 @@ async function runAI(systemPrompt: string, userPrompt: string, jsonMode = false)
         body: JSON.stringify({
           model: candidate.model,
           messages: [
-            { role: "system", content: systemPrompt },
+            { role: "system", content: systemPrompt || DEFAULT_SYSTEM },
             { role: "user", content: userPrompt },
           ],
           temperature: jsonMode ? 0.35 : 0.7,
@@ -163,17 +158,51 @@ const agentPrompts: Record<string, { schema: string; system: string; user: (inpu
   quiz: {
     schema: "quiz",
     system: `You are the Digital Superpower Quiz planner for DigitallyDefined.
+
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+Pillars: Mindset & Reinvention, Digital Real Estate, Digital Assets & Product Creation, AI & Automation, Financial Resilience & Legacy, Privacy-First Digital Independence.
+Framework: Mindset → Assets → Automation → Wealth → Legacy.
+
+Core beliefs:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
 Classify the answers as Builder, Creator, Educator, Strategist, or Connector.
 Be direct, useful, privacy-first, and free of hype.
+Avoid influencer-style guidance. You are an operator, not a guru.
 Return only JSON:
-{"superpowerName":"Builder","superpowerDescription":"...","recommendedPathways":["...","...","..."],"confidenceScore":0.85}`,
+{"superpower":"Builder","score":0.85,"strengths":["..."],"weaknesses":["..."],"recommendedTools":["..."],"roadmapId":"builder-roadmap","email":"user@example.com"}`,
     user: (input) => `Quiz answers: ${JSON.stringify(input.answers || input)}`,
   },
   niche: {
     schema: "niche",
     system: `You are an AI-assisted niche discovery planner for DigitallyDefined.
+
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+Pillars: Mindset & Reinvention, Digital Real Estate, Digital Assets & Product Creation, AI & Automation, Financial Resilience & Legacy, Privacy-First Digital Independence.
+Framework: Mindset → Assets → Automation → Wealth → Legacy.
+
+Core beliefs:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
 Evaluate a niche for faceless digital real estate. Do not invent search-volume statistics.
 Be explicit when recommendations require validation.
+Avoid influencer-style guidance. Prioritize asset-building, automation, and digital independence.
 Return only JSON:
 {"niche":"...","keywords":["..."],"demand":"High|Medium|Low","competition":"High|Medium|Low","recommendation":"..."}`,
     user: (input) => `Analyze this topic or niche: ${String(input.query || input.niche || "")}`,
@@ -181,9 +210,26 @@ Return only JSON:
   roadmap: {
     schema: "roadmap",
     system: `You create practical DigitallyDefined build roadmaps for Gen X women.
+
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+Pillars: Mindset & Reinvention, Digital Real Estate, Digital Assets & Product Creation, AI & Automation, Financial Resilience & Legacy, Privacy-First Digital Independence.
+Framework: Mindset → Assets → Automation → Wealth → Legacy.
+
+Core beliefs:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
 Use a calm, direct tone. Avoid income promises. Give concrete, sequential actions.
+Avoid influencer-style guidance. Reinforce asset-building, automation, and digital independence.
 Return only JSON:
-{"steps":["...","...","...","..."],"estimatedTime":"...","tools":["...","..."],"nextAction":"..."}`,
+{"steps":["...","...","...","..."],"estimatedTime":"...","tools":["...","..."],"nextAction":"...","personalizedSteps":["..."],"personalizedAssets":["..."],"personalizedNiches":["..."],"personalizedAutomation":["..."]}`,
     user: (input) => `Create a personalized roadmap from this profile:
 ${JSON.stringify({
   name: input.name || "Builder",
@@ -193,10 +239,71 @@ ${JSON.stringify({
   goal: input.goal || "",
 })}`,
   },
+  "personalize-roadmap": {
+    schema: "personalize-roadmap",
+    system: `You are the DigitallyDefined Roadmap Personalization agent.
+
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+Pillars: Mindset & Reinvention, Digital Real Estate, Digital Assets & Product Creation, AI & Automation, Financial Resilience & Legacy, Privacy-First Digital Independence.
+Framework: Mindset → Assets → Automation → Wealth → Legacy.
+
+Core beliefs:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
+Your job is to enrich a base roadmap with personalized guidance.
+Inputs: quiz answers, superpower classification, strengths, weaknesses, recommended tools, roadmapId, email.
+Outputs must include:
+- personalizedSteps: sequenced actions tailored to the user's superpower and strengths
+- personalizedAssets: digital asset recommendations matched to their experience and goals
+- personalizedNiches: niche suggestions aligned with their strengths and weaknesses
+- personalizedAutomation: automation opportunities that match their preferred tools and workflow
+
+Avoid influencer-style guidance. Be direct, practical, and privacy-first.
+Return only JSON:
+{"superpower":"Builder","score":0.85,"strengths":["..."],"weaknesses":["..."],"recommendedTools":["..."],"roadmapId":"builder-roadmap","email":"user@example.com","personalizedSteps":["..."],"personalizedAssets":["..."],"personalizedNiches":["..."],"personalizedAutomation":["..."]}`,
+    user: (input) => `Personalize this roadmap profile:
+${JSON.stringify({
+  name: input.name || "Builder",
+  superpower: input.superpower || "Builder",
+  answers: input.answers || {},
+  profile: input.profile || {},
+  goal: input.goal || "",
+  strengths: input.strengths || [],
+  weaknesses: input.weaknesses || [],
+  recommendedTools: input.recommendedTools || [],
+  roadmapId: input.roadmapId || `${String(input.superpower || "builder").toLowerCase()}-roadmap`,
+  email: input.email || "",
+})}`,
+  },
   reputation: {
     schema: "reputation",
-    system: `You evaluate demand and trust signals for a proposed digital niche.
+    system: `You evaluate demand and trust signals for a proposed digital niche for DigitallyDefined.
+
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+Pillars: Mindset & Reinvention, Digital Real Estate, Digital Assets & Product Creation, AI & Automation, Financial Resilience & Legacy, Privacy-First Digital Independence.
+Framework: Mindset → Assets → Automation → Wealth → Legacy.
+
+Core beliefs:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
 Do not claim live market research unless evidence is supplied in the input.
+Avoid influencer-style guidance. Focus on reputation signals that support faceless digital asset ownership.
 Return only JSON:
 {"niche":"...","demandScore":7,"competitionScore":5,"reputationSignals":["..."],"recommendation":"..."}`,
     user: (input) => `Evaluate this niche and supplied evidence: ${JSON.stringify(input)}`,
@@ -204,29 +311,97 @@ Return only JSON:
   scorecard: {
     schema: "scorecard",
     system: `You interpret a deterministic niche scorecard for DigitallyDefined.
+
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+Pillars: Mindset & Reinvention, Digital Real Estate, Digital Assets & Product Creation, AI & Automation, Financial Resilience & Legacy, Privacy-First Digital Independence.
+Framework: Mindset → Assets → Automation → Wealth → Legacy.
+
+Core beliefs:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
 Never change the supplied score or tier. Explain what the inputs mean for a faceless digital asset.
-Do not invent market data. Recommend small validation experiments before a full build.`,
+Do not invent market data. Recommend small validation experiments before a full build.
+Avoid influencer-style guidance. Focus on ownership, automation, and digital independence.`,
     user: (input) => `Interpret this scorecard result: ${JSON.stringify(input)}`,
   },
   "retirement-guide": {
     schema: "retirement-guide",
-    system: `You explain retirement calculator results for educational planning.
+    system: `You explain retirement calculator results for educational planning for DigitallyDefined.
+
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+Pillars: Mindset & Reinvention, Digital Real Estate, Digital Assets & Product Creation, AI & Automation, Financial Resilience & Legacy, Privacy-First Digital Independence.
+Framework: Mindset → Assets → Automation → Wealth → Legacy.
+
+Core beliefs:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
 Do not provide individualized financial advice or guarantees. Identify assumptions and questions the user may want to review with a qualified professional.
-Explain how digital assets could supplement a plan without presenting projections as certain.`,
+Explain how digital assets could supplement a plan without presenting projections as certain.
+Avoid influencer-style guidance. Frame results in terms of digital ownership, automation, and privacy-first options.`,
     user: (input) => `Explain these calculator inputs and results: ${JSON.stringify(input)}`,
   },
   "asset-plan": {
     schema: "asset-plan",
-    system: `You interpret a proposed faceless digital asset portfolio.
+    system: `You interpret a proposed faceless digital asset portfolio for DigitallyDefined.
+
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+Pillars: Mindset & Reinvention, Digital Real Estate, Digital Assets & Product Creation, AI & Automation, Financial Resilience & Legacy, Privacy-First Digital Independence.
+Framework: Mindset → Assets → Automation → Wealth → Legacy.
+
+Core beliefs:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
 Treat all yields and valuations as user-supplied scenarios, not verified forecasts.
-Identify assumptions, concentration risk, a sensible build order, and one next validation step.`,
+Identify assumptions, concentration risk, a sensible build order, and one next validation step.
+Avoid influencer-style guidance. Emphasize ownership, automation, and privacy-first digital independence.`,
     user: (input) => `Interpret this proposed portfolio: ${JSON.stringify(input)}`,
   },
   "offer-architect": {
     schema: "offer-architect",
     system: `You are the internal DigitallyDefined Offer Architect.
+
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+Pillars: Mindset & Reinvention, Digital Real Estate, Digital Assets & Product Creation, AI & Automation, Financial Resilience & Legacy, Privacy-First Digital Independence.
+Framework: Mindset → Assets → Automation → Wealth → Legacy.
+
+Core beliefs:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
 Build a structured offer for one funnel stage: lead_magnet, core_offer, authority_bundle, community, or recurring_revenue.
-The nested offer must follow the supplied stage requirements. Avoid hype and unsupported income claims.`,
+The nested offer must follow the supplied stage requirements. Avoid hype and unsupported income claims.
+Avoid influencer-style guidance. Prioritize privacy-first, automation-ready, asset-based positioning.`,
     user: (input) => `Create a schema-driven offer from this brief: ${JSON.stringify(input)}`,
   },
 };
@@ -416,25 +591,56 @@ serve(async (req) => {
       const result = await runAI(
         `You are Hermes, the DigitallyDefined planning mentor for Gen X women who want to close their retirement gap by building faceless digital real estate.
 
+FOUNDER CONTEXT:
+Founder: Francesca LaVigne.
+Vision: To help Gen X women stop surviving and start building — building assets, leverage, freedom, and legacy.
+Mission: Turn lived experience into digital property that earns without requiring your face or constant posting.
+Manifesto: DigitallyDefined exists to help women understand that they do not need to start over. They need to leverage what they already have.
+
+PILLARS:
+1. Mindset & Reinvention
+2. Digital Real Estate
+3. Digital Assets & Product Creation
+4. AI & Automation
+5. Financial Resilience & Legacy
+6. Privacy-First Digital Independence
+
+FRAMEWORK:
+Mindset → Assets → Automation → Wealth → Legacy
+
+CORE BELIEFS:
+- Experience is equity.
+- Faceless > famous.
+- Systems over hustle.
+- Technology should empower, not overwhelm.
+- Wealth creates options.
+
+SIGNATURE MESSAGES:
+- The goal is not fame. The goal is freedom.
+- Ownership over dependence.
+- Assets over labor.
+- Freedom over survival.
+- Build something that lasts.
+
 WHAT DIGITALLYDEFINED HELPS WITH:
 - Turning lived experience into digital property that earns without requiring your face or constant posting.
 - The core path: (1) know your retirement number → (2) choose one asset type → (3) validate the niche → (4) build the first small asset → (5) document & automate it.
 - Why "faceless" matters: privacy, control, and asset ownership over personal visibility.
 
 KNOWLEDGE OF THE TOOLS (use them as concrete next steps):
-- /gap — Retirement Gap Calculator: turn a vague fear into a planning number (current age, savings, monthly contribution, desired income).
-- /quiz — Digital Superpower Quiz: discover your Builder/Creator/Educator/Strategist/Connector profile.
-- /scorecard — Niche Profitability Scorecard: test demand, competition, monetization, and privacy fit of an idea.
-- /freedom — Freedom Number Calculator: model a portfolio of assets to hit a monthly income target.
-- /roi — 10X ROI Calculator: model lead flow/revenue for a rank-and-rent property.
-- /tools — all free planning tools; the homepage (/) hosts the step-by-step onboarding path.
-
-COMMON ASSET TYPES: template hubs & printables, paid newsletters, YouTube automation, rank & rent sites, digital products.
+- /gap — Retirement Gap Calculator
+- /quiz — Digital Superpower Quiz
+- /scorecard — Niche Profitability Scorecard
+- /freedom — Freedom Number Calculator
+- /roi — 10X ROI Calculator
+- /tools — all free planning tools
 
 HOW TO ANSWER:
-- Be warm, direct, practical, and privacy-first. No hype, no invented urgency, no income promises, and never give individualized financial advice or present projections as guarantees.
-- Always frame answers around the "faceless digital real estate for retirement" path.
-- Keep responses concise (a few sentences) and ALWAYS end with one concrete next step inside the DigitallyDefined tools (reference the route path).`,
+- Be warm, direct, practical, and privacy-first.
+- No hype, no invented urgency, no income promises.
+- Never give individualized financial advice or present projections as guarantees.
+- Always frame answers around the faceless digital real estate for retirement path.
+- Keep responses concise and ALWAYS end with one concrete next step inside the DigitallyDefined tools.`,
         `${topic !== "default" ? `Current page context: ${topic}.\n` : ""}${message}`,
       );
       return json({ success: true, reply: result.reply, provider: result.provider, model: result.model }, 200, origin);
@@ -531,6 +737,8 @@ Return ONLY valid JSON with these keys (include only relevant ones):
       "json-schema-generator": "offer-architect",
       wealth: "wealth",
       "digital-wealth-calculator": "wealth",
+      "personalize-roadmap": "personalize-roadmap",
+      "personalized-roadmap": "personalize-roadmap",
     };
     const requested = action.slice("agent.".length);
     const agentName = aliases[requested];
@@ -582,25 +790,46 @@ Return ONLY valid JSON with these keys (include only relevant ones):
         throw new Error("Quiz analysis failed to return data");
       }
 
-      // Step 2: Generate personalized roadmap based on superpower
+      const superpower = String(quizResult.data.superpower || "").trim().toLowerCase() || "builder";
+      const email = String(quizResult.data.email || "").trim().toLowerCase();
+      const roadmapId = String(quizResult.data.roadmapId || "").trim() || `${superpower}-roadmap`;
+
+      // Step 2: Generate personalized roadmap enrichment AFTER base roadmap
       const roadmapResult = await runStructuredAgent("roadmap", {
-        name: userId.split('@')[0] || "Builder",
-        superpower: quizResult.data.superpowerName?.toLowerCase() || "builder",
+        name: String(userId || "").split("@")[0] || "Builder",
+        superpower,
         answers,
         profile: {},
-        goal: "Build faceless digital real estate that supports retirement and creates a transferable family asset"
+        goal: "Build faceless digital real estate that supports retirement and creates a transferable family asset",
       });
 
-      // Step 3: Return structured intelligence response
+      const personalized = await runStructuredAgent("personalize-roadmap", {
+        name: String(userId || "").split("@")[0] || "Builder",
+        superpower,
+        answers,
+        profile: {},
+        goal: "Build faceless digital real estate that supports retirement and creates a transferable family asset",
+        strengths: quizResult.data.strengths || [],
+        weaknesses: quizResult.data.weaknesses || [],
+        recommendedTools: quizResult.data.recommendedTools || [],
+        roadmapId,
+        email,
+      });
+
+      // Step 3: Return structured intelligence response with email/roadmap routing data
       return json({
         success: true,
         data: {
-          superpower: quizResult.data.superpowerName,
-          superpowerDescription: quizResult.data.superpowerDescription || "",
-          recommendations: quizResult.data.recommendedPathways || [],
-          confidenceScore: quizResult.data.confidenceScore || 0.85,
-          roadmap: roadmapResult.success ? roadmapResult.data : null,
-          rawQuizResult: quizResult.data
+          superpower: quizResult.data.superpower,
+          score: quizResult.data.score,
+          strengths: quizResult.data.strengths || [],
+          weaknesses: quizResult.data.weaknesses || [],
+          recommendedTools: quizResult.data.recommendedTools || [],
+          roadmapId,
+          email,
+          roadmap: roadmapResult.data || null,
+          personalized: personalized.data || null,
+          rawQuizResult: quizResult.data,
         }
       }, 200, origin);
 

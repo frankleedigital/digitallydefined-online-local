@@ -1,166 +1,417 @@
-import React, { useState, useEffect, useRef } from 'react';
-import FadeInSection from '../../components/FadeInSection';
-import DDCTA from '../../components/ui/DDCTA';
-import DDLabel from '../../components/ui/DDLabel';
-import DDCard from '../../components/ui/DDCard';
-import { brutalCard, brutalHeading, brutalButtonPrimary, brutalButtonOutline, theme } from '../../config/theme';
-import { callAgent } from '../../lib/buzz-agents';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Calculator,
+  ArrowRight,
+  TrendingUp,
+  Shield,
+  Layers,
+  Sparkles,
+  AlertTriangle,
+  CheckCircle2,
+  DollarSign,
+  Lock,
+} from 'lucide-react';
+import { setUserGapData } from '../../lib/userState';
 
-const fmt = (n) => {
-  if (n >= 1000000) return `$${(n / 1000000).toFixed(1)}M`;
-  if (n >= 1000) return `$${(n / 1000).toFixed(0)}k`;
-  return `$${n.toLocaleString()}`;
-};
+export default function RetirementGapCalculatorUnified() {
+  const [currentAge, setCurrentAge] = useState(52);
+  const [retireAge, setRetireAge] = useState(67);
+  const [currentSavings, setCurrentSavings] = useState(120000);
+  const [monthlyContribution, setMonthlyContribution] = useState(600);
+  const [desiredMonthly, setDesiredMonthly] = useState(5000);
+  const [socialSecurityMonthly, setSocialSecurityMonthly] = useState(2000);
+  const [annualReturn, setAnnualReturn] = useState(6);
 
-const ASSET_TYPES = [
-  { id: 'templates', name: 'Template Hubs & Printables', icon: 'M', minYield: 50, maxYield: 2000, defaultYield: 500, color: '#F18B25' },
-  { id: 'newsletters', name: 'Paid Newsletters', icon: 'E', minYield: 500, maxYield: 5000, defaultYield: 1500, color: '#47B7D4' },
-  { id: 'youtube', name: 'YouTube Automation', icon: 'P', minYield: 300, maxYield: 8000, defaultYield: 1000, color: '#2D3748' },
-  { id: 'rankandrent', name: 'Rank & Rent Sites', icon: 'R', minYield: 500, maxYield: 5000, defaultYield: 1500, color: 'var(--color-text)' },
-  { id: 'digitalproducts', name: 'Digital Products', icon: 'D', minYield: 100, maxYield: 3000, defaultYield: 500, color: '#F18B25' },
-];
+  // Math
+  const yearsToRetire = Math.max(1, retireAge - currentAge);
+  const r = annualReturn / 100;
+  const monthlyRate = r / 12;
+  const totalMonths = yearsToRetire * 12;
 
-function computeResult(formData, assets, multiplier) {
-  const { currentAge, retireAge, currentSavings, monthlyContribution, annualReturn, desiredIncome, socialSecurity, swr } = formData;
-  const yearsToRetire = Math.max(retireAge - currentAge, 1);
-  const rate = annualReturn / 100;
-  const needFromPortfolio = Math.max(0, desiredIncome - socialSecurity);
-  const targetNestEgg = swr > 0 ? needFromPortfolio / (swr / 100) : 0;
-  const futureSavings = currentSavings * Math.pow(1 + rate, yearsToRetire);
-  const m = rate / 12;
-  const periods = yearsToRetire * 12;
-  const futureContributions = m === 0 ? monthlyContribution * periods : monthlyContribution * ((Math.pow(1 + m, periods) - 1) / m);
-  const totalAtRetirement = futureSavings + futureContributions;
+  // Future value of current savings
+  const fvSavings = currentSavings * Math.pow(1 + r, yearsToRetire);
+
+  // Future value of monthly contributions
+  const fvContributions =
+    monthlyRate > 0
+      ? monthlyContribution * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate)
+      : monthlyContribution * totalMonths;
+
+  const totalAtRetirement = fvSavings + fvContributions;
+
+  // Monthly deficit from portfolio (desired - SS)
+  const monthlyNeededFromPortfolio = Math.max(0, desiredMonthly - socialSecurityMonthly);
+  // 4% safe withdrawal rule (Target nest egg = Annual needed / 0.04 = Monthly needed * 300)
+  const targetNestEgg = monthlyNeededFromPortfolio * 300;
+
   const gap = Math.max(0, targetNestEgg - totalAtRetirement);
-  const divisor = (Math.pow(1 + rate / 12, yearsToRetire * 12) - 1) / (rate / 12);
-  const monthlyNeededToClose = gap > 0 && divisor > 0 ? gap / divisor : 0;
-  const totalMonthlyIncome = Object.values(assets).reduce((sum, a) => sum + (a.qty * a.yield), 0);
-  const liquidationValue = totalMonthlyIncome * multiplier;
-  const traditional12m = 12000;
-  const traditional24m = 24000;
-  const digital12m = (totalMonthlyIncome * 12) + (totalMonthlyIncome * multiplier * 0.5);
-  const digital24m = (totalMonthlyIncome * 24) + liquidationValue;
-  const isOnTrack = gap === 0;
-  const gapPercent = targetNestEgg > 0 ? Math.round((gap / targetNestEgg) * 100) : 0;
-  return { needFromPortfolio, targetNestEgg, totalAtRetirement, gap, monthlyNeededToClose, yearsToRetire, traditional12m, traditional24m, digital12m, digital24m, isOnTrack, gapPercent, totalMonthlyIncome, liquidationValue };
-}
+  const isOnTrack = gap <= 0;
 
-export default function RetirementGapCalculator() {
-  const calculatorRef = useRef(null);
-  const [formData, setFormData] = useState({ currentAge: 52, retireAge: 67, currentSavings: 120000, monthlyContribution: 600, annualReturn: 6, desiredIncome: 55000, socialSecurity: 24000, swr: 4 });
-  const [assets, setAssets] = useState({ templates: { qty: 2, yield: 500 }, newsletters: { qty: 1, yield: 1500 }, youtube: { qty: 0, yield: 1000 }, rankandrent: { qty: 0, yield: 1500 }, digitalproducts: { qty: 1, yield: 500 } });
-  const [multiplier, setMultiplier] = useState(35);
-  const [agentResult, setAgentResult] = useState(null);
-  const [agentLoading, setAgentLoading] = useState(false);
+  // Assets required to replace monthly deficit
+  const assetsRequired = Math.ceil(monthlyNeededFromPortfolio / 500);
 
-  const result = computeResult(formData, assets, multiplier);
-  const handleChange = (key, value) => setFormData((prev) => ({ ...prev, [key]: value }));
-  const handleAssetChange = (id, field, value) => setAssets((prev) => ({ ...prev, [id]: { ...prev[id], [field]: Number(value) } }));
-  const handleMultiplier = (value) => setMultiplier(Number(value));
-
+  // Save to persistent userState
   useEffect(() => {
-    if (calculatorRef.current) calculatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
+    setUserGapData({
+      currentAge,
+      retireAge,
+      currentSavings,
+      desiredMonthly,
+      gap,
+      isOnTrack,
+      monthlyNeededFromPortfolio,
+      assetsRequired,
+    });
+  }, [currentAge, retireAge, currentSavings, desiredMonthly, gap, isOnTrack, monthlyNeededFromPortfolio, assetsRequired]);
 
-  const askAgent = async () => {
-    setAgentLoading(true);
-    setAgentResult(null);
-    try {
-      const response = await callAgent('wealth', { context: 'retirement-gap', formData, assets, result });
-      setAgentResult(response.data || response);
-    } catch (err) {
-      setAgentResult('Agent unavailable right now.');
-    } finally {
-      setAgentLoading(false);
-    }
-  };
+  const fmt = (n) => `$${Math.round(n).toLocaleString()}`;
 
   return (
-    <>
-      <FadeInSection>
-        <section className="page-hero">
-          <DDLabel tone="blue">Retirement Gap Calculator</DDLabel>
-          <h1 style={{ ...brutalHeading, fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', marginBottom: '1rem' }}>How Big Is Your Retirement Gap?</h1>
-          <p className="hero__tagline" style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Gen X women retire with less than men. Calculate your gap and see how faceless digital assets can close it — in years, not decades.</p>
-          <div className="action-row"><DDCTA label="Calculate My Gap →" href="#gap-calculator" variant="primary" /></div>
-        </section>
-      </FadeInSection>
+    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
+      {/* 1. HERO */}
+      <section
+        style={{
+          borderBottom: '2px solid #111111',
+          backgroundColor: '#FFFFFF',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '850px', margin: '0 auto' }}>
+          <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.35rem 0.8rem',
+                backgroundColor: '#FFFCF9',
+                border: '2px solid #111111',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.7rem',
+                fontWeight: 900,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: '#111111',
+              }}
+            >
+              <Calculator size={14} color="#47B7D4" />
+              <span>Interactive Financial Diagnostic</span>
+            </span>
+          </div>
 
-      <FadeInSection delay={100}>
-        <section className="section" id="gap-calculator" ref={calculatorRef}>
-          <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ ...brutalCard, padding: '1.25rem', marginBottom: '1.25rem' }}>
-              <DDLabel tone="orange" style={{ marginBottom: '0.5rem', display: 'inline-block' }}>Start Here</DDLabel>
-              <h2 style={{ ...brutalHeading, fontSize: 'clamp(1.2rem, 2.4vw, 1.5rem)', margin: '0.5rem 0' }}>Your Retirement Gap Isn&rsquo;t a Judgment &mdash; It&rsquo;s a Starting Point.</h2>
-              <p style={{ color: theme.colors.muted, lineHeight: 1.7, fontFamily: theme.fonts.body }}>This page isn&rsquo;t about judgment. It&rsquo;s about clarity — and clarity is power.</p>
+          <h1
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '-0.03em',
+              color: '#111111',
+              lineHeight: 1.1,
+              marginBottom: '1rem',
+            }}
+          >
+            Retirement Gap <span style={{ color: '#47B7D4' }}>Calculator</span>
+          </h1>
+
+          <p
+            style={{
+              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontSize: 'clamp(1rem, 1.8vw, 1.2rem)',
+              lineHeight: 1.65,
+              color: '#4B5563',
+              maxWidth: '680px',
+              margin: '0 auto 2rem',
+            }}
+          >
+            Turn vague retirement anxiety into a concrete mathematical blueprint. See exactly how many faceless digital assets will bridge your shortfall.
+          </p>
+        </div>
+      </section>
+
+      {/* 2. CALCULATOR GRID */}
+      <section style={{ maxWidth: '1100px', margin: '3.5rem auto 0', padding: '0 1.25rem' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '2rem',
+            alignItems: 'start',
+          }}
+        >
+          {/* Inputs Card */}
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              border: '2px solid #111111',
+              padding: '2rem',
+              boxShadow: '4px 4px 0 0 rgba(0,0,0,1)',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.85rem',
+                fontWeight: 900,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: '#111111',
+                marginBottom: '1.5rem',
+                borderBottom: '2px solid #111111',
+                paddingBottom: '0.75rem',
+              }}
+            >
+              01 / Your Parameters
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-              <div style={{ ...brutalCard, padding: '1.25rem' }}>
-                <DDLabel tone="blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>01 / Your Numbers</DDLabel>
-                <div style={{ display: 'grid', gap: '1rem' }}>
-                  {Object.entries(formData).map(([key, value]) => (
-                    <div key={key}>
-                      <label className="form-label" style={{ fontFamily: theme.fonts.body }}>{key}</label>
-                      <input className="form-input dd-input" type="number" value={value} onChange={(e) => handleChange(key, Number(e.target.value))} style={{ fontFamily: theme.fonts.body }} />
-                    </div>
-                  ))}
+            <div style={{ display: 'grid', gap: '1.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                    Current Age: {currentAge}
+                  </label>
+                  <input
+                    type="range"
+                    min="35"
+                    max="70"
+                    value={currentAge}
+                    onChange={(e) => setCurrentAge(Number(e.target.value))}
+                    style={{ width: '100%', accentColor: '#47B7D4' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                    Target Retirement: {retireAge}
+                  </label>
+                  <input
+                    type="range"
+                    min="50"
+                    max="80"
+                    value={retireAge}
+                    onChange={(e) => setRetireAge(Number(e.target.value))}
+                    style={{ width: '100%', accentColor: '#47B7D4' }}
+                  />
                 </div>
               </div>
 
-              <div style={{ ...brutalCard, padding: '1.25rem', background: theme.colors.panel }}>
-                <DDLabel tone="orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>Live Results</DDLabel>
-                <div style={{ marginBottom: '1rem' }}>
-                  <div style={{ fontSize: '0.8rem', color: theme.colors.muted, textTransform: 'uppercase', fontFamily: theme.fonts.body }}>Retirement Gap</div>
-                  <div style={{ fontSize: '2rem', fontWeight: 900, color: result.isOnTrack ? theme.colors.success : theme.colors.textPrimary, fontFamily: theme.fonts.heading }}>{result.isOnTrack ? '✓ ON TRACK' : fmt(result.gap)}</div>
-                  <div style={{ fontSize: '0.9rem', color: theme.colors.muted, fontFamily: theme.fonts.body }}>{result.isOnTrack ? 'You have enough to retire!' : `Shortfall by age ${formData.retireAge}`}</div>
-                </div>
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: '0.5rem' }}>
-                    <span style={{ fontFamily: theme.fonts.body }}>Target Nest Egg</span>
-                    <strong style={{ fontFamily: theme.fonts.heading }}>{fmt(result.targetNestEgg)}</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: '0.5rem' }}>
-                    <span style={{ fontFamily: theme.fonts.body }}>Projected at Retirement</span>
-                    <strong style={{ fontFamily: theme.fonts.heading }}>{fmt(result.totalAtRetirement)}</strong>
-                  </div>
-                </div>
-                {!result.isOnTrack && (
-                  <div style={{ marginTop: '1rem', ...brutalCard, padding: '1rem', borderLeft: `4px solid ${theme.colors.orange}` }}>
-                    <strong style={{ fontFamily: theme.fonts.body }}>To Close the Gap:</strong>
-                    <div style={{ color: theme.colors.muted, lineHeight: 1.6, fontFamily: theme.fonts.body }}>You need <strong>{fmt(result.monthlyNeededToClose)}/mo</strong> more in contributions, OR build digital assets generating <strong>{fmt(result.monthlyNeededToClose * 12)}/year</strong> in passive income.</div>
-                  </div>
-                )}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                  Current Retirement Savings ($)
+                </label>
+                <input
+                  type="number"
+                  step="5000"
+                  value={currentSavings}
+                  onChange={(e) => setCurrentSavings(Number(e.target.value))}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    backgroundColor: '#FFFCF9',
+                    border: '2px solid #111111',
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: 700,
+                    boxSizing: 'border-box',
+                  }}
+                />
               </div>
-            </div>
 
-            <div style={{ marginTop: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-              <div style={{ ...brutalCard, padding: '1.25rem' }}>
-                <DDLabel tone="blue" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>24-Month Comparison</DDLabel>
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: '0.5rem' }}>
-                    <span style={{ fontFamily: theme.fonts.body }}>Traditional Savings</span>
-                    <strong style={{ fontFamily: theme.fonts.heading }}>{fmt(result.traditional24m)}</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: '0.5rem' }}>
-                    <span style={{ fontFamily: theme.fonts.body }}>Digital Assets (Projected)</span>
-                    <strong style={{ color: theme.colors.aquaBlue, fontFamily: theme.fonts.heading }}>{fmt(result.digital24m)}</strong>
-                  </div>
-                </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                  Monthly Savings Addition ($)
+                </label>
+                <input
+                  type="number"
+                  step="50"
+                  value={monthlyContribution}
+                  onChange={(e) => setMonthlyContribution(Number(e.target.value))}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    backgroundColor: '#FFFCF9',
+                    border: '2px solid #111111',
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: 700,
+                    boxSizing: 'border-box',
+                  }}
+                />
               </div>
-              <div style={{ ...brutalCard, padding: '1.25rem' }}>
-                <DDLabel tone="orange" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>Next Steps</DDLabel>
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
-                  <DDCTA label="Take the Digital Superpower Quiz →" href="/quiz?start=true" variant="primary" />
-                  <DDCTA label="Score a Niche Idea →" href="/tools/scorecard" variant="outline" />
-                  <button type="button" style={{ ...brutalButtonOutline, padding: '0.5rem 1rem', fontSize: '0.8rem', fontFamily: theme.fonts.body }} disabled={agentLoading} onClick={askAgent}>{agentLoading ? 'Asking agent…' : 'Ask Hermes for a gap plan'}</button>
-                </div>
-                {agentResult && <div style={{ marginTop: '1rem', ...brutalCard, padding: '1rem', fontFamily: theme.fonts.body }}>{typeof agentResult === 'string' ? agentResult : JSON.stringify(agentResult, null, 2)}</div>}
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                  Desired Monthly Income in Retirement ($)
+                </label>
+                <input
+                  type="number"
+                  step="250"
+                  value={desiredMonthly}
+                  onChange={(e) => setDesiredMonthly(Number(e.target.value))}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    backgroundColor: '#FFFCF9',
+                    border: '2px solid #111111',
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: 700,
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                  Estimated Monthly Social Security / Pension ($)
+                </label>
+                <input
+                  type="number"
+                  step="100"
+                  value={socialSecurityMonthly}
+                  onChange={(e) => setSocialSecurityMonthly(Number(e.target.value))}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    backgroundColor: '#FFFCF9',
+                    border: '2px solid #111111',
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: 700,
+                    boxSizing: 'border-box',
+                  }}
+                />
               </div>
             </div>
           </div>
-        </section>
-      </FadeInSection>
-    </>
+
+          {/* Results Card */}
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              border: '2px solid #111111',
+              padding: '2rem',
+              boxShadow: '4px 4px 0 0 rgba(0,0,0,1)',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.85rem',
+                fontWeight: 900,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: '#111111',
+                marginBottom: '1.5rem',
+                borderBottom: '2px solid #111111',
+                paddingBottom: '0.75rem',
+              }}
+            >
+              02 / Diagnostic Verdict
+            </div>
+
+            <div
+              style={{
+                backgroundColor: isOnTrack ? '#ECFDF5' : '#FEF2F2',
+                border: '2px solid #111111',
+                padding: '1.5rem',
+                marginBottom: '1.5rem',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  color: isOnTrack ? '#16A34A' : '#DC2626',
+                  marginBottom: '0.25rem',
+                }}
+              >
+                {isOnTrack ? 'Full Target Met' : 'Documented Retirement Gap'}
+              </div>
+
+              <div
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '3rem',
+                  fontWeight: 900,
+                  color: isOnTrack ? '#16A34A' : '#111111',
+                  lineHeight: 1,
+                }}
+              >
+                {isOnTrack ? '$0 GAP' : fmt(gap)}
+              </div>
+
+              <div style={{ fontSize: '0.82rem', color: '#6B7280', marginTop: '0.5rem' }}>
+                {isOnTrack
+                  ? 'Your traditional portfolio meets your target retirement needs.'
+                  : `Projected capital shortfall at age ${retireAge}.`}
+              </div>
+            </div>
+
+            {/* Metrics Breakdown */}
+            <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.75rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem' }}>
+                <span style={{ fontSize: '0.85rem', color: '#6B7280' }}>Target Nest Egg (at 4% SWR):</span>
+                <strong style={{ fontFamily: "'Inter', sans-serif" }}>{fmt(targetNestEgg)}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem' }}>
+                <span style={{ fontSize: '0.85rem', color: '#6B7280' }}>Projected at Age {retireAge}:</span>
+                <strong style={{ fontFamily: "'Inter', sans-serif" }}>{fmt(totalAtRetirement)}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem' }}>
+                <span style={{ fontSize: '0.85rem', color: '#6B7280' }}>Monthly Needed from Digital Real Estate:</span>
+                <strong style={{ fontFamily: "'Inter', sans-serif", color: '#F18B25' }}>{fmt(monthlyNeededFromPortfolio)}/mo</strong>
+              </div>
+            </div>
+
+            {/* Solution Block */}
+            <div
+              style={{
+                backgroundColor: '#FFFCF9',
+                border: '2px solid #111111',
+                padding: '1.25rem',
+                marginBottom: '1.5rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                <Sparkles size={16} color="#F18B25" />
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.78rem', fontWeight: 900, textTransform: 'uppercase' }}>
+                  The Faceless Asset Solution:
+                </span>
+              </div>
+              <p style={{ fontSize: '0.88rem', color: '#4B5563', lineHeight: 1.5, margin: 0 }}>
+                Building <strong>{assetsRequired} faceless digital asset(s)</strong> yielding ~$500/month each completely covers your monthly retirement deficit.
+              </p>
+            </div>
+
+            <Link
+              to="/quiz"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                width: '100%',
+                padding: '0.9rem',
+                backgroundColor: '#F18B25',
+                color: '#111111',
+                border: '2px solid #111111',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.82rem',
+                fontWeight: 900,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                boxSizing: 'border-box',
+              }}
+            >
+              <span>Discover Your Superpower to Build Assets</span>
+              <ArrowRight size={15} />
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

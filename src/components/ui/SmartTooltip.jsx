@@ -72,14 +72,14 @@ export default function SmartTooltip({
           border: none;
           padding: 0.25rem;
           cursor: pointer;
-          color: #9CA3AF;
+          color: var(--color-text-muted);
           transition: color 0.2s;
           display: inline-flex;
           align-items: center;
         }
         
         .smart-tooltip-trigger:hover {
-          color: #4db6d1;
+          color: var(--color-accent);
         }
         
         .smart-tooltip {
@@ -111,7 +111,7 @@ export default function SmartTooltip({
         }
         
         .smart-tooltip__content {
-          color: #5A5A5A;
+          color: var(--color-text-muted);
         }
         
         .smart-tooltip__description {
@@ -122,19 +122,19 @@ export default function SmartTooltip({
           display: inline-flex;
           align-items: center;
           gap: 0.375rem;
-          background: #f0f9ff;
-          border: 1px solid #bae6fd;
+          background: var(--color-bg);
+          border: 1px solid var(--color-border);
           border-radius: 4px;
           padding: 0.375rem 0.625rem;
           font-size: 0.75rem;
-          color: #0369a1;
+          color: var(--color-accent);
           cursor: pointer;
           transition: all 0.2s;
         }
         
         .smart-tooltip__hermes-btn:hover {
-          background: #e0f2fe;
-          border-color: #7dd3fc;
+          background: var(--color-bg);
+          border-color: var(--color-border);
         }
         
         .smart-tooltip__arrow {

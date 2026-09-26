@@ -12,7 +12,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-bg);
   color: white;
   border: none;
   border-radius: 8px;
@@ -81,16 +81,16 @@
 }
 
 .puter-save-btn.saving {
-  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  background: var(--color-bg);
 }
 
 .puter-save-btn.success {
-  background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+  background: var(--color-bg);
   color: #1a5c3a;
 }
 
 .puter-save-btn.error {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+  background: var(--color-bg);
 }
 
 .save-hint {

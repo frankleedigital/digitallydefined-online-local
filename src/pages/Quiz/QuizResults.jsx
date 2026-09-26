@@ -20,7 +20,7 @@ export default function QuizResults() {
               <div className="card__heading">{rt.title}</div>
               <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#D4A056', marginBottom: '0.75rem' }}>{rt.tagline}</div>
               <p className="card__text">{rt.description}</p>
-              <div style={{ fontSize: '0.82rem', color: '#5A5A5A', marginTop: 'auto' }}>
+              <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: 'auto' }}>
                 <strong>First step:</strong> {rt.recommendedFirstStep}<br />
                 <strong>Best fit:</strong> {rt.toolPreference}
               </div>

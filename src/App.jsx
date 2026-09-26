@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/HomeUnified';
+import Framework from './pages/FrameworkUnified';
+import StartHere from './pages/StartHereUnified';
+import BuilderPlan from './pages/Plans/BuilderPlanUnified';
+import EmpirePlan from './pages/Plans/EmpirePlanUnified';
 import Quiz from './pages/Quiz/DigitalSuperpowerQuizUnified';
 import NicheDiscovery from './pages/Tools/NicheDiscovery';
 import RoadmapGenerator from './pages/Tools/RoadmapGenerator';
@@ -34,12 +38,20 @@ function App() {
       <OnboardingTour />
       <Layout>
         <Routes>
-          {/* Main Flow */}
+          {/* Main Core Flow */}
           <Route path="/" element={<MentorTopicWrapper topic="home"><Home /></MentorTopicWrapper>} />
+          <Route path="/framework" element={<MentorTopicWrapper topic="home"><Framework /></MentorTopicWrapper>} />
+          <Route path="/start-here" element={<MentorTopicWrapper topic="home"><StartHere /></MentorTopicWrapper>} />
+          <Route path="/builder" element={<MentorTopicWrapper topic="pricing"><BuilderPlan /></MentorTopicWrapper>} />
+          <Route path="/plans/builder" element={<MentorTopicWrapper topic="pricing"><BuilderPlan /></MentorTopicWrapper>} />
+          <Route path="/empire" element={<MentorTopicWrapper topic="pricing"><EmpirePlan /></MentorTopicWrapper>} />
+          <Route path="/plans/empire" element={<MentorTopicWrapper topic="pricing"><EmpirePlan /></MentorTopicWrapper>} />
+
           <Route path="/automation" element={<MentorTopicWrapper topic="automation"><Automation /></MentorTopicWrapper>} />
 
           {/* Quiz Flow */}
           <Route path="/quiz" element={<MentorTopicWrapper topic="quiz"><Quiz /></MentorTopicWrapper>} />
+          <Route path="/quiz/digital-superpower" element={<MentorTopicWrapper topic="quiz"><Quiz /></MentorTopicWrapper>} />
 
           {/* Tools Flow */}
           <Route path="/tools" element={<MentorTopicWrapper topic="tools"><Tools /></MentorTopicWrapper>} />
@@ -47,12 +59,16 @@ function App() {
           <Route path="/tools/roadmap" element={<MentorTopicWrapper topic="roadmap"><RoadmapGenerator /></MentorTopicWrapper>} />
           <Route path="/tools/scorecard" element={<MentorTopicWrapper topic="scorecard"><Scorecard /></MentorTopicWrapper>} />
           <Route path="/tools/calculator" element={<MentorTopicWrapper topic="roi"><WealthCalculator /></MentorTopicWrapper>} />
+          <Route path="/tools/retirement-gap" element={<MentorTopicWrapper topic="retirement-gap"><RetirementGapCalculator /></MentorTopicWrapper>} />
+          <Route path="/tools/freedom-number" element={<MentorTopicWrapper topic="freedom"><FreedomCalculator /></MentorTopicWrapper>} />
 
-          {/* Calculators */}
+          {/* Calculators Direct */}
           <Route path="/scorecard" element={<MentorTopicWrapper topic="scorecard"><Scorecard /></MentorTopicWrapper>} />
+          <Route path="/scorecard/niche-profitability" element={<MentorTopicWrapper topic="scorecard"><Scorecard /></MentorTopicWrapper>} />
           <Route path="/roi" element={<MentorTopicWrapper topic="roi"><WealthCalculator /></MentorTopicWrapper>} />
           <Route path="/freedom" element={<MentorTopicWrapper topic="freedom"><FreedomCalculator /></MentorTopicWrapper>} />
           <Route path="/gap" element={<MentorTopicWrapper topic="retirement-gap"><RetirementGapCalculator /></MentorTopicWrapper>} />
+          <Route path="/calculator/retirement-gap" element={<MentorTopicWrapper topic="retirement-gap"><RetirementGapCalculator /></MentorTopicWrapper>} />
 
           {/* Info Pages */}
           <Route path="/products" element={<MentorTopicWrapper topic="products"><Products /></MentorTopicWrapper>} />

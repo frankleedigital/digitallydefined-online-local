@@ -1,268 +1,994 @@
-import React, { useState } from 'react';
-import EmailSignup from '../components/EmailSignup';
-import { fetchPersonalization } from '../lib/personalization';
-import { callSupabaseEdge } from '../lib/supabase-edge';
-import DDHero from '../components/ui/DDHero';
-import DDCTA from '../components/ui/DDCTA';
-import DDLabel from '../components/ui/DDLabel';
-import DDCard from '../components/ui/DDCard';
-import FadeInSection from '../components/FadeInSection';
-import { theme, brutalCard, brutalHeading, brutalButtonPrimary, brutalButtonOutline } from '../config/theme';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Sparkles,
+  ArrowRight,
+  Shield,
+  EyeOff,
+  Lock,
+  Zap,
+  TrendingUp,
+  Database,
+  Layers,
+  DollarSign,
+  CheckCircle2,
+  BookOpen,
+  Users,
+  Compass,
+  Calculator,
+  ChevronRight,
+  ExternalLink,
+  Flame,
+} from 'lucide-react';
+import { getUserState } from '../lib/userState';
+import { theme } from '../config/theme';
 
-const pressures = [
-  ['01', 'The caregiving squeeze', 'You may be helping children launch, supporting aging parents, and trying to protect your own future at the same time.', '/assets/brand/icon-audience.svg'],
-  ['02', 'The interrupted career', 'Years spent caregiving, underpaid, divorced, downsized, or rebuilding can show up later as smaller savings and benefits.', '/assets/brand/icon-document.svg'],
-  ['03', 'The time gap', 'The old advice assumes decades of uninterrupted compounding. Many Gen X women need an income strategy that can begin now.', '/assets/brand/icon-chart.svg'],
-  ['04', 'The visibility tax', 'The internet keeps insisting that income requires constant posting, personal exposure, and becoming a full-time personality. It does not.', '/assets/brand/icon-shield.svg'],
-];
+export default function HomeUnified() {
+  const [userState, setUserState] = useState(getUserState());
 
-const advantages = [
-  ['Pattern recognition', 'You have lived through analog and digital change. You can spot what is useful, what is noise, and what real people will pay to solve.'],
-  ['Earned expertise', 'Careers, caregiving, reinvention, and hard-won judgment create niche knowledge that AI can help package without replacing your voice.'],
-  ['Trust instincts', 'Gen X skepticism is an advantage. Clear, useful, no-hype digital assets stand out in an internet crowded with performance.'],
-  ['Resourcefulness', 'You learned to figure things out before tutorials existed. With AI handling repetition, that independence becomes leverage.'],
-];
+  useEffect(() => {
+    const handleUpdate = () => setUserState(getUserState());
+    window.addEventListener('dd_user_state_updated', handleUpdate);
+    return () => window.removeEventListener('dd_user_state_updated', handleUpdate);
+  }, []);
 
-const assets = [
-  ['Search property', 'A useful niche website that attracts high-intent visitors and generates leads for a business.', '/assets/brand/icon-domain.svg'],
-  ['Knowledge property', 'Templates, guides, databases, calculators, and resource libraries built around a specific problem.', '/assets/brand/icon-document.svg'],
-  ['Audience property', 'A faceless newsletter, directory, or content channel that compounds attention you control.', '/assets/brand/icon-email.svg'],
-  ['System property', 'Automated funnels and workflows that capture, nurture, route, and measure demand without constant manual work.', '/assets/brand/icon-gear.svg'],
-];
+  const realEstateSteps = [
+    {
+      num: '01',
+      title: 'Claim It',
+      desc: 'Identify every digital property you already own or have a right to: domains, search terms, social assets, and unmonetized expertise.',
+      icon: Database,
+      accent: '#F18B25',
+    },
+    {
+      num: '02',
+      title: 'Optimize It',
+      desc: 'Package knowledge into high-converting digital assets: Notion systems, micro-guides, evergreen SEO boards, and automated toolkits.',
+      icon: TrendingUp,
+      accent: '#47B7D4',
+    },
+    {
+      num: '03',
+      title: 'Expand It',
+      desc: 'Systematically add complementary faceless assets. Build an interconnected portfolio that compounds value every month.',
+      icon: Layers,
+      accent: '#16A34A',
+    },
+    {
+      num: '04',
+      title: 'Monetize It',
+      desc: 'Convert digital traffic into recurring cash flow through automated funnels, digital product sales, and affiliate ecosystems.',
+      icon: DollarSign,
+      accent: '#8B5CF6',
+    },
+  ];
 
-const path = [
-  ['01', 'Face the number', 'Use the Retirement Gap Calculator to turn a vague fear into a planning number. The result is a scenario, not a verdict.', '/gap', 'Calculate the gap'],
-  ['02', 'Name your advantage', 'Take the Digital Superpower Quiz to identify the kind of asset-building work that fits how you naturally think.', '/quiz', 'Find your superpower'],
-  ['03', 'Choose a problem', 'Use niche discovery and the profitability scorecard to test demand, privacy fit, durability, and ways to earn.', '/scorecard', 'Score a niche'],
-  ['04', 'Model one asset', 'Use the ROI and Freedom Number calculators to compare a realistic asset plan with your monthly target.', '/freedom', 'Model the portfolio'],
-  ['05', 'Build the first version', 'Turn the validated idea into one small, useful property. Document the process so it can be improved, automated, and repeated.', '/tools', 'Choose a build tool'],
-];
-
-export default function Home() {
-  const [optEmail, setOptEmail] = useState('');
-  const [optStatus, setOptStatus] = useState(null);
-
-  async function handleOptIn(e) {
-    e.preventDefault();
-    setOptStatus('submitting');
-    try {
-      await callSupabaseEdge('subscribe', {
-        name: '',
-        email: optEmail,
-        source: 'homepage-hero',
-        tags: ['website-signup'],
-      });
-      setOptEmail('');
-      setOptStatus('success');
-    } catch (err) {
-      console.error('Subscription error:', err);
-      setOptStatus('error');
-    }
-  }
+  const facelessAssets = [
+    {
+      title: 'Notion Operations Hubs',
+      type: 'Systems Asset',
+      estRevenue: '$500 - $2,500/mo',
+      desc: 'Turnkey workflow templates for solo operators and micro-businesses.',
+      tag: 'Builder Favorite',
+      accent: '#47B7D4',
+    },
+    {
+      title: 'Evergreen SEO & Content Engines',
+      type: 'Traffic Asset',
+      estRevenue: '$800 - $3,200/mo',
+      desc: 'Faceless search-driven content generating automated affiliate income.',
+      tag: 'High Passive',
+      accent: '#F18B25',
+    },
+    {
+      title: 'Signature Digital Playbooks',
+      type: 'Knowledge Asset',
+      estRevenue: '$1,200 - $4,500/mo',
+      desc: 'Concise 25-page PDF implementation guides priced at $27 - $97.',
+      tag: 'Fast Launch',
+      accent: '#16A34A',
+    },
+    {
+      title: 'Interactive Calculators & Tools',
+      type: 'Lead Magnet Asset',
+      estRevenue: '$1,000 - $5,000/mo',
+      desc: 'High-utility single-purpose web calculators that capture qualified buyers.',
+      tag: 'High Conversion',
+      accent: '#8B5CF6',
+    },
+    {
+      title: 'Curated Email Masterminds',
+      type: 'Community Asset',
+      estRevenue: '$1,500 - $6,000/mo',
+      desc: 'Paid micro-newsletters and curated industry intelligence digests.',
+      tag: 'Recurring MRR',
+      accent: '#C20F0A',
+    },
+    {
+      title: 'Automated Lead Funnels',
+      type: 'Conversion Asset',
+      estRevenue: '$2,000 - $8,000/mo',
+      desc: 'Zero-touch email sequences converting cold visitors into buyers.',
+      tag: 'Scalable',
+      accent: '#111111',
+    },
+  ];
 
   return (
-    <>
-      <FadeInSection>
-        <section style={{ background: theme.colors.background, borderBottom: brutalBorder, padding: 'clamp(3.5rem,8vw,6rem) 0' }}>
-          <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 24px', textAlign: 'center' }}>
-            <DDLabel tone="orange">Start here / not everywhere</DDLabel>
-            <h1 style={{ ...brutalHeading, fontSize: 'clamp(2.4rem,5.5vw,3.8rem)', margin: '0 0 1.25rem' }}>Build Faceless Digital Assets.</h1>
-            <p style={{ fontSize: '1.15rem', lineHeight: 1.6, color: theme.colors.muted, maxWidth: 720, margin: '0 auto 2rem' }}>Start your path to freedom-based digital ownership. No camera. No invented urgency. No promise of overnight income.</p>
-            
-            {optStatus === 'success' ? (
-              <p style={{ color: theme.colors.success, fontWeight: 700, marginBottom: '1.25rem' }}>You're in. Watch your inbox for your first step.</p>
-            ) : (
-              <form onSubmit={handleOptIn} style={{ maxWidth: 520, margin: '0 auto 1.5rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <input
-                  type="email"
-                  required
-                  placeholder="your@email.com"
-                  style={{ flex: '1 1 220px', padding: '0.75rem 1rem', border: brutalBorder, background: theme.colors.card, fontSize: '1rem', outline: 'none', fontFamily: theme.fonts.body }}
-                  value={optEmail}
-                  onChange={(e) => setOptEmail(e.target.value)}
-                  aria-label="Email address"
-                />
-                <DDCTA label={optStatus === 'submitting' ? 'Starting…' : 'Start Here →'} onClick={(e) => { e.preventDefault(); handleOptIn(e); }} disabled={optStatus === 'submitting'} />
-              </form>
-            )}
+    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh' }}>
+      {/* 1. PERSONALIZATION BANNER */}
+      <div
+        style={{
+          borderBottom: '2px solid #111111',
+          backgroundColor: '#FFFFFF',
+          padding: '0.75rem 1.25rem',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '1100px',
+            margin: '0 auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '0.75rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '24px',
+                height: '24px',
+                backgroundColor: '#F18B25',
+                border: '1px solid #111111',
+              }}
+            >
+              <Sparkles size={14} color="#111111" />
+            </span>
+            <span
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+              }}
+            >
+              {userState.hasQuiz && userState.profile ? (
+                <>
+                  Profile Active:{' '}
+                  <span style={{ color: '#F18B25' }}>{userState.profile.title}</span> — Next Step:{' '}
+                  <span style={{ color: '#111111' }}>{userState.profile.starterAsset}</span>
+                </>
+              ) : (
+                <>
+                  Orientation Active — Step 1: Discover Your Digital Superpower in 2 Minutes
+                </>
+              )}
+            </span>
+          </div>
 
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <DDCTA label="Find Your Superpower First →" href="/quiz?start=true" variant="primary" />
-              <DDCTA label="Calculate My Retirement Gap →" href="/gap" variant="outline" />
+          <Link
+            to={userState.hasQuiz ? '/tools/roadmap' : '/quiz'}
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.72rem',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: '#111111',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              borderBottom: '2px solid #F18B25',
+              paddingBottom: '2px',
+            }}
+          >
+            <span>{userState.hasQuiz ? 'View Roadmap →' : 'Take Free Quiz →'}</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* 2. ABOVE-THE-FOLD HERO SECTION */}
+      <section
+        style={{
+          maxWidth: '1100px',
+          margin: '0 auto',
+          padding: 'clamp(3rem, 6vw, 5.5rem) 1.25rem 3.5rem',
+          textAlign: 'center',
+        }}
+      >
+        {/* Eyebrow badge */}
+        <div style={{ display: 'inline-block', marginBottom: '1.25rem' }}>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.4rem 0.9rem',
+              backgroundColor: '#FFFFFF',
+              border: '2px solid #111111',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.68rem',
+              fontWeight: 900,
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              color: '#111111',
+            }}
+          >
+            <EyeOff size={14} color="#F18B25" />
+            <span>Faceless Digital Real Estate for Gen X Women</span>
+          </span>
+        </div>
+
+        {/* Main Hero Headline */}
+        <h1
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
+            lineHeight: 1.08,
+            letterSpacing: '-0.03em',
+            textTransform: 'uppercase',
+            color: '#111111',
+            maxWidth: '920px',
+            margin: '0 auto 1.5rem',
+          }}
+        >
+          Build Digital Assets That <span style={{ color: '#F18B25' }}>Work Quietly</span>.
+        </h1>
+
+        {/* Subtitle */}
+        <p
+          style={{
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+            lineHeight: 1.6,
+            color: '#4B5563',
+            maxWidth: '720px',
+            margin: '0 auto 2.5rem',
+          }}
+        >
+          Start your path to freedom-based digital ownership. No camera. No invented urgency.
+          No personal branding theater. Just income-producing digital assets built around your real skills.
+        </p>
+
+        {/* Centered CTA Buttons */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '1rem',
+            flexWrap: 'wrap',
+            marginBottom: '2.5rem',
+          }}
+        >
+          <Link
+            to="/quiz"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.6rem',
+              padding: '1rem 2.25rem',
+              backgroundColor: '#F18B25',
+              color: '#111111',
+              border: '2px solid #111111',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.85rem',
+              fontWeight: 900,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+              boxShadow: '4px 4px 0 0 rgba(0,0,0,1)',
+              transition: 'transform 100ms ease',
+            }}
+          >
+            <span>Take the Free Quiz</span>
+            <ArrowRight size={16} />
+          </Link>
+
+          <Link
+            to="/start-here"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.6rem',
+              padding: '1rem 2rem',
+              backgroundColor: '#FFFFFF',
+              color: '#111111',
+              border: '2px solid #111111',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.85rem',
+              fontWeight: 900,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+            }}
+          >
+            <span>Start Here Blueprint</span>
+          </Link>
+
+          <Link
+            to="/gap"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.6rem',
+              padding: '1rem 2rem',
+              backgroundColor: '#FFFFFF',
+              color: '#111111',
+              border: '2px solid #111111',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.85rem',
+              fontWeight: 900,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+            }}
+          >
+            <Calculator size={15} color="#47B7D4" />
+            <span>Retirement Gap Tool</span>
+          </Link>
+        </div>
+
+        {/* Value Props Row */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '1.5rem',
+            flexWrap: 'wrap',
+            paddingTop: '1.5rem',
+            borderTop: '1px solid #E5E7EB',
+            maxWidth: '780px',
+            margin: '0 auto',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', fontWeight: 700, color: '#4B5563' }}>
+            <Lock size={15} color="#16A34A" />
+            <span>Privacy-First by Design</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', fontWeight: 700, color: '#4B5563' }}>
+            <EyeOff size={15} color="#F18B25" />
+            <span>0 Cameras Required</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', fontWeight: 700, color: '#4B5563' }}>
+            <Shield size={15} color="#47B7D4" />
+            <span>Built for Gen X Women</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. SOCIAL PROOF & METRICS STRIP */}
+      <section
+        style={{
+          backgroundColor: '#FFFFFF',
+          borderTop: '2px solid #111111',
+          borderBottom: '2px solid #111111',
+          padding: '2.5rem 1.25rem',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '1100px',
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '1.5rem',
+          }}
+        >
+          <div
+            style={{
+              padding: '1.5rem',
+              border: '2px solid #111111',
+              backgroundColor: '#FFFCF9',
+              textAlign: 'center',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '2.5rem',
+                fontWeight: 900,
+                color: '#111111',
+                lineHeight: 1,
+                marginBottom: '0.4rem',
+              }}
+            >
+              1,280+
+            </div>
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                color: '#6B7280',
+              }}
+            >
+              Gen X Women Building
             </div>
           </div>
-        </section>
-      </FadeInSection>
 
-      <FadeInSection delay={80}>
-        <section className="tools-cta" aria-label="Free planning tools" style={{ marginTop: 0 }}>
-          <div className="tools-cta__row">
-            <DDCTA label="Freedom Number Calculator" href="/freedom" variant="outline" />
-            <DDCTA label="Asset Builder" href="/tools" variant="outline" />
-            <DDCTA label="10X ROI" href="/roi" variant="outline" />
-            <DDCTA label="Digital Superpower Quiz" href="/quiz" variant="outline" />
-          </div>
-        </section>
-      </FadeInSection>
-
-      <FadeInSection delay={100}>
-        <section className="philosophy-strip" aria-label="DigitallyDefined principles">
-          <span>FACELESS BY DESIGN</span><i aria-hidden="true">•</i>
-          <span>AI AS LEVERAGE</span><i aria-hidden="true">•</i>
-          <span>SYSTEMS OVER HUSTLE</span><i aria-hidden="true">•</i>
-          <span>ASSETS OVER ALGORITHMS</span>
-        </section>
-      </FadeInSection>
-
-      <FadeInSection delay={120}>
-        <section className="story-section story-section--white" id="build-path">
-          <div className="story-heading">
-            <span className="label label--blue">Start here / not everywhere</span>
-            <h2>One path from retirement anxiety to an asset you own.</h2>
-            <p>You do not need another pile of ideas. You need a sequence that respects your time, privacy, experience, and actual financial goal.</p>
-          </div>
-          <div className="path-list">
-            {path.map(([number, title, copy, href, cta]) => (
-              <article className="path-step" key={number}>
-                <span className="path-step__number">{number}</span>
-                <div><h2>{title}</h2><p>{copy}</p></div>
-                <DDCTA label={cta + ' →'} href={href} variant="primary" />
-              </article>
-            ))}
-          </div>
-        </section>
-      </FadeInSection>
-
-      <FadeInSection delay={140}>
-        <section className="expectation-strip" aria-label="What DigitallyDefined is and is not">
-          <div><strong>What this is</strong><p>A practical system for building owned digital assets with AI assistance.</p></div>
-          <div><strong>What this is not</strong><p>A guarantee, a get-rich-quick plan, or a demand that you become a public personality.</p></div>
-          <div><strong>What comes first</strong><p>Clarity, validation, one small build, and a documented process you can repeat.</p></div>
-        </section>
-      </FadeInSection>
-
-      <FadeInSection delay={160}>
-        <section className="ticker" aria-label="DigitallyDefined principles">
-          <span>FACELESS BY DESIGN</span><span>AI AS LEVERAGE</span><span>SYSTEMS OVER HUSTLE</span><span>ASSETS OVER ALGORITHMS</span>
-        </section>
-      </FadeInSection>
-
-      <FadeInSection delay={180}>
-        <section className="story-section story-section--cream">
-          <div className="story-heading">
-            <span className="label label--orange">The part no one planned for</span>
-            <h2>You did everything you were told. The math still feels uncertain.</h2>
-            <p>This is not a failure of discipline. It is the accumulated weight of unequal pay, unpaid care, career interruptions, rising costs, and retirement systems designed around a different life.</p>
-          </div>
-          <div className="story-grid story-grid--four">
-            {pressures.map(([number, title, copy, icon]) => (
-              <article className="story-card" key={number}>
-                <img className="story-card__icon" src={icon} alt="" />
-                <span className="story-card__number">{number}</span>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
-            ))}
-          </div>
-          <div className="truth-bar">
-            <strong>The goal is not to erase the past.</strong>
-            <span>It is to build an asset base that gives the next decade more options than the last one did.</span>
-          </div>
-        </section>
-      </FadeInSection>
-
-      <FadeInSection delay={200}>
-        <section className="story-section story-section--white">
-          <div className="split-story">
-            <div className="story-heading story-heading--left">
-              <span className="label label--blue">Your unfair advantage</span>
-              <h2>Gen X is not late to the internet. We are built for this version of it.</h2>
-              <p>You do not need to compete with twenty-year-old creators at being twenty. Your advantage is context: knowing how businesses work, what people actually need, and how to keep going when the novelty wears off.</p>
-              <a href="/quiz?start=true" className="text-link" style={{ fontFamily: theme.fonts.body, fontSize: '0.9rem', fontWeight: 700, color: theme.colors.orange, textDecoration: 'none' }}>Find your digital superpower →</a>
+          <div
+            style={{
+              padding: '1.5rem',
+              border: '2px solid #111111',
+              backgroundColor: '#FFFCF9',
+              textAlign: 'center',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '2.5rem',
+                fontWeight: 900,
+                color: '#F18B25',
+                lineHeight: 1,
+                marginBottom: '0.4rem',
+              }}
+            >
+              $48,000
             </div>
-            <div className="advantage-list">
-              {advantages.map(([title, copy], index) => (
-                <div className="advantage-row" key={title}>
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <div><h3>{title}</h3><p>{copy}</p></div>
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                color: '#6B7280',
+              }}
+            >
+              Average Portfolio Asset Value
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: '1.5rem',
+              border: '2px solid #111111',
+              backgroundColor: '#FFFCF9',
+              textAlign: 'center',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '2.5rem',
+                fontWeight: 900,
+                color: '#47B7D4',
+                lineHeight: 1,
+                marginBottom: '0.4rem',
+              }}
+            >
+              5
+            </div>
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                color: '#6B7280',
+              }}
+            >
+              Superpower Monetization Paths
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: '1.5rem',
+              border: '2px solid #111111',
+              backgroundColor: '#FFFCF9',
+              textAlign: 'center',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '2.5rem',
+                fontWeight: 900,
+                color: '#16A34A',
+                lineHeight: 1,
+                marginBottom: '0.4rem',
+              }}
+            >
+              0
+            </div>
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                color: '#6B7280',
+              }}
+            >
+              Cameras / Public Exposure
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. THE 4-STEP REAL ESTATE FRAMEWORK */}
+      <section
+        style={{
+          maxWidth: '1100px',
+          margin: '0 auto',
+          padding: '4.5rem 1.25rem',
+        }}
+      >
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <span
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.15em',
+              color: '#F18B25',
+            }}
+          >
+            The Operating System
+          </span>
+          <h2
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '-0.03em',
+              color: '#111111',
+              marginTop: '0.5rem',
+            }}
+          >
+            How Faceless Real Estate Works
+          </h2>
+          <p
+            style={{
+              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontSize: '1rem',
+              color: '#6B7280',
+              maxWidth: '650px',
+              margin: '0.75rem auto 0',
+            }}
+          >
+            Just like physical real estate, digital real estate produces cash flow without your presence.
+            You build it once with precision, optimize it, and let it work 24/7.
+          </p>
+        </div>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: '1.5rem',
+          }}
+        >
+          {realEstateSteps.map((step) => {
+            const Icon = step.icon;
+            return (
+              <div
+                key={step.num}
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '2px solid #111111',
+                  padding: '1.75rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  position: 'relative',
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '1.25rem',
+                      borderBottom: '2px solid #111111',
+                      paddingBottom: '0.85rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontSize: '1.25rem',
+                        fontWeight: 900,
+                        color: step.accent,
+                      }}
+                    >
+                      {step.num}
+                    </span>
+                    <div
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        border: '1px solid #111111',
+                        backgroundColor: '#FFFCF9',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Icon size={18} color="#111111" />
+                    </div>
+                  </div>
+
+                  <h3
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: '1.15rem',
+                      fontWeight: 900,
+                      textTransform: 'uppercase',
+                      letterSpacing: '-0.02em',
+                      color: '#111111',
+                      marginBottom: '0.65rem',
+                    }}
+                  >
+                    {step.title}
+                  </h3>
+
+                  <p
+                    style={{
+                      fontFamily: "'DM Sans', system-ui, sans-serif",
+                      fontSize: '0.88rem',
+                      lineHeight: 1.6,
+                      color: '#4B5563',
+                      marginBottom: '1.5rem',
+                    }}
+                  >
+                    {step.desc}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </FadeInSection>
 
-      <FadeInSection delay={220}>
-        <section className="story-section story-section--ink">
-          <div className="story-heading">
-            <span className="label label--orange">What you are building</span>
-            <h2>Digital real estate is useful online property that can earn, grow, and transfer.</h2>
-            <p>Instead of renting all your attention to social platforms, you build assets you can control: a domain, an email list, a searchable resource, a product library, a lead engine, or a documented automation.</p>
+                <div style={{ paddingTop: '0.85rem', borderTop: '1px solid #E5E7EB' }}>
+                  <span
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: '0.68rem',
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      color: step.accent,
+                    }}
+                  >
+                    Phase {step.num} Protocol
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+          <Link
+            to="/framework"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.85rem 1.75rem',
+              backgroundColor: '#FFFFFF',
+              color: '#111111',
+              border: '2px solid #111111',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.78rem',
+              fontWeight: 900,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+            }}
+          >
+            <span>Read the Complete Framework Guide</span>
+            <ArrowRight size={15} />
+          </Link>
+        </div>
+      </section>
+
+      {/* 5. FACELESS DIGITAL REAL ESTATE TAXONOMY */}
+      <section
+        style={{
+          backgroundColor: '#FFFFFF',
+          borderTop: '2px solid #111111',
+          borderBottom: '2px solid #111111',
+          padding: '4.5rem 1.25rem',
+        }}
+      >
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <span
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.15em',
+                color: '#47B7D4',
+              }}
+            >
+              Asset Portfolio Taxonomy
+            </span>
+            <h2
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '-0.03em',
+                color: '#111111',
+                marginTop: '0.5rem',
+              }}
+            >
+              6 Types of Digital Real Estate You Can Build
+            </h2>
+            <p
+              style={{
+                fontFamily: "'DM Sans', system-ui, sans-serif",
+                fontSize: '1rem',
+                color: '#6B7280',
+                maxWidth: '650px',
+                margin: '0.75rem auto 0',
+              }}
+            >
+              Each asset type requires zero video presence, zero social media dance routines, and generates independent monthly revenue.
+            </p>
           </div>
-          <div className="asset-grid">
-            {assets.map(([title, copy, icon], index) => (
-              <article className="asset-card" key={title}>
-                <img className="asset-card__icon" src={icon} alt="" />
-                <span>PROPERTY {String(index + 1).padStart(2, '0')}</span>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '1.5rem',
+            }}
+          >
+            {facelessAssets.map((asset, idx) => (
+              <div
+                key={idx}
+                style={{
+                  backgroundColor: '#FFFCF9',
+                  border: '2px solid #111111',
+                  padding: '1.75rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '1rem',
+                      borderBottom: '1px solid #E5E7EB',
+                      paddingBottom: '0.75rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontSize: '0.65rem',
+                        fontWeight: 800,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.12em',
+                        color: asset.accent,
+                      }}
+                    >
+                      {asset.type}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontSize: '0.62rem',
+                        fontWeight: 800,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        backgroundColor: '#FFFFFF',
+                        border: '1px solid #111111',
+                        padding: '0.2rem 0.5rem',
+                      }}
+                    >
+                      {asset.tag}
+                    </span>
+                  </div>
+
+                  <h3
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: '1.2rem',
+                      fontWeight: 900,
+                      textTransform: 'uppercase',
+                      letterSpacing: '-0.02em',
+                      color: '#111111',
+                      marginBottom: '0.5rem',
+                    }}
+                  >
+                    {asset.title}
+                  </h3>
+
+                  <p
+                    style={{
+                      fontFamily: "'DM Sans', system-ui, sans-serif",
+                      fontSize: '0.88rem',
+                      lineHeight: 1.6,
+                      color: '#4B5563',
+                      marginBottom: '1.25rem',
+                    }}
+                  >
+                    {asset.desc}
+                  </p>
+                </div>
+
+                <div
+                  style={{
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #111111',
+                    padding: '0.65rem 0.85rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: '0.65rem',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      color: '#6B7280',
+                    }}
+                  >
+                    Target Cash Flow:
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: '0.85rem',
+                      fontWeight: 900,
+                      color: '#111111',
+                    }}
+                  >
+                    {asset.estRevenue}
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
-          <p className="disclaimer">Digital assets take research, testing, maintenance, and time to become profitable. Calculator projections are planning scenarios, not income guarantees.</p>
-        </section>
-      </FadeInSection>
+        </div>
+      </section>
 
-      <FadeInSection delay={240}>
-        <section className="story-section story-section--automation">
-          <div className="automation-map">
-            <div className="story-heading story-heading--left">
-              <span className="label label--blue">The quiet operating system</span>
-              <h2>You bring the judgment. Simple AI systems carry the repetition.</h2>
-              <p>DigitallyDefined helps you move from an idea to a repeatable asset workflow: research the problem, validate demand, create useful content, capture interest, follow up, and measure what is working without manually rebuilding every step.</p>
-            </div>
-            <div className="system-diagram" aria-label="Faceless digital asset workflow">
-              <div className="system-node system-node--orange"><small>YOU</small><strong>Direction + lived expertise</strong></div>
-              <div className="system-arrow">↓</div>
-              <div className="system-node system-node--black"><small>AI ASSISTANCE</small><strong>Research + structure + production</strong></div>
-              <div className="system-arrow">↓</div>
-              <div className="system-node system-node--blue"><small>AUTOMATION</small><strong>Capture + follow-up + measurement</strong></div>
-              <div className="system-arrow">↓</div>
-              <div className="system-node"><small>DIGITAL PROPERTY</small><strong>Compounding assets you control</strong></div>
-            </div>
-          </div>
-        </section>
-      </FadeInSection>
+      {/* 6. CALL TO ACTION INTERLOCK */}
+      <section
+        style={{
+          maxWidth: '1100px',
+          margin: '0 auto',
+          padding: '4.5rem 1.25rem',
+          textAlign: 'center',
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: '2px solid #111111',
+            padding: 'clamp(2.5rem, 5vw, 4rem) 1.5rem',
+            boxShadow: '6px 6px 0 0 rgba(0,0,0,1)',
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.15em',
+              color: '#F18B25',
+              display: 'inline-block',
+              marginBottom: '0.5rem',
+            }}
+          >
+            Ready to Build Your Digital Freedom?
+          </span>
 
-      <FadeInSection delay={260}>
-        <section className="legacy-section">
-          <div className="legacy-section__copy">
-            <span className="label label--orange">Beyond retirement</span>
-            <h2>A legacy is not only money. It is a working system your family does not have to start from zero.</h2>
-            <p>Generational trauma often includes scarcity, silence, financial confusion, and knowledge that disappears with one person. A documented digital portfolio can hold something different: owned assets, recurring processes, customer relationships, operating instructions, and the confidence that wealth-building is learnable.</p>
-          </div>
-          <div className="legacy-stack">
-            <div><DDLabel tone="orange">01</DDLabel><strong>Build</strong><small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Create useful assets around problems you understand.</small></div>
-            <div><DDLabel tone="orange">02</DDLabel><strong>Protect</strong><small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Document ownership, access, revenue, and maintenance.</small></div>
-            <div><DDLabel tone="orange">03</DDLabel><strong>Transfer</strong><small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Leave a clear digital inheritance, not a locked account mystery.</small></div>
-            <div><DDLabel tone="orange">04</DDLabel><strong>Teach</strong><small style={{ color: theme.colors.muted, fontFamily: theme.fonts.body }}>Pass down the system and the belief that assets can be built.</small></div>
-          </div>
-        </section>
-      </FadeInSection>
+          <h2
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '-0.03em',
+              color: '#111111',
+              maxWidth: '750px',
+              margin: '0 auto 1.25rem',
+            }}
+          >
+            Your Roadmap Is One 2-Minute Quiz Away.
+          </h2>
 
-      <FadeInSection delay={280}>
-        <section className="final-cta">
-          <span className="label label--blue">Your next chapter can own property</span>
-          <h2>Start with the truth of your numbers. Then build one useful asset.</h2>
-          <div className="action-row">
-            <DDCTA label="Calculate My Retirement Gap →" href="/gap" variant="outline" />
-            <DDCTA label="Find Your Superpower First →" href="/quiz?start=true" variant="primary" />
-          </div>
-          <p className="microcopy">Not sure where to start? Take the 2-minute quiz to find your digital asset superpower.</p>
-        </section>
-      </FadeInSection>
+          <p
+            style={{
+              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontSize: '1.05rem',
+              lineHeight: 1.6,
+              color: '#4B5563',
+              maxWidth: '620px',
+              margin: '0 auto 2.25rem',
+            }}
+          >
+            Discover your highest-margin digital superpower. Get your build sequence, starter asset recommendations, and access to all studio tools immediately.
+          </p>
 
-      <EmailSignup source="homepage-story" />
-    </>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '1rem',
+              flexWrap: 'wrap',
+            }}
+          >
+            <Link
+              to="/quiz"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '1rem 2.5rem',
+                backgroundColor: '#F18B25',
+                color: '#111111',
+                border: '2px solid #111111',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.85rem',
+                fontWeight: 900,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+              }}
+            >
+              <span>Start Free Quiz Now</span>
+              <ArrowRight size={16} />
+            </Link>
+
+            <Link
+              to="/pricing"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '1rem 2rem',
+                backgroundColor: '#FFFFFF',
+                color: '#111111',
+                border: '2px solid #111111',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.85rem',
+                fontWeight: 900,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+              }}
+            >
+              <span>Explore Plans ($47/mo)</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

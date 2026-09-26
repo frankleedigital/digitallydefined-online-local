@@ -67,11 +67,10 @@ export default function EmailSignup({ source = 'homepage' }) {
               style={{ marginBottom: '1rem' }}
             />
             <button
-              type="submit"
-              className="btn btn--primary"
-              style={{ width: '100%' }}
-              disabled={status === 'submitting'}
-            >
+                type="submit"
+                style={{ ...brutalButtonPrimary, width: '100%' }}
+                disabled={status === 'submitting'}
+              >
               {status === 'submitting' ? 'Sending...' : 'Send Me My Roadmap →'}
             </button>
           </form>

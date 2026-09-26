@@ -46,7 +46,7 @@
 .gap-hero .hero__tagline {
   max-width: 580px;
   margin: 0 auto 1.4rem;
-  color: #1A1A1A;
+  color: var(--color-text);
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 500;
   font-size: 0.92rem;
@@ -351,7 +351,7 @@
 .gap-result-label {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 0.9rem;
-  color: #5A5A5A;
+  color: var(--color-text-muted);
   margin-top: 0.5rem;
 }
 
@@ -436,12 +436,12 @@
 .gap-comparison-note {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 0.8rem;
-  color: #9CA3AF;
+  color: var(--color-text-muted);
 }
 
 .gap-win-message {
   padding: 1rem;
-  background: #F7F4EF;
+  background: var(--color-bg);
   border: 2px solid var(--color-accent);
 }
 
@@ -467,7 +467,7 @@
 .gap-privacy {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 0.85rem;
-  color: #5A5A5A;
+  color: var(--color-text-muted);
   margin-top: 1rem;
 }
 
@@ -606,7 +606,7 @@
   justify-content: space-between;
   gap: 1rem;
   margin: 0.7rem 0 0.45rem;
-  color: #525252;
+  color: var(--color-text-muted);
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 600;
   font-size: 0.62rem;

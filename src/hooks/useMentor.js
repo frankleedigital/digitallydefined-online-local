@@ -103,6 +103,11 @@ export function useMentor(topic = 'default', options = {}) {
         content: response.reply || response.message || 'I processed your request.',
       };
 
+      if (response.nextSteps || response.caution) {
+        assistantMessage.nextSteps = Array.isArray(response.nextSteps) ? response.nextSteps : [];
+        assistantMessage.caution = response.caution || '';
+      }
+
       if (response.filePath) assistantMessage.filePath = response.filePath;
       if (response.codeSnippet) assistantMessage.codeSnippet = response.codeSnippet;
       if (response.exactChange) assistantMessage.exactChange = response.exactChange;

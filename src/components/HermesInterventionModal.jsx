@@ -127,24 +127,25 @@ export default function HermesInterventionModal({
         </div>
 
         <div className="hermes-intervention-modal__actions">
-          <button 
+          <button
             className="btn btn--secondary"
+            style={{ ...brutalButtonOutline }}
             onClick={onDismiss}
           >
             Not now
           </button>
-          
+
           {onNextStep && (
-            <button 
-              className="btn btn--outline"
+            <button
+              style={{ ...brutalButtonOutline }}
               onClick={onNextStep}
             >
               Show next step →
             </button>
           )}
-          
-          <button 
-            className="btn btn--primary"
+
+          <button
+            style={{ ...brutalButtonPrimary }}
             onClick={onOpenChat}
           >
             Chat with Hermes →

@@ -232,6 +232,23 @@ export default function MentorWidget({ topic = 'default', systemPrompt, toolStat
                   {msg.content}
                 </div>
 
+                {/* Structured non-dev response block */}
+                {!msg.isDevGuidance && (msg.nextSteps || msg.caution) && (
+                  <div className="mentor-widget__structured">
+                    {Array.isArray(msg.nextSteps) && msg.nextSteps.length > 0 && (
+                      <div className="mentor-widget__block">
+                        <div className="mentor-widget__block-title">Next steps</div>
+                        <ol className="mentor-widget__list">
+                          {msg.nextSteps.map((step, idx) => (
+                            <li key={idx}>{step}</li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                    {msg.caution && <div className="mentor-widget__caution">{msg.caution}</div>}
+                  </div>
+                )}
+
                 {/* Optional Dev Blocks */}
                 {(msg.filePath || msg.codeSnippet || msg.exactChange) && (
                   <div className="mentor-widget__dev-block">

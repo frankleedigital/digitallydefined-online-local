@@ -1,68 +1,287 @@
-import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/quiz', label: 'Quiz' },
-  { href: '/tools', label: 'Tools' },
-  { href: '/about', label: 'Our Mission' },
-];
-
-const navCtas = [{ href: '/gap', label: 'Calculate My Gap →' }];
-
-const externalLinks = [];
+import React, { useState, useEffect } from 'react';
+import { Menu, X, Sparkles, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import Logo from './Logo';
+import { getUserState } from '../lib/userState';
+import { theme } from '../config/theme';
 
 export default function BrandNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userState, setUserState] = useState(getUserState());
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleUpdate = () => setUserState(getUserState());
+    window.addEventListener('dd_user_state_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('dd_user_state_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/framework', label: 'Framework' },
+    { href: '/start-here', label: 'Start Here' },
+    { href: '/quiz', label: 'Quiz' },
+    { href: '/tools', label: 'Tools' },
+    { href: '/builder', label: 'Builder Plan' },
+    { href: '/empire', label: 'Empire Plan' },
+    { href: '/pricing', label: 'Pricing' },
+    { href: '/about', label: 'Our Mission' },
+  ];
 
   return (
-    <header className="brand-nav">
-      <div className="brand-nav__inner dd-container">
-        <Link to="/" className="brand-logo" aria-label="DigitallyDefined home">
-          <span className="brand-logo__name">Digitally<span>Defined</span></span>
-          <small>Digital Reinvention for Gen X Women</small>
+    <header
+      style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        backgroundColor: '#FFFCF9',
+        borderBottom: '2px solid #111111',
+        padding: '0.85rem 1.25rem',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '1.25rem',
+          flexWrap: 'nowrap',
+        }}
+      >
+        {/* Brand Logo */}
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+          <Logo showTagline={false} size="medium" />
         </Link>
 
-        <nav className="desktop-nav brand-nav__links" aria-label="Primary navigation">
-          {navLinks.map((link) => (
-            <Link key={link.href} to={link.href}>{link.label}</Link>
-          ))}
+        {/* Desktop Navigation Links */}
+        <nav
+          style={{
+            display: 'none',
+            alignItems: 'center',
+            gap: '1.25rem',
+          }}
+          className="desktop-nav-menu"
+        >
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                to={link.href}
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  color: isActive ? '#F18B25' : '#2D3748',
+                  borderBottom: isActive ? '2px solid #F18B25' : '2px solid transparent',
+                  paddingBottom: '2px',
+                  transition: 'color 150ms ease',
+                }}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        {navCtas.map((link) => (
-          <Link key={link.href} to={link.href} className="nav-cta">
-            {link.label}
+        {/* Action CTAs + Personalization Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {userState.hasQuiz && userState.profile ? (
+            <Link
+              to="/tools/roadmap"
+              style={{
+                display: 'none',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.35rem 0.65rem',
+                backgroundColor: '#FFFFFF',
+                border: '2px solid #111111',
+                fontSize: '0.65rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: '#2D3748',
+                textDecoration: 'none',
+              }}
+              className="user-progress-badge"
+            >
+              <Sparkles size={13} color="#F18B25" />
+              <span>{userState.profile.title.replace('The ', '')}</span>
+            </Link>
+          ) : null}
+
+          <Link
+            to={userState.hasQuiz ? '/gap' : '/quiz'}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              padding: '0.5rem 1rem',
+              backgroundColor: '#F18B25',
+              color: '#111111',
+              border: '2px solid #111111',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <span>{userState.hasQuiz ? 'Calculate Gap →' : 'Take Free Quiz →'}</span>
           </Link>
-        ))}
 
-        {externalLinks.map((link) => (
-          <a key={link.href} href={link.href} className="nav-cta" target="_blank" rel="noreferrer">
-            {link.label}
+          <a
+            href="https://dashboard.digitallydefined.online"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'none',
+              alignItems: 'center',
+              gap: '0.4rem',
+              padding: '0.5rem 0.85rem',
+              backgroundColor: '#FFFFFF',
+              color: '#111111',
+              border: '2px solid #111111',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+            }}
+            className="dashboard-link-btn"
+          >
+            <span>Dashboard</span>
           </a>
-        ))}
 
-        <button
-          type="button"
-          className="mobile-menu-btn brand-nav__menu"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-navigation"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-        >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+          {/* Mobile Menu Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '38px',
+              height: '38px',
+              backgroundColor: '#FFFFFF',
+              border: '2px solid #111111',
+              cursor: 'pointer',
+              color: '#111111',
+            }}
+            className="mobile-toggle-btn"
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
+      {/* Mobile Menu Drawer */}
       {menuOpen && (
-        <nav id="mobile-navigation" className="brand-nav__mobile" aria-label="Mobile navigation">
+        <div
+          style={{
+            marginTop: '0.75rem',
+            paddingTop: '0.75rem',
+            borderTop: '2px solid #111111',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.65rem',
+          }}
+        >
           {navLinks.map((link) => (
-            <Link key={link.href} to={link.href} onClick={() => setMenuOpen(false)}>
+            <Link
+              key={link.href}
+              to={link.href}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.85rem',
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                color: location.pathname === link.href ? '#F18B25' : '#2D3748',
+                padding: '0.4rem 0.25rem',
+              }}
+            >
               {link.label}
             </Link>
           ))}
-        </nav>
+          <div style={{ paddingTop: '0.5rem', borderTop: '1px solid #E5E7EB', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <Link
+              to="/gap"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                flex: 1,
+                textAlign: 'center',
+                padding: '0.6rem',
+                backgroundColor: '#FFFFFF',
+                border: '2px solid #111111',
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                color: '#111111',
+              }}
+            >
+              Retirement Gap
+            </Link>
+            <a
+              href="https://dashboard.digitallydefined.online"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                flex: 1,
+                textAlign: 'center',
+                padding: '0.6rem',
+                backgroundColor: '#111111',
+                border: '2px solid #111111',
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                color: '#FFFFFF',
+              }}
+            >
+              Open Dashboard
+            </a>
+          </div>
+        </div>
       )}
+
+      {/* Embedded CSS for responsive breakpoint behavior */}
+      <style>{`
+        @media (min-width: 1024px) {
+          .desktop-nav-menu {
+            display: flex !important;
+          }
+          .mobile-toggle-btn {
+            display: none !important;
+          }
+          .dashboard-link-btn,
+          .user-progress-badge {
+            display: inline-flex !important;
+          }
+        }
+      `}</style>
     </header>
   );
 }

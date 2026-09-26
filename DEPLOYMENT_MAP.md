@@ -68,7 +68,7 @@ User visits digitallydefined.online
 | `DigitallyDefined-Dashboard` | `DigitallyDefined-Backend` | HTTP API calls (`lib/hermesClient.js` → `https://digitallydefined-os-backend.vercel.app/api/hermes`) |
 | `DigitallyDefined-Dashboard` | Supabase | Auth, database (direct client connection) |
 | `DigitallyDefined-Backend` | Supabase | Edge functions, database |
-| `DigitallyDefined-Backend` | OmniRoute | AI gateway (`lib/omniroute.js`) |
+|| `DigitallyDefined-Backend` | OmniRoute | AI gateway (`lib/omniroute.js`, `supabase/functions/_shared/omniroute.ts`) ||
 | `DigitallyDefined-Backend` | Social APIs | Facebook, Instagram, LinkedIn, Threads, TikTok, YouTube, Pinterest, Brevo, SendPulse |
 | `DigitallyDefined-Backend` | Notion API | Content sync, webhooks |
 | `DigitallyDefined-Backend` | AgentOps | AI monitoring (optional) |

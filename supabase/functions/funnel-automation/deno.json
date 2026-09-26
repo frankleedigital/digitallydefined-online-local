@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "funnel-automation": {
+      "name": "funnel-automation",
+      "description": "Email capture & monetization funnel: quiz completions -> lead scoring -> email routing -> Notion sync -> dashboard metrics"
+    }
+  }
+}

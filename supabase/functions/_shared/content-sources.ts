@@ -3,11 +3,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const POST_TEMPLATES = [
-  { id: 'daily-micro' },
-  { id: 'daily-principle' },
-  { id: 'daily-tool-promo' },
-  { id: 'weekly-community-prompt' },
-  { id: 'monthly-niche-challenge' },
+  { id: 'daily-micro', pillar: 'Digital Assets & Product Creation', format: 'plain-text' },
+  { id: 'daily-principle', pillar: 'Mindset & Reinvention', format: 'plain-text' },
+  { id: 'daily-tool-promo', pillar: 'AI & Automation', format: 'plain-text' },
+  { id: 'weekly-community-prompt', pillar: 'Financial Resilience & Legacy', format: 'plain-text' },
+  { id: 'monthly-niche-challenge', pillar: 'Digital Real Estate', format: 'plain-text' },
 ];
 
 const CONTENT_BASE = path.join(process.cwd(), 'content');
@@ -21,6 +21,10 @@ function parseResult(rawBody) {
 
 function buildPostText({ source, resultKey, scorecardTier, calculatorInsight, pillarSummary, niche, tool }) {
   if (resultKey) return `Digital Superpower: ${resultKey}${niche ? ` — ${niche}` : ''}`;
+  if (calculatorInsight) return `Planning insight: ${calculatorInsight}`;
+  if (scorecardTier) return `Niche score: ${scorecardTier}`;
+  if (pillarSummary) return `Pillar focus: ${pillarSummary}`;
+  if (tool) return `Tool highlight: ${tool}`;
   return null;
 }
 

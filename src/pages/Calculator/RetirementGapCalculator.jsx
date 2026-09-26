@@ -26,7 +26,7 @@ const ASSET_TYPES = [
   { id: 'templates', name: 'Template Hubs & Printables', icon: '📋', minYield: 50, maxYield: 2000, defaultYield: 500, color: '#F18B25' },
   { id: 'newsletters', name: 'Paid Newsletters', icon: '✉️', minYield: 500, maxYield: 5000, defaultYield: 1500, color: '#47B7D4' },
   { id: 'youtube', name: 'YouTube Automation', icon: '🎬', minYield: 300, maxYield: 8000, defaultYield: 1000, color: '#2D3748' },
-  { id: 'rankandrent', name: 'Rank & Rent Sites', icon: '🏠', minYield: 500, maxYield: 5000, defaultYield: 1500, color: '#3B153E' },
+  { id: 'rankandrent', name: 'Rank & Rent Sites', icon: 'H', minYield: 500, maxYield: 5000, defaultYield: 1500, color: 'var(--color-text)' },
   { id: 'digitalproducts', name: 'Digital Products', icon: '📦', minYield: 100, maxYield: 3000, defaultYield: 500, color: '#F18B25' },
 ];
 

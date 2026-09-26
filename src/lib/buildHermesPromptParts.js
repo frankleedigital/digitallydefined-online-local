@@ -151,7 +151,7 @@ STRUCTURE YOU MUST FOLLOW:
 [Number]. [Industry Name]
 Why it works: One sentence explaining the pain point or demand.
 Asset examples:
-– Write 3–5 asset examples on separate lines, each beginning with a dash. These dashes are plain text, not markdown bullets.
+- Write 3–5 asset examples on separate lines, each beginning with a dash. These dashes are plain text, not markdown bullets.
 
 4. After the numbered industries, write a section titled: How Hermes Should Guide You Next. This must be plain text.
 

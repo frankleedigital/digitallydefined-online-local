@@ -8,6 +8,7 @@ import { useToolState } from '../../context/ToolStateContext.jsx';
 import FadeInSection from '../../components/FadeInSection';
 import DDCTA from '../../components/ui/DDCTA';
 import DDLabel from '../../components/ui/DDLabel';
+import { setUserQuizData } from '../../lib/userState';
 import { theme, brutalCard, brutalHeading, brutalEyebrow, brutalButtonPrimary, brutalButtonOutline } from '../../config/theme';
 
 const QUESTIONS = [
@@ -155,6 +156,13 @@ export default function DigitalSuperpowerQuiz() {
       quizComplete: true,
       quizSuperpower: key,
       quizAnswers: finalAnswers,
+    });
+
+    setUserQuizData({
+      superpower: key,
+      answers: finalAnswers,
+      name: contact.name.trim(),
+      email: contact.email.trim(),
     });
 
     if (intelligenceError) {

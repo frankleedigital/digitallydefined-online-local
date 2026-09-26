@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "funnel-automation": {
+      "verify_jwt": false
+    }
+  }
+}

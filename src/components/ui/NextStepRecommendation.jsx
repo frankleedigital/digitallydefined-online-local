@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, TrendingUp, Target, Users } from 'lucide-react';
+import { ArrowRight, TrendingUp, Target, Users, Lightbulb } from 'lucide-react';
 import { IconMessageCircle } from '../../lib/icons.jsx';
+import { theme, brutalBorder, brutalCard, brutalHeading, brutalButtonPrimary, brutalButtonOutline } from '../../config/theme';
 
 /**
  * NextStepRecommendation
@@ -251,27 +252,25 @@ export default function NextStepRecommendation({
   
   if (loading || !recommendation) {
     return (
-      <div className="next-step-recommendation next-step-recommendation--loading">
-        <div className="spinner"></div>
-        <p>Generating your personalized next step...</p>
+      <div style={{ ...brutalCard, padding: '2rem', marginTop: '2rem', textAlign: 'center' }}>
+        <p style={{ fontFamily: theme.fonts.body, color: theme.colors.textMuted }}>Generating your personalized next step...</p>
       </div>
     );
   }
-  
+
   return (
-    <section className="next-step-recommendation">
-      <div className="next-step-recommendation__header">
-        <h3>{recommendation.title}</h3>
-        <p className="next-step-recommendation__description">
+    <section style={{ ...brutalCard, padding: '2rem', marginTop: '2rem', textAlign: 'center' }}>
+      <div style={{ maxWidth: 600, margin: '0 auto' }}>
+        <h3 style={{ ...brutalHeading, fontSize: '1.5rem', marginBottom: '0.75rem' }}>{recommendation.title}</h3>
+        <p style={{ fontFamily: theme.fonts.body, fontSize: '1rem', lineHeight: 1.6, color: theme.colors.textMuted, margin: '0 auto 1.5rem' }}>
           {recommendation.description}
         </p>
       </div>
-      
-      <div className="next-step-recommendation__actions">
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
         {recommendation.primaryAction && (
-          <a 
+          <a
             href={recommendation.primaryAction.href}
-            className="btn btn--primary"
+            style={{ ...brutalButtonPrimary, display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', fontSize: '0.95rem', fontFamily: theme.fonts.body }}
             onClick={(e) => {
               if (recommendation.primaryAction.action === 'retry') {
                 e.preventDefault();
@@ -288,10 +287,9 @@ export default function NextStepRecommendation({
             {recommendation.primaryAction.label}
           </a>
         )}
-        
         {recommendation.secondaryAction && (
           <button
-            className="btn btn--outline"
+            style={{ ...brutalButtonOutline, display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', fontSize: '0.95rem', fontFamily: theme.fonts.body }}
             onClick={() => {
               if (recommendation.secondaryAction.hermes && onAskHermes) {
                 onAskHermes(recommendation.secondaryAction.label);
@@ -303,92 +301,6 @@ export default function NextStepRecommendation({
           </button>
         )}
       </div>
-      
-      <style jsx>{`
-        .next-step-recommendation {
-          background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-          border: 2px solid #bae6fd;
-          border-radius: 12px;
-          padding: 2rem;
-          margin-top: 2rem;
-          text-align: center;
-        }
-        
-        .next-step-recommendation--loading {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-        }
-        
-        .next-step-recommendation__header h3 {
-          font-size: 1.5rem;
-          margin-bottom: 0.75rem;
-          color: #3B153E;
-        }
-        
-        .next-step-recommendation__description {
-          font-size: 1rem;
-          line-height: 1.6;
-          color: #5A5A5A;
-          max-width: 600px;
-          margin: 0 auto 1.5rem;
-        }
-        
-        .next-step-recommendation__actions {
-          display: flex;
-          gap: 1rem;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-        
-        .btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.75rem 1.5rem;
-          border-radius: 8px;
-          font-weight: 600;
-          text-decoration: none;
-          transition: all 0.2s;
-          cursor: pointer;
-          border: none;
-          font-size: 0.95rem;
-        }
-        
-        .btn--primary {
-          background: #4db6d1;
-          color: #fff;
-        }
-        
-        .btn--primary:hover {
-          background: #3aa5c0;
-          transform: translateY(-2px);
-        }
-        
-        .btn--outline {
-          background: transparent;
-          color: #4db6d1;
-          border: 2px solid #4db6d1;
-        }
-        
-        .btn--outline:hover {
-          background: #f0f9ff;
-        }
-        
-        .spinner {
-          width: 32px;
-          height: 32px;
-          border: 3px solid #e0f2fe;
-          border-top-color: #4db6d1;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </section>
   );
 }

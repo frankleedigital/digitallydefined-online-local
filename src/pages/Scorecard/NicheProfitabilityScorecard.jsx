@@ -81,7 +81,7 @@ export default function NicheProfitabilityScorecard() {
   };
 
   const allAnswered = CRITERIA.every(c => scores[c.key] != null && scores[c.key] > -1);
-  const tierColor = (tier) => tier === 'A' ? '#15803D' : tier === 'B' ? '#4db6d1' : tier === 'C' ? '#f18b25' : '#c20f0a';
+  const tierColor = (tier) => tier === 'A' ? 'var(--color-success)' : tier === 'B' ? 'var(--color-accent)' : tier === 'C' ? 'var(--color-accent)' : 'var(--color-red)';
 
   if (result) {
     const copy = tierCopy(result.tier);
@@ -103,7 +103,7 @@ export default function NicheProfitabilityScorecard() {
                 {Math.round(result.pct * 100)}%
               </div>
               <div style={{ marginTop: 'var(--space-sm)', fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: '1.5rem', textTransform: 'uppercase' }}>{copy.title}</div>
-              <p style={{ maxWidth: '480px', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.7, color: '#5A5A5A' }}>{copy.body}</p>
+              <p style={{ maxWidth: '480px', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--color-text-muted)' }}>{copy.body}</p>
             </div>
 
             <div className="card" style={{ marginBottom: 'var(--space-lg)', background: '#fff' }}>
@@ -132,7 +132,7 @@ export default function NicheProfitabilityScorecard() {
 
             {/* Breakdown table */}
             <div className="card" style={{ marginBottom: 'var(--space-lg)' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '0.9rem 0', borderBottom: '1px solid rgba(0,0,0,0.08)', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#9CA3AF' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '0.9rem 0', borderBottom: '1px solid rgba(0,0,0,0.08)', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>
                 <span>Criterion</span>
                 <span>Score</span>
               </div>
@@ -140,9 +140,9 @@ export default function NicheProfitabilityScorecard() {
                 <div key={c.key} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '0.85rem 0', borderBottom: c.key !== 'demand_market' ? '1px solid rgba(0,0,0,0.04)' : 'none' }}>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{c.label}</div>
-                    <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>{c.description}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{c.description}</div>
                   </div>
-                  <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: '1.2rem', color: '#3B153E' }}>{scores[c.key]} / 10</div>
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: '1.2rem', color: 'var(--color-text)' }}>{scores[c.key]} / 10</div>
                 </div>
               ))}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '0.85rem 0', marginTop: '0.5rem', borderTop: '2px solid rgba(0,0,0,0.08)', fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: '1rem' }}>
@@ -155,17 +155,17 @@ export default function NicheProfitabilityScorecard() {
             <div className="card" style={{ marginBottom: 'var(--space-lg)', background: '#fff' }}>
               <p className="section__eyebrow">What Your Score Means</p>
               <h2 style={{ fontSize: '1.4rem', marginBottom: '0.75rem' }}>A quick way to read your result</h2>
-              <p style={{ lineHeight: 1.7, color: '#5A5A5A', marginBottom: '1rem' }}>
+              <p style={{ lineHeight: 1.7, color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
                 Your score is a percentage out of 100. Here&rsquo;s how to think about it before you choose your next step:
               </p>
-              <ul style={{ lineHeight: 1.9, color: '#5A5A5A', paddingLeft: '1.25rem', margin: 0 }}>
+              <ul style={{ lineHeight: 1.9, color: 'var(--color-text-muted)', paddingLeft: '1.25rem', margin: 0 }}>
                 <li><strong>0\u201320</strong> — Low signal. The idea likely needs more market proof before it&rsquo;s worth your time.</li>
                 <li><strong>21\u201340</strong> — Mixed at best. Look closely at competition and monetization before building.</li>
                 <li><strong>41\u201360</strong> — Worth exploring. Choose the weakest criteria and dig a little deeper there.</li>
                 <li><strong>61\u201380</strong> — Strong lean-in. Validate demand, then launch a small first version.</li>
                 <li><strong>81\u2013100</strong> — Excellent. This is close to a build-and-go niche. Protect your positioning early.</li>
               </ul>
-              <p style={{ lineHeight: 1.7, color: '#5A5A5A', marginTop: '1rem', fontStyle: 'italic' }}>
+              <p style={{ lineHeight: 1.7, color: 'var(--color-text-muted)', marginTop: '1rem', fontStyle: 'italic' }}>
                 Whatever your number, it&rsquo;s a starting point — not a label on you. One idea scoring low simply means you move on to the next.
               </p>
             </div>
@@ -174,7 +174,7 @@ export default function NicheProfitabilityScorecard() {
             <div style={{ textAlign: 'center' }}>
               <a href="/tools/calculator" className="btn btn--primary">Calculate My ROI →</a>
               <button onClick={() => { setResult(null); setScores({}); setInsight(null); }} className="btn btn--ghost" style={{ marginLeft: 'var(--space-sm)' }}>Reassess Niche</button>
-              <p style={{ fontSize: '0.82rem', color: '#9CA3AF', marginTop: 'var(--space-sm)' }}>Scores are based on simplified criteria. Use this as a filter, not a final verdict.</p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: 'var(--space-sm)' }}>Scores are based on simplified criteria. Use this as a filter, not a final verdict.</p>
             </div>
           </div>
         </section>
@@ -199,12 +199,12 @@ export default function NicheProfitabilityScorecard() {
         <div className="container container--narrow">
           <div className="card" style={{ padding: 'var(--space-lg)', background: '#fff' }}>
             <h2 style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>How This Scorecard Works</h2>
-            <p style={{ lineHeight: 1.7, color: '#5A5A5A', marginBottom: '1rem' }}>
+            <p style={{ lineHeight: 1.7, color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
               This tool is a quick, honest first look at a business idea — a filter, not a final verdict. It scores six simple
               criteria on a scale of <strong>0 to 10</strong> and combines them into one overall percentage. You don&rsquo;t need
               perfect data or fancy research. Give your best honest rating and you&rsquo;ll get a clear sense of where your niche stands.
             </p>
-            <ul style={{ lineHeight: 1.8, color: '#5A5A5A', paddingLeft: '1.25rem', margin: 0 }}>
+            <ul style={{ lineHeight: 1.8, color: 'var(--color-text-muted)', paddingLeft: '1.25rem', margin: 0 }}>
               <li><strong>Rate each criterion from 0 to 10</strong> based on your honest gut and what you already know.</li>
               <li><strong>Answer every field</strong> — all six are required before your score unlocks.</li>
               <li><strong>Leave the math to the tool.</strong> You just rate the idea; the weighting is handled for you.</li>
@@ -228,7 +228,7 @@ export default function NicheProfitabilityScorecard() {
                 <div key={criterion.key} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'center', padding: '1rem 0', borderBottom: criterion.key !== 'ease_of_entry' ? '1px solid rgba(0,0,0,0.06)' : 'none' }}>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: '0.15rem' }}>{criterion.label}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#9CA3AF' }}>{criterion.description}</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>{criterion.description}</div>
                     <div style={{ fontSize: '0.8rem', color: '#7A7A7A', marginTop: '0.35rem', lineHeight: 1.55 }}>{CRITERIA_HELP[criterion.key]}</div>
                   </div>
                   <input type="number" min="0" max="10" value={scores[criterion.key] ?? ''} onChange={e => handleScoreChange(criterion.key, e.target.value)}
@@ -239,7 +239,7 @@ export default function NicheProfitabilityScorecard() {
 
             <div style={{ textAlign: 'center', marginTop: 'var(--space-lg)' }}>
               <button type="submit" disabled={!allAnswered} className="btn btn--primary" style={{ opacity: allAnswered ? 1 : 0.5, cursor: allAnswered ? 'pointer' : 'default' }}>Calculate My Score</button>
-              <p style={{ fontSize: '0.82rem', color: '#9CA3AF', marginTop: '0.75rem' }}>Enter a score from 0 to 10 for each item. All fields must be filled to submit.</p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: '0.75rem' }}>Enter a score from 0 to 10 for each item. All fields must be filled to submit.</p>
             </div>
           </form>
         </div>
@@ -249,33 +249,33 @@ export default function NicheProfitabilityScorecard() {
         <div className="container container--narrow">
           <p className="section__eyebrow">See It in Action</p>
           <h2 style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>Example Niche Scoring Scenarios</h2>
-          <p style={{ lineHeight: 1.7, color: '#5A5A5A', marginBottom: '1.5rem' }}>
+          <p style={{ lineHeight: 1.7, color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
             Not sure what an honest score feels like? Here are three made-up examples showing how different ideas land.
           </p>
           <div style={{ display: 'grid', gap: '1.25rem', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
             <div className="card" style={{ background: '#fff', padding: '1.25rem' }}>
               <h3 style={{ fontSize: '1.05rem', marginBottom: '0.5rem' }}>Strong: Emergency Plumbing in Phoenix</h3>
-              <ul style={{ color: '#5A5A5A', lineHeight: 1.8, paddingLeft: '1.25rem', margin: '0 0 0.75rem' }}>
+              <ul style={{ color: 'var(--color-text-muted)', lineHeight: 1.8, paddingLeft: '1.25rem', margin: '0 0 0.75rem' }}>
                 <li>Demand 9 · Competition 7 · Monetization 8</li>
                 <li>Sustainability 8 · Ease 6 · Privacy 7</li>
               </ul>
-              <p style={{ color: '#5A5A5A', lineHeight: 1.7, margin: 0 }}>People search daily, revenue paths are clear, and it can run discreetly behind the scenes. A high score and an easy yes.</p>
+              <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, margin: 0 }}>People search daily, revenue paths are clear, and it can run discreetly behind the scenes. A high score and an easy yes.</p>
             </div>
             <div className="card" style={{ background: '#fff', padding: '1.25rem' }}>
               <h3 style={{ fontSize: '1.05rem', marginBottom: '0.5rem' }}>Worth Testing: Local Food Tours</h3>
-              <ul style={{ color: '#5A5A5A', lineHeight: 1.8, paddingLeft: '1.25rem', margin: '0 0 0.75rem' }}>
+              <ul style={{ color: 'var(--color-text-muted)', lineHeight: 1.8, paddingLeft: '1.25rem', margin: '0 0 0.75rem' }}>
                 <li>Demand 6 · Competition 5 · Monetization 7</li>
                 <li>Sustainability 6 · Ease 8 · Privacy 9</li>
               </ul>
-              <p style={{ color: '#5A5A5A', lineHeight: 1.7, margin: 0 }}>Nice demand and easy to run, but local competition is a question mark. Worth a small test before going all in.</p>
+              <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, margin: 0 }}>Nice demand and easy to run, but local competition is a question mark. Worth a small test before going all in.</p>
             </div>
             <div className="card" style={{ background: '#fff', padding: '1.25rem' }}>
               <h3 style={{ fontSize: '1.05rem', marginBottom: '0.5rem' }}>Needs Research: AI Chatbots for Everyone</h3>
-              <ul style={{ color: '#5A5A5A', lineHeight: 1.8, paddingLeft: '1.25rem', margin: '0 0 0.75rem' }}>
+              <ul style={{ color: 'var(--color-text-muted)', lineHeight: 1.8, paddingLeft: '1.25rem', margin: '0 0 0.75rem' }}>
                 <li>Demand 8 · Competition 3 · Monetization 4</li>
                 <li>Sustainability 5 · Ease 3 · Privacy 8</li>
               </ul>
-              <p style={{ color: '#5A5A5A', lineHeight: 1.7, margin: 0 }}>Plenty of hype, but heavy competition and a muddy money path bring the score down. It needs a much sharper focus.</p>
+              <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, margin: 0 }}>Plenty of hype, but heavy competition and a muddy money path bring the score down. It needs a much sharper focus.</p>
             </div>
           </div>
         </div>
@@ -285,7 +285,7 @@ export default function NicheProfitabilityScorecard() {
         <div className="container container--narrow">
           <div className="card" style={{ background: 'rgba(77, 182, 209, 0.08)', borderLeft: '4px solid var(--color-blue)', padding: '1.5rem' }}>
             <h2 style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>You&rsquo;ve Got This — Take a Breath</h2>
-            <p style={{ lineHeight: 1.8, color: '#5A5A5A', margin: 0 }}>
+            <p style={{ lineHeight: 1.8, color: 'var(--color-text-muted)', margin: 0 }}>
               It&rsquo;s completely normal to feel a little unsure at first. Most people score their first idea either too high
               or too low — that&rsquo;s part of learning. You don&rsquo;t need to perfect everything today. This score isn&rsquo;t a test of
               you; it&rsquo;s a gentle compass for your next step. One idea isn&rsquo;t your whole future. Stay calm, stay private, and
@@ -299,7 +299,7 @@ export default function NicheProfitabilityScorecard() {
         <div className="container container--narrow" style={{ textAlign: 'center' }}>
           <p className="section__eyebrow">What&rsquo;s Next</p>
           <h2 style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>Next Steps After You Score</h2>
-          <p style={{ lineHeight: 1.7, color: '#5A5A5A', maxWidth: '540px', margin: '0 auto 1.5rem' }}>
+          <p style={{ lineHeight: 1.7, color: 'var(--color-text-muted)', maxWidth: '540px', margin: '0 auto 1.5rem' }}>
             A strong score is a great starting point. Move forward at your own pace with these free companion tools.
           </p>
           <div className="action-row">
@@ -308,7 +308,7 @@ export default function NicheProfitabilityScorecard() {
             <a href="/gap" className="btn btn--ghost">Check My Retirement Gap</a>
             <a href="/freedom" className="btn btn--ghost">Model My Freedom Number</a>
           </div>
-          <p style={{ fontSize: '0.82rem', color: '#9CA3AF', marginTop: '1rem' }}>Everything here stays in your browser. You&rsquo;re never locked in.</p>
+          <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: '1rem' }}>Everything here stays in your browser. You&rsquo;re never locked in.</p>
         </div>
       </section>
     </>

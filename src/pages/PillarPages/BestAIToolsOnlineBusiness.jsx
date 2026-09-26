@@ -26,14 +26,14 @@ const subStyle = {
   fontWeight: 700,
   letterSpacing: '0.15em',
   textTransform: 'uppercase',
-  color: '#4db6d1',
+  color: 'var(--color-accent)',
   marginBottom: '1.5rem',
 };
 
 const introStyle = {
   fontSize: '0.95rem',
   lineHeight: 1.7,
-  color: '#374151',
+  color: 'var(--color-text)',
   marginBottom: '2rem',
   maxWidth: '720px',
   marginLeft: 'auto',
@@ -66,7 +66,7 @@ const listItemStyle = {
   alignItems: 'flex-start',
   gap: '0.75rem',
   padding: '0.9rem 0',
-  borderBottom: '1px solid #E5E7EB',
+  borderBottom: '1px solid var(--color-border)',
   fontSize: '0.95rem',
   lineHeight: 1.6,
 };
@@ -78,7 +78,7 @@ const toolNameStyle = {
 
 const primaryBtnStyle = {
   display: 'inline-block',
-  background: '#F18B25',
+  background: 'var(--color-accent)',
   color: '#fff',
   fontFamily: "Inter, sans-serif",
   fontWeight: 700,
@@ -93,7 +93,7 @@ const primaryBtnStyle = {
 
 const helperStyle = {
   fontSize: '0.8rem',
-  color: '#6B7280',
+  color: 'var(--color-text-muted)',
   marginTop: '0.75rem',
   textAlign: 'center',
 };
@@ -160,7 +160,7 @@ export default function BestAIToolsOnlineBusiness() {
           </div>
         ))}
 
-        <div style={{ border: '1px solid #111111', background: '#fff', padding: '1.75rem', marginBottom: '2rem' }}>
+        <div style={{ border: '1px solid #111111', background: 'var(--color-card)', padding: '1.75rem', marginBottom: '2rem' }}>
           <h3 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 800, fontSize: '1rem', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
             The rule of one
           </h3>

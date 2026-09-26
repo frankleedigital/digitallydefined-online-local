@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { scoreNiche, tierCopy, CRITERIA } from './ScorecardLogic';
 import { callAgent } from '../../lib/buzz-agents';
 import { useToolState } from '../../context/ToolStateContext.jsx';
+import { setUserScorecardData } from '../../lib/userState';
 import AiMentorChatBox from '../../components/AiMentorChatBox';
 import FadeInSection from '../../components/FadeInSection';
 import { theme, brutalCard, brutalHeading } from '../../config/theme';
@@ -60,6 +61,15 @@ export default function NicheProfitabilityScorecard() {
       nicheInputs: scores,
       strength,
       weakness,
+    });
+
+    setUserScorecardData({
+      nicheName: nicheName || 'Unnamed niche',
+      score: Math.round(scored.pct * 100),
+      tier: scored.tier,
+      strength,
+      weakness,
+      inputs: scores,
     });
 
     try {

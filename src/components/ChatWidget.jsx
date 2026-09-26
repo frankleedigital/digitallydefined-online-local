@@ -2,6 +2,34 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, Send, Trash2, X } from 'lucide-react';
 import { callSupabaseEdge } from '../lib/supabase-edge';
 
+function StructuredMessage({ msg }) {
+  const reply = msg.reply || msg.content || '';
+  const nextSteps = Array.isArray(msg.nextSteps) ? msg.nextSteps : [];
+  const caution = msg.caution || '';
+  const hasStructured = nextSteps.length > 0 || caution;
+
+  return (
+    <div className={`chat-widget__message chat-widget__message--assistant`}>
+      {reply ? <div className="chat-widget__reply">{reply}</div> : null}
+      {hasStructured ? (
+        <div className="chat-widget__structured">
+          {nextSteps.length > 0 ? (
+            <div className="chat-widget__block">
+              <div className="chat-widget__block-title">Next steps</div>
+              <ol className="chat-widget__list">
+                {nextSteps.map((step, idx) => (
+                  <li key={idx}>{step}</li>
+                ))}
+              </ol>
+            </div>
+          ) : null}
+          {caution ? <div className="chat-widget__caution">{caution}</div> : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export default function ChatWidget({ position = 'bottom-right' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -16,49 +44,53 @@ export default function ChatWidget({ position = 'bottom-right' }) {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isOpen]);
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isOpen]);
 
-const sendMessage = async () => {
-  if (!currentMessage?.trim() || loading) return;
+  const sendMessage = async () => {
+    if (!currentMessage?.trim() || loading) return;
 
-  const userMsg = { role: 'user', content: currentMessage.trim() };
-  setMessages(prev => [...prev, userMsg]);
-  setCurrentMessage('');
-  setLoading(true);
-  setError(null);
+    const userMsg = { role: 'user', content: currentMessage.trim() };
+    setMessages(prev => [...prev, userMsg]);
+    setCurrentMessage('');
+    setLoading(true);
+    setError(null);
 
-  try {
-    const data = await callSupabaseEdge('hermes', {
-      message: userMsg.content,
-      userId: 'website-user'
-    });
+    try {
+      const data = await callSupabaseEdge('hermes', {
+        message: userMsg.content,
+        userId: 'website-user',
+        structured: true
+      });
 
-    const reply = data?.reply || 'I responded.';
-    setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
-  } catch (err) {
-    console.error('Chat error:', err);
-    setMessages(prev => [...prev, {
-      role: 'assistant',
-      content: "I'm having trouble connecting right now. Please try again in a moment."
-    }]);
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
+      const assistantMessage = {
+        role: 'assistant',
+        reply: data?.reply || '',
+        nextSteps: Array.isArray(data?.nextSteps) ? data.nextSteps : [],
+        caution: data?.caution || '',
+        content: data?.reply || 'I responded.'
+      };
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (err) {
+      console.error('Chat error:', err);
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: "I'm having trouble connecting right now. Please try again in a moment."
+      }]);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -81,7 +113,6 @@ const sendMessage = async () => {
 
   return (
     <>
-      {/* Chat Toggle Button */}
       <button
         onClick={toggleOpen}
         className="chat-toggle-btn"
@@ -90,16 +121,12 @@ const sendMessage = async () => {
         {isOpen ? <X size={20} /> : <MessageCircle size={20} />}
       </button>
 
-      {/* Chat Window */}
       {isOpen && (
-        <div
-          className="chat-widget"
-        >
-          {/* Header */}
+        <div className="chat-widget">
           <div className="chat-widget__header">
             <div>
-              <div style={{ fontWeight: 900, fontSize: '1rem' }}>AI Planning Guide</div>
-              <div style={{ fontSize: '0.7rem', color: '#525252' }}>Faceless Digital Real Estate</div>
+              <div className="chat-widget__title">AI Planning Guide</div>
+              <div className="chat-widget__subtitle">Faceless Digital Real Estate</div>
             </div>
             <button
               onClick={clearChat}
@@ -111,28 +138,29 @@ const sendMessage = async () => {
             </button>
           </div>
 
-          {/* Messages */}
           <div className="chat-widget__messages">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`chat-widget__message chat-widget__message--${msg.role}`}
-              >
-                {msg.content}
-              </div>
-            ))}
+            {messages.map((msg, idx) =>
+              msg.role === 'assistant' && (msg.reply || msg.nextSteps || msg.caution) ? (
+                <StructuredMessage key={idx} msg={msg} />
+              ) : (
+                <div
+                  key={idx}
+                  className={`chat-widget__message chat-widget__message--${msg.role}`}
+                >
+                  {msg.content}
+                </div>
+              )
+            )}
             {loading && (
               <div className="chat-widget__message chat-widget__message--assistant">Thinking...</div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Error */}
           {error && (
             <div className="chat-widget__error">{error}</div>
           )}
 
-          {/* Input */}
           <div className="chat-widget__composer">
             <textarea
               ref={inputRef}

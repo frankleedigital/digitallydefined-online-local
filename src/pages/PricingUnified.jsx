@@ -9,9 +9,54 @@ export default function Pricing() {
   const [billing, setBilling] = useState('monthly');
 
   const plans = [
-    { name: 'Free', price: '$0', desc: 'Explore tools, take the quiz, grab free resources.', features: ['Digital Superpower Quiz', 'Niche Profitability Scorecard', '10x ROI Calculator', 'Free AI Tools lists', 'Community forum access'], cta: 'Start Free', ctaHref: '/quiz?start=true', ctaClass: 'dd-button dd-button--outline' },
-    { name: 'Builder', price: billing === 'monthly' ? '$27/mo' : '$297/year', desc: 'The automation starter kit. Systems that actually work.', features: ['Everything in Free', 'Automated email sequences', 'Social media scheduling (5 platforms)', 'AI content engine access', 'Notion dashboard templates', 'SEO content calendar'], cta: 'Join Waitlist', ctaHref: '/contact', ctaClass: 'dd-button dd-button--primary', highlighted: true },
-    { name: 'Empire', price: billing === 'monthly' ? '$67/mo' : '$697/year', desc: 'Full faceless empire builder. Automate everything.', features: ['Everything in Builder', 'Unlimited social posting', 'Google Sheets revenue tracking', 'Custom CRM integration', 'Priority support', 'Exclusive templates & SOPs', 'API access for custom builds'], cta: 'Join Waitlist', ctaHref: '/contact', ctaClass: 'dd-button dd-button--primary' }
+    {
+      name: 'Starter',
+      price: '$0',
+      desc: 'Explore free calculators, identify your superpower, and learn the framework.',
+      features: [
+        'Digital Superpower Diagnostic Quiz',
+        'Retirement Gap & Freedom Calculators',
+        'Niche Profitability Scorecard (0–100%)',
+        '10x ROI Yield Forecaster',
+        'Faceless Digital Real Estate Playbook intro',
+      ],
+      cta: 'Start Free Diagnostic',
+      ctaHref: '/quiz',
+      ctaClass: 'dd-button dd-button--outline',
+    },
+    {
+      name: 'Builder',
+      price: billing === 'monthly' ? '$47/mo' : '$470/year',
+      desc: 'The complete launchkit for creating and monetizing your first 1–3 faceless assets.',
+      features: [
+        'Everything in Free Starter',
+        'All 12+ Faceless Digital Real Estate Playbooks',
+        'Notion Operations System & Asset Tracker',
+        'Standard AI Prompt Engineering System',
+        'Private Community & Bi-Weekly Asset Audits',
+        '14-day 100% money-back guarantee',
+      ],
+      cta: 'Join Builder Plan',
+      ctaHref: '/builder',
+      ctaClass: 'dd-button dd-button--primary',
+      highlighted: true,
+    },
+    {
+      name: 'Empire',
+      price: billing === 'monthly' ? '$197/mo' : '$1,970/year',
+      desc: 'For multi-asset portfolio operators scaling automated cashflow systems.',
+      features: [
+        'Everything in Builder Plan',
+        'AI Mentor Engine: 24/7 personalized prompt guidance',
+        'Supabase & Notion Backend Architecture Kits',
+        'Multi-Asset Portfolio Dashboard & Valuation Tracker',
+        'Quarterly 1-on-1 Monetization Review',
+        'Private VIP Mastermind & Whitelabel Rights',
+      ],
+      cta: 'Join Empire Plan',
+      ctaHref: '/empire',
+      ctaClass: 'dd-button dd-button--primary',
+    },
   ];
 
   return (

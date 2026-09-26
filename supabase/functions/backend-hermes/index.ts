@@ -13,6 +13,7 @@
  */
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { omniRoute } from '../_shared/omniroute.ts';
 
 // === Configuration - Environment Variables ===
 const API_KEY = Deno.env.get('DASHBOARD_API_KEY') || 'DigitallyDefined-OS-2026';
@@ -20,7 +21,6 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || 'https://dijjlppdljpcgyoakd
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') || '';
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
-// AI Providers
 const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY') || '';
 const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY') || '';
 const AGNES_API_KEY = Deno.env.get('AGNES_API_KEY') || '';
@@ -224,40 +224,54 @@ async function handleAIChat(body: any): Promise<any> {
     return { error: 'Missing message field', reply: '' };
   }
 
-  // Try multiple AI providers in order of preference
-  const models = [
-    { key: 'openai/gpt-4o-mini', name: 'GPT-4o Mini', keyEnv: 'OPENROUTER_API_KEY' },
-    { key: 'anthropic/claude-3-haiku', name: 'Claude 3 Haiku', keyEnv: 'ANTHROPIC_API_KEY' },
-    { key: 'mistral/mistral-small', name: 'Mistral Small', keyEnv: 'MISTRAL_API_KEY' },
-    { key: 'groq/llama3-8b', name: 'Llama 3', keyEnv: 'GROQ_API_KEY' },
+  const systemPrompt =
+    body.systemPrompt ||
+    'You are the private DigitallyDefined operations assistant. Be concise, practical, and accurate.';
+
+  const omniResult = await omniRoute(
+    `${conversation.length ? `Conversation: ${JSON.stringify(conversation)}\n\n` : ''}${message}`,
+    {
+      model: body.model || undefined,
+      systemPrompt,
+      jsonMode: false,
+      timeout: 90000,
+      fallbackModels: [
+        ...(OPENROUTER_API_KEY ? ['openai/gpt-4o-mini'] : []),
+        ...(GROQ_API_KEY ? ['groq/llama-3.3-70b-versatile'] : []),
+        ...(MISTRAL_API_KEY ? ['mistral/mistral-small'] : []),
+        ...(ANTHROPIC_API_KEY ? ['anthropic/claude-3-haiku'] : []),
+      ].filter(Boolean),
+    },
+  );
+
+  if (!omniResult.error && omniResult.reply) {
+    return {
+      reply: omniResult.reply,
+      model: omniResult.model || body.model || 'omniroute',
+      provider: omniResult.provider || 'omniroute',
+    };
+  }
+
+  const legacyModels = [
+    { key: 'openai/gpt-4o-mini', name: 'GPT-4o Mini', keyEnv: 'OPENROUTER_API_KEY', url: 'https://openrouter.ai/api/v1/chat/completions', extraHeaders: { 'HTTP-Referer': 'https://dashboard.digitallydefined.online', 'X-Title': 'DigitallyDefined Dashboard' } },
+    { key: 'anthropic/claude-3-haiku', name: 'Claude 3 Haiku', keyEnv: 'ANTHROPIC_API_KEY', url: 'https://api.anthropic.com/v1/messages', extraHeaders: { 'anthropic-version': '2023-06-01' } },
+    { key: 'mistral/mistral-small', name: 'Mistral Small', keyEnv: 'MISTRAL_API_KEY', url: 'https://api.mistral.ai/v1/chat/completions', extraHeaders: {} },
+    { key: 'groq/llama3-8b', name: 'Llama 3', keyEnv: 'GROQ_API_KEY', url: 'https://api.groq.com/openai/v1/chat/completions', extraHeaders: {} },
   ];
 
-  for (const model of models) {
+  for (const model of legacyModels) {
     const apiKey = Deno.env.get(model.keyEnv);
     if (!apiKey) continue;
 
     try {
-      let apiUrl = '';
-      let headers: Record<string, string> = { 'Content-Type': 'application/json' };
-
-      if (model.keyEnv === 'OPENROUTER_API_KEY') {
-        apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+      const headers: Record<string, string> = { 'Content-Type': 'application/json', ...model.extraHeaders };
+      if (model.keyEnv !== 'ANTHROPIC_API_KEY') {
         headers['Authorization'] = `Bearer ${apiKey}`;
-        headers['HTTP-Referer'] = 'https://dashboard.digitallydefined.online';
-        headers['X-Title'] = 'DigitallyDefined Dashboard';
-      } else if (model.keyEnv === 'ANTHROPIC_API_KEY') {
-        apiUrl = 'https://api.anthropic.com/v1/messages';
+      } else {
         headers['x-api-key'] = apiKey;
-        headers['anthropic-version'] = '2023-06-01';
-      } else if (model.keyEnv === 'MISTRAL_API_KEY') {
-        apiUrl = 'https://api.mistral.ai/v1/chat/completions';
-        headers['Authorization'] = `Bearer ${apiKey}`;
-      } else if (model.keyEnv === 'GROQ_API_KEY') {
-        apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
-        headers['Authorization'] = `Bearer ${apiKey}`;
       }
 
-      const res = await fetch(apiUrl, {
+      const res = await fetch(model.url, {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -269,11 +283,10 @@ async function handleAIChat(body: any): Promise<any> {
       });
 
       const data = await res.json();
-      
       if (model.keyEnv === 'ANTHROPIC_API_KEY') {
         return { reply: data.content?.[0]?.text || 'No response', model: model.name };
       }
-      
+
       return {
         reply: data.choices?.[0]?.message?.content || 'No response',
         model: model.name,
@@ -284,9 +297,8 @@ async function handleAIChat(body: any): Promise<any> {
     }
   }
 
-  // Fallback response
   return {
-    reply: `Hermes received: "${message}". Configure AI provider keys for chat responses.`,
+    reply: `Hermes received: "${message}". Configure OmniRoute or provider keys for chat responses.`,
     agent: 'hermes',
   };
 }
