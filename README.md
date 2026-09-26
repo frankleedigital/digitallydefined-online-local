@@ -40,7 +40,7 @@ c:\Users\frank\Documents\
 |---|--------------|-------------|----------------|--------|---------|
 | 1 | `digitallydefined-online-local` | `digitallydefined-online` | `digitallydefined-online` | `digitallydefined.online` | **Marketing site** — public-facing website |
 | 2 | `DigitallyDefined-Dashboard` | `digitallydefined-reputation-dashboard` | `digitallydefined-reputation-dashboard` | `dashboard.digitallydefined.online` | **Dashboard app** — authenticated SaaS UI |
-| 3 | `DigitallyDefined-Backend` | `digitallydefined-os-backend` | `digitallydefined-os-backend` | `digitallydefined-os-backend.vercel.app` | **Backend API** — Hermes AI, cron jobs, social publishers, Notion sync |
+| 3 | `DigitallyDefined-Backend` | `digitallydefined-backend-clean` | `digitallydefined-backend-clean` | `digitallydefined-backend-clean.vercel.app` | **Backend API** — Hermes AI, cron jobs, social publishers, Notion sync |
 
 > **Important naming note:** The folder `DigitallyDefined-Dashboard` was previously named `DigitallyDefined-Frontend`. This was renamed to clarify that it is the **dashboard application**, not the marketing site. The marketing site is `digitallydefined-online-local`. See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full naming rationale.
 
@@ -73,7 +73,7 @@ For the complete deployment map, environment variable documentation, and inter-r
 | Repo | Purpose | Docs |
 |------|---------|------|
 | `DigitallyDefined-Dashboard` | Authenticated dashboard at `dashboard.digitallydefined.online` | [README.md](../DigitallyDefined-Dashboard/README.md) |
-| `DigitallyDefined-Backend` | Backend API at `digitallydefined-os-backend.vercel.app` | [OMNIROUTE_INTEGRATION.md](../DigitallyDefined-Backend/OMNIROUTE_INTEGRATION.md) |
+| `DigitallyDefined-Backend` | Backend API at `digitallydefined-backend-clean.vercel.app` | [OMNIROUTE_INTEGRATION.md](../DigitallyDefined-Backend/OMNIROUTE_INTEGRATION.md) |
 
 ## License
 

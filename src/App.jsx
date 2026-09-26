@@ -16,6 +16,13 @@ const ProductTool = lazy(() => import('./features/tools/product/ProductTool.jsx'
 const SocialTool = lazy(() => import('./features/tools/social/SocialTool.jsx'));
 const TrendsTool = lazy(() => import('./features/tools/trends/TrendsTool.jsx'));
 
+// New pages
+const StartHerePage = lazy(() => import('./pages/StartHerePage.jsx'));
+const BuilderPage = lazy(() => import('./pages/BuilderPage.jsx'));
+const EmpirePage = lazy(() => import('./pages/EmpirePage.jsx'));
+const FrameworkPage = lazy(() => import('./pages/FrameworkPage.jsx'));
+const RetirementGapPage = lazy(() => import('./pages/RetirementGapPage.jsx'));
+
 function guarded(element) {
   return <SiteLayout><RequireUnlock>{element}</RequireUnlock></SiteLayout>;
 }
@@ -26,12 +33,20 @@ function App() {
       <Routes>
         {/* Public funnel */}
         <Route path="/" element={<SiteLayout><HomePage /></SiteLayout>} />
+        <Route path="/start-here" element={<SiteLayout><StartHerePage /></SiteLayout>} />
         <Route path="/quiz" element={<SiteLayout><QuizPage /></SiteLayout>} />
         <Route path="/quiz/inbox" element={<SiteLayout><QuizInboxPage /></SiteLayout>} />
 
-        {/* Results: reads the result saved on this device (never route state),
-            so refreshing or bookmarking the page keeps working. */}
+        {/* Results — reads localStorage, never route state */}
         <Route path="/results" element={<SiteLayout><ResultsPage /></SiteLayout>} />
+
+        {/* Plan pages */}
+        <Route path="/builder" element={<SiteLayout><BuilderPage /></SiteLayout>} />
+        <Route path="/empire" element={<SiteLayout><EmpirePage /></SiteLayout>} />
+
+        {/* Explainer / framework pages */}
+        <Route path="/framework" element={<SiteLayout><FrameworkPage /></SiteLayout>} />
+        <Route path="/retirement-gap" element={<SiteLayout><RetirementGapPage /></SiteLayout>} />
 
         {/* Personalized roadmap (post-quiz) + shareable persona roadmaps */}
         <Route path="/roadmap" element={guarded(<RoadmapPage />)} />

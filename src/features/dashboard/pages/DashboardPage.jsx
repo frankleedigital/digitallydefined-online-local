@@ -5,6 +5,9 @@ import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import PersonaHeader from '../components/PersonaHeader.jsx';
 import ToolGrid from '../components/ToolGrid.jsx';
+import DDLabel from '../../../components/ui/DDLabel.jsx';
+import DDCard from '../../../components/ui/DDCard.jsx';
+import DDCTA from '../../../components/ui/DDCTA.jsx';
 
 const STORAGE_KEY = 'dd-quiz-results';
 
@@ -34,24 +37,86 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="dd-container" style={{ paddingTop: '3rem', paddingBottom: '3rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', margin: 0 }}>Dashboard</h1>
-          {email && <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', margin: '0.25rem 0 0' }}>Signed in as {email}</p>}
+    <>
+      {/* ── DASHBOARD HEADER ─────────────────────────── */}
+      <section className="dd-dashboard-header">
+        <div className="dd-container">
+          <div className="dd-dashboard-header__inner">
+            <div>
+              <DDLabel tone="orange">Your Workspace</DDLabel>
+              <h1 className="dd-dashboard-header__title">Dashboard</h1>
+              {email && (
+                <p className="dd-dashboard-header__sub">
+                  Signed in as {email}
+                </p>
+              )}
+            </div>
+            <button
+              className="dd-btn dd-btn--outline dd-btn--sm"
+              onClick={() => { clearSession(); window.location.href = '/quiz'; }}
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
-        <button className="btn btn--outline" style={{ fontSize: '0.8rem', padding: '6px 12px' }} onClick={() => { clearSession(); window.location.href = '/quiz'; }}>
-          Sign Out
-        </button>
-      </div>
+      </section>
 
-      <PersonaHeader superpower={stored.superpower} />
+      {/* ── PERSONA HEADER ───────────────────────────── */}
+      <section className="dd-section dd-section--rule">
+        <div className="dd-container">
+          <PersonaHeader superpower={stored.superpower} />
+        </div>
+      </section>
 
-      <ToolGrid />
+      {/* ── TOOL GRID ────────────────────────────────── */}
+      <section className="dd-section dd-section--alt dd-section--rule">
+        <div className="dd-container">
+          <div className="dd-section__head">
+            <DDLabel tone="orange">Your Tools</DDLabel>
+            <h2>Tools unlocked by your quiz result.</h2>
+            <p className="dd-section__intro">
+              Superpower: <strong>{stored.superpower}</strong>. Use these tools to validate your niche, plan your product, and build.
+            </p>
+          </div>
+          <ToolGrid />
+        </div>
+      </section>
 
-      <div style={{ marginTop: '2rem', borderTop: '1px solid var(--color-border)', paddingTop: '1.5rem' }}>
-        <a href="/tools" className="btn btn--primary">Go to Tools →</a>
-      </div>
-    </div>
+      {/* ── NEXT STEPS ───────────────────────────────── */}
+      <section className="dd-section dd-section--rule">
+        <div className="dd-container">
+          <div className="dd-section__head">
+            <DDLabel tone="orange">Next Steps</DDLabel>
+            <h2>What to do next.</h2>
+          </div>
+          <div className="dd-grid dd-grid--three">
+            <DDCard>
+              <div className="dd-card__inner">
+                <DDLabel tone="orange">01</DDLabel>
+                <h3 className="dd-card__title">Review your roadmap.</h3>
+                <p className="dd-card__text">Your personalized build sequence — the exact order of actions for your superpower profile.</p>
+                <DDCTA label="Open Roadmap →" href="/roadmap" variant="primary" />
+              </div>
+            </DDCard>
+            <DDCard>
+              <div className="dd-card__inner">
+                <DDLabel tone="orange">02</DDLabel>
+                <h3 className="dd-card__title">Score your niche.</h3>
+                <p className="dd-card__text">Validate a niche idea across 6 criteria before you commit time to building anything.</p>
+                <DDCTA label="Open Niche Scorecard →" href="/tools/niche" variant="outline" />
+              </div>
+            </DDCard>
+            <DDCard>
+              <div className="dd-card__inner">
+                <DDLabel tone="orange">03</DDLabel>
+                <h3 className="dd-card__title">Explore all tools.</h3>
+                <p className="dd-card__text">See your full unlocked toolset — niche, roadmap, product, social, and trends tools.</p>
+                <DDCTA label="Go to Tools →" href="/tools" variant="outline" />
+              </div>
+            </DDCard>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

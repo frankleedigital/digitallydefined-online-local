@@ -1,5 +1,3 @@
-// src/config/modelRouting.json — agent-to-runtime mapping (from agentRegistry.js)
-
 {
   "fastapi": [
     "agent.niche", "agent.roadmap", "agent.asset-plan", "agent.offer-architect",

@@ -8,7 +8,7 @@ The DigitallyDefined platform uses **three independent git repositories**, each 
 
 | Reason | Detail |
 |--------|--------|
-| **Different deployment targets** | Marketing site → `digitallydefined.online`; Dashboard → `dashboard.digitallydefined.online`; Backend → `digitallydefined-os-backend.vercel.app` |
+| **Different deployment targets** | Marketing site → `digitallydefined.online`; Dashboard → `dashboard.digitallydefined.online`; Backend → `digitallydefined-backend-clean.vercel.app` |
 | **Different tech stacks** | Marketing: pure React/Vite; Dashboard: React/Vite + Supabase + serverless API; Backend: Node.js + Python (Hermes MCP) |
 | **Different deployment frequency** | Marketing site changes rarely; dashboard changes moderately; backend changes frequently (cron jobs, API endpoints) |
 | **Independent scaling** | Each can be scaled, monitored, and rolled back independently |
@@ -32,7 +32,7 @@ The DigitallyDefined platform uses **three independent git repositories**, each 
 |--------------|-------------|--------------|----------------|
 | `digitallydefined-online-local` | `digitallydefined-online` | `digitallydefined-online` | **Marketing site** |
 | `DigitallyDefined-Dashboard` | `digitallydefined-reputation-dashboard` | `digitallydefined-reputation-dashboard` | **Dashboard app** (NOT the marketing site) |
-| `DigitallyDefined-Backend` | `digitallydefined-os-backend` | `digitallydefined-os-backend` | **Backend API** |
+| `DigitallyDefined-Backend` | `digitallydefined-backend-clean` | `digitallydefined-backend-clean` | **Backend API** |
 
 The name `DigitallyDefined-Frontend` was misleading because it sounded like it should be the main marketing frontend, but it's actually the authenticated dashboard application. The folder has been renamed to `DigitallyDefined-Dashboard` to resolve this confusion.
 
@@ -126,7 +126,7 @@ You have already renamed the local folder from `DigitallyDefined-Frontend` to `D
 
 ### 3. `DigitallyDefined-Backend` — Backend API
 
-**Responsibility:** API layer at `digitallydefined-os-backend.vercel.app`
+**Responsibility:** API layer at `digitallydefined-backend-clean.vercel.app`
 
 **What it owns:**
 - Hermes AI agent (Node.js + Python MCP)
@@ -171,7 +171,7 @@ You have already renamed the local folder from `DigitallyDefined-Frontend` to `D
    ```
    # Exclude sub-projects (they have their own git repos)
    # - DigitallyDefined-Dashboard: Dashboard app (dashboard.digitallydefined.online)
-   # - DigitallyDefined-Backend: Backend API (digitallydefined-os-backend.vercel.app)
+   # - DigitallyDefined-Backend: Backend API (digitallydefined-backend-clean.vercel.app)
    DigitallyDefined-Backend/
    DigitallyDefined-Dashboard/
    ```

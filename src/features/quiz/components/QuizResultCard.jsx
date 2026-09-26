@@ -4,11 +4,15 @@
 // copy for identical answers.
 
 import React from 'react';
+import DDSection from '../../../components/ui/DDSection';
+import DDCard from '../../../components/ui/DDCard';
+import DDLabel from '../../../components/ui/DDLabel';
+import DDCTA from '../../../components/ui/DDCTA';
 
 function Meter({ value, label }) {
   const percent = Math.round((Number(value) || 0) * 100);
   return (
-    <div className="result-meter">
+    <DDCard className="result-meter">
       <div className="result-meter__track" role="img" aria-label={`Match strength ${percent} percent`}>
         <span className="result-meter__fill" style={{ width: `${percent}%` }} />
       </div>
@@ -16,17 +20,17 @@ function Meter({ value, label }) {
         <span>{label}</span>
         <span>{percent}% of your answers point this way</span>
       </div>
-    </div>
+    </DDCard>
   );
 }
 
 function Panel({ eyebrow, title, eyebrowTone = 'orange', children }) {
   return (
-    <article className="story-card">
-      <span className={`label label--${eyebrowTone}`}>{eyebrow}</span>
+    <DDCard className="story-card">
+      <DDLabel tone={eyebrowTone}>{eyebrow}</DDLabel>
       <h3>{title}</h3>
       {children}
-    </article>
+    </DDCard>
   );
 }
 
@@ -55,9 +59,9 @@ export default function QuizResultCard({
   const evidence = result.evidence || [];
 
   return (
-    <div className="result-shell">
+    <DDSection className="result-shell">
       <header className="result-hero">
-        <span className="label label--orange">{eyebrow}</span>
+        <DDLabel tone="orange">{eyebrow}</DDLabel>
         <h1>
           {name ? `${name}, your digital superpower is ` : 'Your digital superpower is '}
           <span className="result-hero__name">{result.superpowerName}</span>.
@@ -84,7 +88,7 @@ export default function QuizResultCard({
       </div>
 
       <div className="result-sequence">
-        <span className="label label--blue">Your personalized build sequence</span>
+        <DDLabel tone="blue">Your personalized build sequence</DDLabel>
         <h2>From superpower to an asset you own.</h2>
         <p className="result-sequence__intro">
           Built from your answers, in the order that avoids wasted work.
@@ -136,6 +140,6 @@ export default function QuizResultCard({
       )}
 
       {actions ? <div className="result-actions">{actions}</div> : null}
-    </div>
+    </DDSection>
   );
 }

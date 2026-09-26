@@ -3,8 +3,10 @@
 
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import DDToolCard from '../../../components/ui/DDToolCard.jsx';
-import DDLabel from '../../../components/ui/DDLabel.jsx';
+import DDToolCard from '../../../components/ui/DDToolCard';
+import DDLabel from '../../../components/ui/DDLabel';
+import DDSection from '../../../components/ui/DDSection';
+import DDCTA from '../../../components/ui/DDCTA';
 
 const STORAGE_KEY = 'dd-quiz-results';
 
@@ -33,32 +35,55 @@ export default function ToolsPage() {
   }
 
   return (
-    <div className="dd-container" style={{ paddingTop: '3rem', paddingBottom: '3rem' }}>
-      <DDLabel tone="orange" style={{ display: 'block', marginBottom: '0.5rem' }}>Your Toolset</DDLabel>
-      <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>
-        Tools unlocked after your quiz
-      </h1>
-      <p style={{ color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
-        Superpower: <strong style={{ color: 'var(--color-text)' }}>{stored.superpower}</strong>. Use these tools to validate, plan, and build.
-      </p>
+    <>
+      {/* ── HERO ───────────────────────────────────── */}
+      <section className="dd-hero">
+        <div className="dd-container dd-container--narrow">
+          <DDLabel tone="orange">Your Toolset</DDLabel>
+          <h1 className="dd-hero__headline">Tools unlocked by your quiz.</h1>
+          <p className="dd-hero__lead">
+            Superpower: <strong>{stored.superpower}</strong>. Use these tools to validate your niche,
+            plan your product, and build your first digital property.
+          </p>
+        </div>
+      </section>
 
-      <div className="story-grid story-grid--three">
-        {TOOLS.map((tool, index) => (
-          <DDToolCard
-            key={tool.key}
-            step={index + 1}
-            title={tool.name}
-            description={tool.desc}
-            note={tool.status === 'coming-soon' ? 'Coming soon' : undefined}
-            className={tool.status === 'coming-soon' ? 'tool-card--disabled' : ''}
-            style={{ opacity: tool.status === 'coming-soon' ? 0.6 : 1 }}
-          />
-        ))}
-      </div>
+      {/* ── TOOLS GRID ─────────────────────────────── */}
+      <section className="dd-section dd-section--rule">
+        <div className="dd-container">
+          <div className="dd-grid dd-grid--three">
+            {TOOLS.map((tool, index) => (
+              <DDToolCard
+                key={tool.key}
+                step={index + 1}
+                title={tool.name}
+                description={tool.desc}
+                href={tool.status === 'active' ? tool.href : undefined}
+                note={tool.status === 'coming-soon' ? 'Coming soon' : undefined}
+                className={tool.status === 'coming-soon' ? 'dd-tool-card--disabled' : ''}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <div style={{ marginTop: '2rem', borderTop: '1px solid var(--color-border)', paddingTop: '1rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-        <a href="/roadmap" className="btn btn--outline" style={{ fontSize: '0.8rem', padding: '6px 12px' }}>View My Roadmap</a>
-      </div>
-    </div>
+      {/* ── NEXT STEP ──────────────────────────────── */}
+      <section className="dd-section dd-section--alt dd-section--rule">
+        <div className="dd-container dd-container--narrow">
+          <div className="dd-section__head">
+            <DDLabel tone="orange">Next Step</DDLabel>
+            <h2>Your roadmap tells you what to build first.</h2>
+            <p className="dd-section__intro">
+              Not sure where to start? Your personalized roadmap has a 4-phase build sequence
+              based on your superpower. Follow it before using the tools.
+            </p>
+          </div>
+          <div className="action-row">
+            <DDCTA label="View My Roadmap →" href="/roadmap" variant="primary" />
+            <DDCTA label="Back to Dashboard" href="/dashboard" variant="outline" />
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

@@ -124,7 +124,7 @@ The three DigitallyDefined projects have been successfully unified into a cohesi
 
 ### 3. Backend API (DigitallyDefined-Backend)
 **Purpose**: Serverless API layer and automation engine
-**URL**: https://digitallydefined-os-backend.vercel.app
+**URL**: https://digitallydefined-backend-clean.vercel.app
 **Tech**: Node.js, Vercel Functions, Supabase Edge Functions
 
 **Key Changes Made**:
@@ -158,7 +158,7 @@ SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # Backend API
-VITE_HERMES_GATEWAY_URL=https://digitallydefined-os-backend.vercel.app/api/hermes
+VITE_HERMES_GATEWAY_URL=https://digitallydefined-backend-clean.vercel.app/api/hermes
 VITE_DASHBOARD_API_URL=https://dijjlppdljpcgyoakdnq.supabase.co/functions/v1
 VITE_DASHBOARD_API_KEY=DigitallyDefined-OS-2026
 ```
@@ -171,7 +171,7 @@ SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # Hermes Gateway
-HERMES_GATEWAY_URL=https://digitallydefined-os-backend.vercel.app/api/hermes
+HERMES_GATEWAY_URL=https://digitallydefined-backend-clean.vercel.app/api/hermes
 
 # Various API keys for integrations
 # (Already configured in existing .env)
@@ -254,7 +254,7 @@ All three projects share the same Supabase database. Required tables:
 2. Import in Vercel
 3. Add environment variables from `.env`
 4. Deploy to production
-5. Note the deployment URL (e.g., https://digitallydefined-os-backend.vercel.app)
+5. Note the deployment URL (e.g., https://digitallydefined-backend-clean.vercel.app)
 
 ### Deploy Dashboard
 1. Push `DigitallyDefined-Frontend` to GitHub

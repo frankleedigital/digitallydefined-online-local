@@ -8,7 +8,7 @@ This document maps every repository to its Vercel project, domain, dependencies,
 |----------------|--------|-------------|--------------|-----------|---------------|
 | `digitallydefined-online` | `digitallydefined.online` | `frankielee1971/digitallydefined-online` | `digitallydefined-online-local` | Vite (React) | `vite build` |
 | `digitallydefined-reputation-dashboard` | `dashboard.digitallydefined.online` | `frankielee1971/digitallydefined-reputation-dashboard` | `DigitallyDefined-Dashboard` | Vite (React) + Serverless API | `vite build` |
-| `digitallydefined-os-backend` | `digitallydefined-os-backend.vercel.app` | `frankielee1971/digitallydefined-os-backend` | `DigitallyDefined-Backend` | Node.js (Vercel Functions) + Python (Hermes MCP) | N/A (functions) |
+| `digitallydefined-backend-clean` | `digitallydefined-backend-clean.vercel.app` | `frankielee1971/digitallydefined-backend-clean` | `DigitallyDefined-Backend` | Node.js (Vercel Functions) + Python (Hermes MCP) | N/A (functions) |
 
 ### DNS Configuration
 
@@ -16,11 +16,11 @@ This document maps every repository to its Vercel project, domain, dependencies,
 |--------|------|-----------|
 | `digitallydefined.online` | A / CNAME | Vercel (`digitallydefined-online` project) |
 | `dashboard.digitallydefined.online` | CNAME | Vercel (`digitallydefined-reputation-dashboard` project) |
-| `digitallydefined-os-backend.vercel.app` | — | Vercel default (no custom domain needed) |
+| `digitallydefined-backend-clean.vercel.app` | — | Vercel default (no custom domain needed) |
 
 ### Cross-Origin Resource Sharing (CORS)
 
-The backend (`digitallydefined-os-backend`) is configured to accept requests from:
+The backend (`digitallydefined-backend-clean`) is configured to accept requests from:
 
 - `https://dashboard.digitallydefined.online`
 - `https://digitallydefined.online`
@@ -46,7 +46,7 @@ User visits digitallydefined.online
         │   ├── Serverless API routes (api/dashboard/*)
         │   │   └── Calls Supabase directly
         │   └── Hermes AI requests (lib/hermesClient.js)
-        │       └── POST → https://digitallydefined-os-backend.vercel.app/api/hermes
+        │       └── POST → https://digitallydefined-backend-clean.vercel.app/api/hermes
         │           (with x-api-key: DASHBOARD_API_KEY)
         │
         └── Backend API (DigitallyDefined-Backend)
@@ -65,7 +65,7 @@ User visits digitallydefined.online
 | Repo | Depends On | How |
 |------|------------|-----|
 | `digitallydefined-online-local` | `DigitallyDefined-Dashboard` | HTTP redirect (`/dashboard` → `https://dashboard.digitallydefined.online`) |
-| `DigitallyDefined-Dashboard` | `DigitallyDefined-Backend` | HTTP API calls (`lib/hermesClient.js` → `https://digitallydefined-os-backend.vercel.app/api/hermes`) |
+| `DigitallyDefined-Dashboard` | `DigitallyDefined-Backend` | HTTP API calls (`lib/hermesClient.js` → `https://digitallydefined-backend-clean.vercel.app/api/hermes`) |
 | `DigitallyDefined-Dashboard` | Supabase | Auth, database (direct client connection) |
 | `DigitallyDefined-Backend` | Supabase | Edge functions, database |
 | `DigitallyDefined-Backend` | OmniRoute | AI gateway (`lib/omniroute.js`) |

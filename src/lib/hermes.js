@@ -89,30 +89,18 @@ export function buildHermesMessage(topic, payload) {
 }
 
 export function getHermesEndpoint() {
-  if (import.meta.env.VITE_HERMES_ENDPOINT) {
-    return import.meta.env.VITE_HERMES_ENDPOINT;
-  }
-  const baseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://dijjlppdljpcgyoakdnq.supabase.co';
-  return `${baseUrl}/functions/v1/hermes`;
+  const backendUrl = (import.meta.env.VITE_BACKEND_URL || 'https://digitallydefined-backend-clean.vercel.app/api').replace(/\/+$/, '');
+  return `${backendUrl}/dispatch`;
 }
 
 export function getHermesHeaders(extra = {}) {
-  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-  if (!anonKey && import.meta.env.DEV) {
-    console.warn('[Hermes] VITE_SUPABASE_ANON_KEY is not set. AI features will fail.');
-  }
+  const apiKey = import.meta.env.VITE_DASHBOARD_API_KEY || 'DigitallyDefined-OS-2026';
 
   const headers = {
     'Content-Type': 'application/json',
-    'x-api-key': import.meta.env.VITE_DASHBOARD_API_KEY || 'DigitallyDefined-OS-2026',
+    'x-api-key': apiKey,
     ...extra,
   };
-
-  if (anonKey) {
-    headers['apikey'] = anonKey;
-    headers['Authorization'] = `Bearer ${anonKey}`;
-  }
 
   return headers;
 }

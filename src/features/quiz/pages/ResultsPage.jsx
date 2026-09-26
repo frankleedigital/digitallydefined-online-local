@@ -8,27 +8,30 @@
 
 import React, { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import QuizResultCard from '../components/QuizResultCard.jsx';
+import QuizResultCard from '../components/QuizResultCard';
 import { loadQuizResult, buildPersonaPreview, resolvePersonaParam } from '../lib/quizLogic.js';
 import { PERSONA_KEYS } from '../lib/scoring.js';
 import { getPersona } from '../lib/personas.js';
+import DDSection from '../../../components/ui/DDSection';
+import DDLabel from '../../../components/ui/DDLabel';
+import DDCTA from '../../../components/ui/DDCTA';
 
 function EmptyState() {
   return (
-    <section className="page-hero">
+    <DDSection className="dd-section--hero">
       <div className="dd-container dd-container--narrow">
-        <span className="label label--orange">Your result</span>
+        <DDLabel tone="orange">Your result</DDLabel>
         <h1>No result on this device yet.</h1>
         <p>
           The quiz takes about two minutes and scores on this device. Once you finish, this page
           keeps your superpower, your blind spots and your build sequence.
         </p>
         <div className="action-row">
-          <Link className="btn btn--primary" to="/quiz">Take the quiz →</Link>
-          <Link className="btn btn--outline" to="/">Back to home</Link>
+          <DDCTA label="Take the quiz" href="/quiz" variant="primary" />
+          <DDCTA label="Back to home" href="/" variant="outline" />
         </div>
       </div>
-    </section>
+    </DDSection>
   );
 }
 
@@ -54,9 +57,9 @@ export default function ResultsPage() {
 
   return (
     <>
-      <section className="page-hero page-hero--ink">
+      <DDSection className="dd-section--hero dd-section--ink">
         <div className="dd-container">
-          <span className="label label--blue">Step 03 / Result</span>
+          <DDLabel tone="blue">Step 03 / Result</DDLabel>
           <h1>
             {isPersonalized
               ? 'This is your result, scored from your own answers.'
@@ -69,40 +72,40 @@ export default function ResultsPage() {
           </p>
           {generatedLabel ? <p className="hero-note hero-note--ink">Generated {generatedLabel}</p> : null}
         </div>
-      </section>
+      </DDSection>
 
-      <section className="story-section story-section--white">
+      <DDSection className="dd-section--story dd-section--white">
         <div className="dd-container">
           <QuizResultCard
             result={result}
             eyebrow={isPersonalized ? 'Your superpower' : `${getPersona(result.superpower).title} overview`}
             actions={
               <>
-                <Link className="btn btn--primary" to={`/roadmap/${result.superpower}`}>
-                  Open my roadmap →
-                </Link>
-                <Link className="btn btn--outline" to="/quiz">Retake the quiz</Link>
+                <DDCTA label="Open my roadmap" href={`/roadmap/${result.superpower}`} variant="primary" />
+                <DDCTA label="Retake the quiz" href="/quiz" variant="outline" />
               </>
             }
           />
 
           <div className="result-explore">
-            <span className="label label--blue">Explore the other four</span>
+            <DDLabel tone="blue">Explore the other four</DDLabel>
             <div className="result-explore__grid">
               {PERSONA_KEYS.filter((key) => key !== result.superpower).map((key) => {
                 const persona = getPersona(key);
                 return (
-                  <Link key={key} className="result-explore__card" to={`/roadmap/${key}`}>
-                    <span className="label label--orange">{persona.title}</span>
-                    <strong>{persona.superpowerName || persona.title}</strong>
-                    <span className="result-explore__tagline">{persona.tagline}</span>
-                  </Link>
+                  <DDCTA
+                    key={key}
+                    label={persona.title}
+                    href={`/roadmap/${key}`}
+                    variant="outline"
+                    className="result-explore__card"
+                  />
                 );
               })}
             </div>
           </div>
         </div>
-      </section>
+      </DDSection>
     </>
   );
 }

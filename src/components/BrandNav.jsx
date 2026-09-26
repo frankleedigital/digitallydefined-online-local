@@ -35,8 +35,10 @@ export default function BrandNav() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
+    { href: '/start-here', label: 'Start Here' },
     { href: '/quiz', label: 'Quiz' },
     ...(unlocked ? [{ href: '/roadmap', label: 'Roadmap' }, { href: '/tools', label: 'Tools' }] : []),
+    { href: '/builder', label: 'Plans' },
     { href: FACEBOOK_GROUP_URL, label: 'Community', external: true },
   ];
 

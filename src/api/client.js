@@ -11,8 +11,8 @@ import { callSupabaseEdge } from './supabase.js';
 
 /**
  * Agent runtime mapping.
- * 'backend' = DigitallyDefined backend gateway (/api/<endpoint>)
- * 'hermes'  = legacy Supabase Hermes edge function (quiz email, reputation, content)
+ * 'backend' = DigitallyDefined backend gateway (/api/<endpoint> or /api/dispatch)
+ * 'hermes'  = Supabase Hermes edge function (reputation, public.chat)
  */
 const RUNTIME = {
   'agent.niche': 'backend',
@@ -23,23 +23,27 @@ const RUNTIME = {
   'agent.trends': 'backend',
   'agent.chat': 'backend',
   'agent.dashboard': 'backend',
+  'agent.quiz': 'backend',
+  'agent.personalize': 'backend',
+
+  'quiz.complete': 'backend',
+  'quiz.roadmap': 'backend',
+  'quiz.submit': 'backend',
+
+  'chat': 'backend',
+  'public.chat': 'backend',
+  'mentor.dev': 'backend',
+  'hermes.agent': 'backend',
+
+  'analytics': 'backend',
+  'events': 'backend',
+  'optimization': 'backend',
+  'report': 'backend',
+  'subscribe': 'backend',
+  'website.content': 'backend',
 
   'agent.reputation': 'hermes',
-  'agent.quiz': 'hermes',
-  'quiz.complete': 'hermes',
-  'quiz.roadmap': 'hermes',
-  'public.chat': 'hermes',
-  'chat': 'backend',
-  'website.content': 'hermes',
   'license.verify': 'hermes',
-  'analytics': 'hermes',
-  'subscribe': 'hermes',
-  'personalize': 'hermes',
-  'events': 'hermes',
-  'optimization': 'hermes',
-  'report': 'hermes',
-  'mentor.dev': 'hermes',
-  'hermes.agent': 'hermes',
 };
 
 function runtimeFor(action) {

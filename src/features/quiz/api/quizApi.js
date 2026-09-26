@@ -1,13 +1,10 @@
-// src/features/quiz/api/quizApi.js — quiz delivery (email + storage) only.
+// src/features/quiz/api/quizApi.js — quiz delivery via backend-clean dispatch.
 //
 // Personalization is local and deterministic (see ../lib/quizLogic.js).
-// The previous AI personalization call ("intelligence" edge action) has been
-// removed: the result must render whether or not an AI provider is reachable.
-//
-// What is left here is optional delivery: record the lead, store the result and
-// send the roadmap email. Every call is best-effort and never blocks the UI.
+// Delivery (persist + email) is routed through the DigitallyDefined backend
+// dispatcher so quiz data lands in Supabase and Brevo from one place.
 
-import { callSupabaseEdge } from '../../../api/supabase.js';
+import { postBackend } from '../../../api/backend.js';
 import { getRoadmap } from '../lib/roadmapData.js';
 
 /**
@@ -15,7 +12,8 @@ import { getRoadmap } from '../lib/roadmapData.js';
  * Non-fatal by design — the on-screen result is already complete.
  */
 export async function submitQuiz({ name, email, superpower, answers, roadmap, devMode, brevoTest, testEmail }) {
-  const data = await callSupabaseEdge('quiz.complete', {
+  const data = await postBackend('/dispatch', {
+    action: 'quiz.complete',
     name,
     email,
     superpower,
@@ -30,9 +28,13 @@ export async function submitQuiz({ name, email, superpower, answers, roadmap, de
   return data;
 }
 
-/** Fetch a previously stored roadmap for an email (Supabase quiz_roadmaps). */
+/** Fetch a previously stored roadmap for an email (backend quiz_roadmaps). */
 export async function fetchRoadmap(email) {
-  return callSupabaseEdge('quiz.roadmap', { email });
+  const data = await postBackend('/dispatch', {
+    action: 'quiz.roadmap',
+    email,
+  });
+  return data;
 }
 
 /** Kept so older imports of QUIZ_SCHEMA resolve to the persona key list. */

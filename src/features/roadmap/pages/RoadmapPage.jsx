@@ -1,44 +1,41 @@
-// src/features/roadmap/pages/RoadmapPage.jsx
-// The personalized roadmap, reachable three ways:
-//   /roadmap            → the result saved on this device
-//   /roadmap/:type      → a shareable link for one of the five superpowers
-//   /quiz/results       → routed here for backwards compatibility
-//
-// Content comes from the same deterministic result the quiz produced, so the
-// roadmap and the result page can never disagree. No AI is involved.
-
-import React, { useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+// RoadmapPage.jsx - Brand Compliant Version
+import React, { useMemo } from "react";
+import { useParams } from "react-router-dom";
 import {
   loadQuizResult,
   buildPersonaPreview,
   resolvePersonaParam,
-} from '../../quiz/lib/quizLogic.js';
-import { PERSONA_KEYS } from '../../quiz/lib/scoring.js';
-import { getPersona } from '../../quiz/lib/personas.js';
+} from "../../quiz/lib/quizLogic.js";
+import { PERSONA_KEYS } from "../../quiz/lib/scoring.js";
+import { getPersona } from "../../quiz/lib/personas.js";
+import DDSection from "../../../components/ui/DDSection";
+import DDCard from "../../../components/ui/DDCard";
+import DDLabel from "../../../components/ui/DDLabel";
+import DDCTA from "../../../components/ui/DDCTA";
 
 function PersonaPicker({ title, message }) {
   return (
-    <section className="page-hero">
-      <div className="dd-container">
-        <span className="label label--orange">Roadmap</span>
-        <h1>{title}</h1>
-        <p>{message}</p>
-        <div className="result-explore__grid">
+    <section className="dd-hero">
+      <div className="dd-container dd-container--narrow">
+        <DDLabel tone="orange">Roadmap</DDLabel>
+        <h1 className="dd-hero__headline">{title}</h1>
+        <p className="dd-hero__lead">{message}</p>
+        <div className="dd-grid dd-grid--three" style={{ marginTop: '2rem' }}>
           {PERSONA_KEYS.map((key) => {
             const persona = getPersona(key);
             return (
-              <Link key={key} className="result-explore__card" to={`/roadmap/${key}`}>
-                <span className="label label--orange">{persona.title}</span>
-                <strong>{persona.superpowerName || persona.title}</strong>
-                <span className="result-explore__tagline">{persona.tagline}</span>
-              </Link>
+              <DDCTA
+                key={key}
+                label={persona.title}
+                href={`/roadmap/${key}`}
+                variant="outline"
+              />
             );
           })}
         </div>
         <div className="action-row">
-          <Link className="btn btn--primary" to="/quiz">Take the quiz →</Link>
-          <Link className="btn btn--outline" to="/">Back to home</Link>
+          <DDCTA label="Take the quiz" href="/quiz" variant="primary" />
+          <DDCTA label="Back to home" href="/" variant="outline" />
         </div>
       </div>
     </section>
@@ -78,119 +75,151 @@ export default function RoadmapPage() {
   }
 
   const persona = getPersona(result.superpower);
-  const sequence = result.buildSequence || [];
   const isPersonalized = result.source !== 'persona-template';
-  const generated = result.generatedAt ? new Date(result.generatedAt) : null;
-  const generatedLabel = generated && !Number.isNaN(generated.getTime())
-    ? generated.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
-    : '';
-
-  const heading = result.firstName
-    ? `${result.firstName}, here is your ${persona.title} roadmap.`
-    : `Your ${persona.title} roadmap.`;
-
+  const sequence = result.sequence || result.buildSequence || [];
+  const heading = isPersonalized
+    ? `Your ${persona?.title || result.superpower} roadmap.`
+    : `The ${persona?.title || result.superpower} roadmap.`;
   const meta = isPersonalized
-    ? `Scored from ${result.answered} of ${result.total || 7} answers${generatedLabel ? ` on ${generatedLabel}` : ''}. Saved in this browser only.`
-    : 'Overview mode. Take the quiz to personalize this roadmap with your own answers.';
+    ? 'Built from your quiz answers. Stays on this device.'
+    : 'Preview only. Take the quiz to personalize this roadmap.';
+  const nextPersona = otherPersona(result.superpower);
 
   return (
     <>
-      <section className="page-hero">
-        <div className="dd-container">
-          <span className="label label--blue">{persona.title} / {result.superpowerName}</span>
-          <h1>{heading}</h1>
-          <p>{result.overview}</p>
+      {/* ── HERO ─────────────────────────────────────── */}
+      <section className="dd-hero">
+        <div className="dd-container dd-container--narrow">
+          <DDLabel tone="blue">{persona?.title || result.superpower} / {persona?.superpowerName || result.superpowerName || 'Roadmap'}</DDLabel>
+          <h1 className="dd-hero__headline">{heading}</h1>
+          <p className="dd-hero__lead">{result.overview}</p>
           <div className="action-row">
             {isPersonalized ? (
-              <Link className="btn btn--primary" to="/results">See my result page →</Link>
+              <DDCTA label="See my result page" href="/results" variant="primary" />
             ) : (
-              <Link className="btn btn--primary" to="/quiz">Take the quiz to personalize →</Link>
+              <DDCTA label="Take the quiz to personalize" href="/quiz" variant="primary" />
             )}
-            <Link className="btn btn--outline" to={`/roadmap/${otherPersona(result.superpower)}`}>
-              Compare another superpower
-            </Link>
+            <DDCTA
+              label="Compare another superpower"
+              href={`/roadmap/${nextPersona}`}
+              variant="outline"
+            />
           </div>
-          <p className="hero-note">{meta}</p>
+          <p className="dd-hero__note">{meta}</p>
         </div>
       </section>
 
-      <section className="story-section story-section--white">
+      {/* ── STRENGTHS / BLIND SPOTS / NICHES / TOOLS ─── */}
+      <section className="dd-section dd-section--alt dd-section--rule">
         <div className="dd-container">
-          <div className="roadmap-grid">
-            <article className="roadmap-panel">
-              <span className="label label--orange">Strengths</span>
-              <h3>What you already do well</h3>
-              <ul className="dd-list">
-                {(result.strengths || []).map((item) => <li key={item}>{item}</li>)}
-              </ul>
-            </article>
-
-            <article className="roadmap-panel">
-              <span className="label label--blue">Blind spots</span>
-              <h3>Where this profile usually stalls</h3>
-              <ul className="dd-list">
-                {(result.blindSpots || []).map((item) => <li key={item}>{item}</li>)}
-              </ul>
-            </article>
-
-            <article className="roadmap-panel">
-              <span className="label label--orange">Best-fit niches</span>
-              <h3>Where your superpower meets demand</h3>
-              <ul className="dd-list">
-                {(result.niches || []).map((item) => <li key={item}>{item}</li>)}
-              </ul>
-            </article>
-
-            <article className="roadmap-panel">
-              <span className="label label--blue">Tools to use</span>
-              <h3>In the order you need them</h3>
-              <ul className="dd-list">
-                {(result.tools || []).map((item) => <li key={item}>{item}</li>)}
-              </ul>
-            </article>
-          </div>
-
-          <div className="roadmap-plan">
-            <span className="label label--orange">Your personalized build sequence</span>
-            <h2>Phase by phase, without wasted effort.</h2>
-            <p>
-              Each phase produces one thing you can point at.
-              {result.timeframe ? ` Typical window for this profile: ${result.timeframe}.` : ''}
-            </p>
-
-            {sequence.map((step) => (
-              <div className="roadmap-step" key={`${step.step}-${step.title}`}>
-                <span>{String(step.step).padStart(2, '0')}</span>
-                <div>
-                  <h3>{step.title}</h3>
-                  {step.timeframe ? <p className="roadmap-step__meta">Target: {step.timeframe}</p> : null}
-                  {step.metric ? <p className="roadmap-step__meta">Done when: {step.metric}</p> : null}
-                </div>
+          <div className="dd-grid dd-grid--two">
+            <DDCard>
+              <div className="dd-card__inner">
+                <DDLabel tone="orange">Strengths</DDLabel>
+                <h3 className="dd-card__title">What you already do well</h3>
+                <ul className="dd-list">
+                  {(result.strengths || []).map((item) => <li key={item}>{item}</li>)}
+                </ul>
               </div>
-            ))}
-          </div>
+            </DDCard>
 
-          <div className="truth-bar">
-            <strong>Start here</strong>
-            <span>
-              {result.nextAction}
-              {result.nextActionReason ? ` ${result.nextActionReason}` : ''}
-            </span>
-          </div>
+            <DDCard>
+              <div className="dd-card__inner">
+                <DDLabel tone="blue">Blind spots</DDLabel>
+                <h3 className="dd-card__title">Where this profile usually stalls</h3>
+                <ul className="dd-list">
+                  {(result.blindSpots || []).map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </div>
+            </DDCard>
 
-          <div className="roadmap-next">
-            <div>
-              <span className="label label--blue">Step 04 / Build</span>
-              <h2>Keep the roadmap in view while you build.</h2>
-              <p>
-                Your roadmap stays on this device and points to the tools in your private workspace.
-                Everything stays private to this browser.
+            <DDCard>
+              <div className="dd-card__inner">
+                <DDLabel tone="orange">Best-fit niches</DDLabel>
+                <h3 className="dd-card__title">Where your superpower meets demand</h3>
+                <ul className="dd-list">
+                  {(result.niches || []).map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </div>
+            </DDCard>
+
+            <DDCard>
+              <div className="dd-card__inner">
+                <DDLabel tone="blue">Tools to use</DDLabel>
+                <h3 className="dd-card__title">In the order you need them</h3>
+                <ul className="dd-list">
+                  {(result.tools || []).map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </div>
+            </DDCard>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BUILD SEQUENCE ───────────────────────────── */}
+      {sequence.length > 0 && (
+        <section className="dd-section dd-section--rule">
+          <div className="dd-container dd-container--narrow">
+            <div className="dd-section__head">
+              <DDLabel tone="orange">Your personalized build sequence</DDLabel>
+              <h2>Phase by phase, without wasted effort.</h2>
+              <p className="dd-section__intro">
+                Each phase produces one thing you can point at.
+                {result.timeframe ? ` Typical window for this profile: ${result.timeframe}.` : ''}
               </p>
             </div>
-            <div className="action-row">
-              <Link className="btn btn--primary" to="/tools">See the tools</Link>
-              <Link className="btn btn--outline" to="/quiz">Retake the quiz</Link>
+
+            <div className="dd-steps-list">
+              {sequence.map((step) => (
+                <div key={`step-${step.step}`} className="dd-step-row">
+                  <div className="dd-step-row__number">
+                    <span>{String(step.step).padStart(2, '0')}</span>
+                  </div>
+                  <div className="dd-step-row__content">
+                    <h3 className="dd-step-row__title">{step.title}</h3>
+                    {step.timeframe && (
+                      <p className="dd-step-row__text">Target: {step.timeframe}</p>
+                    )}
+                    {step.metric && (
+                      <p className="dd-step-row__text">Done when: {step.metric}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── NEXT ACTION ──────────────────────────────── */}
+      {result.nextAction && (
+        <section className="dd-section dd-section--alt dd-section--rule">
+          <div className="dd-container dd-container--narrow">
+            <div className="truth-bar">
+              <strong>Start here</strong>
+              <span>
+                {result.nextAction}
+                {result.nextActionReason ? ` — ${result.nextActionReason}` : ''}
+              </span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── CTA ──────────────────────────────────────── */}
+      <section className="dd-section dd-section--rule">
+        <div className="dd-container dd-container--narrow">
+          <div className="dd-section__head">
+            <DDLabel tone="blue">Step 04 / Build</DDLabel>
+            <h2>Keep the roadmap in view while you build.</h2>
+            <p className="dd-section__intro">
+              Your roadmap stays on this device and points to the tools in your private workspace.
+              Everything stays private to this browser.
+            </p>
+          </div>
+          <div className="action-row">
+            <DDCTA label="See the tools" href="/tools" variant="primary" />
+            <DDCTA label="Retake the quiz" href="/quiz" variant="outline" />
           </div>
         </div>
       </section>
