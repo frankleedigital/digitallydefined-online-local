@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import SiteLayout from '../Layout/SiteLayout';
 import { sendToHermes } from '../../lib/hermes';
 import { useToolState } from '../../context/ToolStateContext.jsx';
 import {
@@ -140,9 +139,9 @@ function MentorTopicWrapper({ topic, children }) {
   }, [toolState, isCalculatorRoute]);
 
   return (
-    <SiteLayout mentorTopic={topic} systemPrompt={systemPrompt} toolState={toolState}>
+    <>
       {children}
-    </SiteLayout>
+    </>
   );
 }
 
