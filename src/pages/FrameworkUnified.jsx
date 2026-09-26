@@ -2,409 +2,399 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Layers,
-  ArrowRight,
-  Database,
-  TrendingUp,
+  Sparkles,
+  Target,
   Cpu,
-  DollarSign,
+  Share2,
+  TrendingUp,
+  ArrowRight,
   Shield,
   CheckCircle2,
-  Lock,
-  EyeOff,
-  Sparkles,
-  Zap,
+  Compass,
+  FileText,
+  Workflow
 } from 'lucide-react';
 
 export default function FrameworkUnified() {
-  const TIERS = [
+  const tiers = [
     {
-      tier: '01',
-      title: 'Audience & Niche Architecture',
-      subtitle: 'Identify High-Pain Problems Without Identity Exposure',
-      accent: '#F18B25',
-      icon: Database,
-      deliverables: [
-        'Proprietary 0-100 Niche Profitability Scoring formula',
-        'Faceless brand identity guidelines (typography, palette, tone)',
-        'Legal entity & domain separation protocols for privacy',
-        'Customer search intent keyword maps',
+      tier: 'Tier 01',
+      name: 'Niche Identification & Asset Validation',
+      icon: Target,
+      color: '#F18B25',
+      timeframe: 'Days 1–7',
+      objective: 'Discover high-demand, low-competition digital product topics based on your career experience.',
+      steps: [
+        'Take the Superpower Quiz to identify your creator archetype (Curator, Architect, Builder, Synthesizer).',
+        'Use the Niche Profitability Scorecard to evaluate commercial intent and purchasing power.',
+        'Validate problem urgency with search queries before writing a single word.',
       ],
-      description:
-        'We begin by uncovering the exact intersection of your corporate expertise and urgent digital demand. You will never put your face on camera, use your personal name, or broadcast your personal life.',
+      deliverable: '1 Validated Digital Asset Topic & Problem Statement',
     },
     {
-      tier: '02',
-      title: 'Automated Asset Creation',
-      subtitle: 'Turn Professional Knowledge Into Scalable Products',
-      accent: '#47B7D4',
-      icon: TrendingUp,
-      deliverables: [
-        'Structured Notion Operating Systems ($47–$97 pricing sweet spot)',
-        'Micro-SaaS & Interactive Calculator blueprints',
-        'AI prompt chains for instant high-value documentation',
-        'Automated checkout & frictionless instant delivery',
-      ],
-      description:
-        'Transform complex workflows into high-utility digital templates. Customers buy immediate clarity and time savings — not video personality.',
-    },
-    {
-      tier: '03',
-      title: 'Faceless Traffic Flywheel',
-      subtitle: 'Systematize Inbound Leads on Autopilot',
-      accent: '#16A34A',
+      tier: 'Tier 02',
+      name: 'Automated AI Asset Production',
       icon: Cpu,
-      deliverables: [
-        'Search-driven editorial content funnels',
-        'Automated Brevo & Substack email automation sequences',
-        'Faceless Pinterest & SEO distribution matrices',
-        'Zero-budget inbound lead magnet architecture',
+      color: '#47B7D4',
+      timeframe: 'Days 8–18',
+      objective: 'Build high-utility digital templates, Notion systems, or interactive calculators using structured AI prompts.',
+      steps: [
+        'Apply our proprietary prompt blueprints to extract 10–20 years of career knowledge into clean modules.',
+        'Format deliverables into Notion templates, fillable PDFs, or client-side calculation engines.',
+        'Package into clean, white-card soft brutalist designs that look professional and trustworthy.',
       ],
-      description:
-        'Instead of fighting social media algorithms with endless daily video uploads, we build durable search assets and email pipelines that deliver sales 24/7.',
+      deliverable: '1 Complete Faceless Digital Product ($27–$97 Price Point)',
     },
     {
-      tier: '04',
-      title: 'Cashflow Stacking & Empire Scaling',
-      subtitle: 'Bridge the Retirement Gap With Multiple Micro-Assets',
-      accent: '#8B5CF6',
-      icon: DollarSign,
-      deliverables: [
-        'Portfolio diversification across 3–5 complementary niches',
-        'High-ticket backend consulting ladders (optional, camera-free)',
-        'Recurring membership & community infrastructure',
-        'Asset valuation & digital real estate exit planning',
+      tier: 'Tier 03',
+      name: 'Faceless 1-Page Funnel & Checkout',
+      icon: Share2,
+      color: '#1F2937',
+      timeframe: 'Days 19–24',
+      objective: 'Deploy a high-converting, centered 1-page checkout funnel with zero video recording required.',
+      steps: [
+        'Set up a high-readability sales page with clear problem-solution hierarchy and centered CTAs.',
+        'Connect Stripe / Lemon Squeezy checkout for immediate automated product delivery.',
+        'Add client-side calculators or free sample lead magnets to build an email list.',
       ],
-      description:
-        'By stacking 4 to 6 digital assets each producing $300–$750/month, you generate $2,000–$4,500/mo in resilient cashflow — neutralizing the Gen X retirement deficit forever.',
+      deliverable: '1 Live, Automated Checkout Funnel with Instant Delivery',
+    },
+    {
+      tier: 'Tier 04',
+      name: 'Automated Distribution & Multi-Asset Scaling',
+      icon: TrendingUp,
+      color: '#F18B25',
+      timeframe: 'Days 25–30+',
+      objective: 'Set up autonomous email sequences and build 3–5 total assets to permanently bridge the retirement gap.',
+      steps: [
+        'Trigger automated welcome and educational email sequences via Brevo / Supabase Edge.',
+        'Repurpose asset snippets into faceless text/graphic posts on LinkedIn or Pinterest.',
+        'Stack 3–5 micro-assets to create $1,500–$2,500/mo in recurring cashflow floor.',
+      ],
+      deliverable: 'A Complete Self-Sustaining Digital Real Estate Portfolio',
     },
   ];
 
   return (
-    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
-      {/* 1. HERO */}
+    <div style={{ backgroundColor: '#FFFCF9', color: '#1F2937', minHeight: '100vh' }}>
+      
+      {/* Header — Centered */}
       <section
         style={{
-          borderBottom: '2px solid #1F2937',
-          backgroundColor: '#FFFFFF',
-          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
+          maxWidth: '1040px',
+          margin: '0 auto',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem 2.5rem',
           textAlign: 'center',
         }}
       >
-        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                padding: '0.35rem 0.85rem',
-                backgroundColor: '#FFFCF9',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.7rem',
-                fontWeight: 900,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: '#1F2937',
-              }}
-            >
-              <Layers size={14} color="#F18B25" />
-              <span>Core Architecture</span>
-            </span>
-          </div>
-
-          <h1
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+          <div
             style={{
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 900,
-              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
-              lineHeight: 1.1,
-              letterSpacing: '-0.03em',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
+              padding: '0.35rem 0.85rem',
+              fontSize: '0.72rem',
+              fontWeight: 800,
               textTransform: 'uppercase',
-              color: '#1F2937',
-              maxWidth: '880px',
-              margin: '0 auto 1.25rem',
+              letterSpacing: '0.08em',
+              color: '#F18B25',
+              boxShadow: 'none',
             }}
           >
-            The 4-Tier <span style={{ color: '#F18B25' }}>Faceless Asset</span> Framework
-          </h1>
-
-          <p
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
-              lineHeight: 1.6,
-              color: '#4B5563',
-              maxWidth: '720px',
-              margin: '0 auto 2.5rem',
-            }}
-          >
-            A predictable, step-by-step operating system designed specifically for Gen X women.
-            No dancing on video. No public exposure. Just systematic digital assets that work 24/7.
-          </p>
-
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <Link
-              to="/quiz"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.9rem 2rem',
-                backgroundColor: '#F18B25',
-                color: '#1F2937',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.8rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                textDecoration: 'none',
-                boxShadow: '4px 4px 0 0 #1F2937',
-              }}
-            >
-              <span>Map Your Tier With The Quiz</span>
-              <ArrowRight size={15} />
-            </Link>
-
-            <Link
-              to="/gap"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.9rem 1.75rem',
-                backgroundColor: '#FFFFFF',
-                color: '#1F2937',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.8rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                textDecoration: 'none',
-                boxShadow: '4px 4px 0 0 #1F2937',
-              }}
-            >
-              <span>Calculate Retirement Need</span>
-            </Link>
+            <Layers size={13} color="#F18B25" />
+            <span>System Architecture</span>
           </div>
+        </div>
+
+        <h1
+          style={{
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(2rem, 4vw, 3rem)',
+            textTransform: 'uppercase',
+            letterSpacing: '-0.02em',
+            color: '#1F2937',
+            marginBottom: '1rem',
+          }}
+        >
+          The 4-Tier Faceless System Framework
+        </h1>
+
+        <p
+          style={{
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontSize: '1.05rem',
+            color: '#4B5563',
+            maxWidth: '680px',
+            margin: '0 auto 2.5rem',
+            lineHeight: 1.6,
+          }}
+        >
+          A methodical, step-by-step engineering pathway designed for Gen X women to transform 
+          career experience into automated digital assets—without camera pressure, complex tech, or guessing.
+        </p>
+
+        {/* Centered CTA */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <Link
+            to="/start-here"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              backgroundColor: '#F18B25',
+              border: '1.5px solid #1F2937',
+              color: '#1F2937',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.85rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              padding: '0.85rem 1.75rem',
+              textDecoration: 'none',
+              boxShadow: 'none',
+            }}
+          >
+            <Compass size={15} />
+            <span>Start 3-Step Guide</span>
+            <ArrowRight size={14} />
+          </Link>
+
+          <Link
+            to="/gap"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
+              color: '#1F2937',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.85rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              padding: '0.85rem 1.75rem',
+              textDecoration: 'none',
+              boxShadow: 'none',
+            }}
+          >
+            <Sparkles size={15} color="#F18B25" />
+            <span>Retirement Gap Calculator</span>
+          </Link>
         </div>
       </section>
 
-      {/* 2. TIERS BREAKDOWN */}
-      <section style={{ maxWidth: '1080px', margin: '0 auto', padding: '4.5rem 1.25rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-          {TIERS.map((tier) => {
-            const TierIcon = tier.icon;
+      {/* 4 Tiers List — Centered Container (Max-Width 1040px) */}
+      <section
+        style={{
+          maxWidth: '1040px',
+          margin: '0 auto',
+          padding: '0 1.25rem 4.5rem',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {tiers.map((t, idx) => {
+            const Icon = t.icon;
             return (
               <div
-                key={tier.tier}
+                key={t.tier}
                 style={{
                   backgroundColor: '#FFFFFF',
-                  border: '2px solid #1F2937',
-                  padding: 'clamp(1.75rem, 3.5vw, 2.75rem)',
-                  boxShadow: '6px 6px 0 0 #1F2937',
+                  border: '1.5px solid #1F2937',
+                  padding: 'clamp(1.5rem, 4vw, 2.25rem)',
+                  boxShadow: 'none',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
-                  <div>
-                    <span
-                      style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: '0.75rem',
-                        fontWeight: 900,
-                        textTransform: 'uppercase',
-                        color: tier.accent,
-                        letterSpacing: '0.1em',
-                        display: 'block',
-                        marginBottom: '0.25rem',
-                      }}
-                    >
-                      Tier {tier.tier}
-                    </span>
-                    <h2
-                      style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: 'clamp(1.4rem, 3vw, 2rem)',
-                        fontWeight: 900,
-                        textTransform: 'uppercase',
-                        color: '#1F2937',
-                        margin: 0,
-                        lineHeight: 1.15,
-                      }}
-                    >
-                      {tier.title}
-                    </h2>
-                    <p
-                      style={{
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontSize: '0.95rem',
-                        fontWeight: 600,
-                        color: '#6B7280',
-                        margin: '0.35rem 0 0',
-                      }}
-                    >
-                      {tier.subtitle}
-                    </p>
-                  </div>
-
-                  <div
-                    style={{
-                      width: '44px',
-                      height: '44px',
-                      backgroundColor: '#FFFCF9',
-                      border: '2px solid #1F2937',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <TierIcon size={22} color={tier.accent} />
-                  </div>
-                </div>
-
-                <p
+                {/* Tier Header */}
+                <div
                   style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: '0.95rem',
-                    lineHeight: 1.65,
-                    color: '#4B5563',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '1rem',
+                    paddingBottom: '1.25rem',
+                    borderBottom: '1.5px solid #1F2937',
                     marginBottom: '1.5rem',
                   }}
                 >
-                  {tier.description}
-                </p>
-
-                <div
-                  style={{
-                    backgroundColor: '#FFFCF9',
-                    border: '1.5px solid #1F2937',
-                    padding: '1.25rem 1.5rem',
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: '0.7rem',
-                      fontWeight: 900,
-                      textTransform: 'uppercase',
-                      color: '#1F2937',
-                      letterSpacing: '0.08em',
-                      marginBottom: '0.75rem',
-                    }}
-                  >
-                    Core Blueprint Deliverables:
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
-                    {tier.deliverables.map((item, idx) => (
-                      <div
-                        key={idx}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                    <div
+                      style={{
+                        width: '42px',
+                        height: '42px',
+                        backgroundColor: '#FAF8F5',
+                        border: '1.5px solid #1F2937',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Icon size={20} color={t.color} />
+                    </div>
+                    <div>
+                      <span
                         style={{
-                          display: 'flex',
-                          alignItems: 'flex-start',
-                          gap: '0.45rem',
-                          fontFamily: "'DM Sans', sans-serif",
-                          fontSize: '0.85rem',
-                          color: '#1F2937',
-                          lineHeight: 1.4,
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.08em',
+                          color: '#F18B25',
+                          display: 'block',
                         }}
                       >
-                        <CheckCircle2 size={15} color="#16A34A" style={{ flexShrink: 0, marginTop: '2px' }} />
-                        <span>{item}</span>
-                      </div>
-                    ))}
+                        {t.tier} · {t.timeframe}
+                      </span>
+                      <h2
+                        style={{
+                          fontFamily: "'Inter', system-ui, sans-serif",
+                          fontSize: '1.3rem',
+                          fontWeight: 900,
+                          textTransform: 'uppercase',
+                          color: '#1F2937',
+                          margin: 0,
+                        }}
+                      >
+                        {t.name}
+                      </h2>
+                    </div>
                   </div>
+
+                  <div
+                    style={{
+                      backgroundColor: '#FAF8F5',
+                      border: '1px solid #1F2937',
+                      padding: '0.35rem 0.75rem',
+                      fontSize: '0.75rem',
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      color: '#1F2937',
+                    }}
+                  >
+                    Target: {t.deliverable}
+                  </div>
+                </div>
+
+                {/* Objective */}
+                <p
+                  style={{
+                    fontFamily: "'DM Sans', system-ui, sans-serif",
+                    fontSize: '1rem',
+                    color: '#1F2937',
+                    fontWeight: 600,
+                    lineHeight: 1.5,
+                    marginBottom: '1.25rem',
+                  }}
+                >
+                  {t.objective}
+                </p>
+
+                {/* Checklist Steps */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                  {t.steps.map((step, sIdx) => (
+                    <div
+                      key={sIdx}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '0.65rem',
+                        fontSize: '0.9rem',
+                        fontFamily: "'DM Sans', system-ui, sans-serif",
+                        color: '#4B5563',
+                        lineHeight: 1.55,
+                      }}
+                    >
+                      <CheckCircle2 size={16} color="#F18B25" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                      <span>{step}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             );
           })}
         </div>
-      </section>
 
-      {/* 3. READY TO START */}
-      <section style={{ maxWidth: '1080px', margin: '0 auto', padding: '0 1.25rem', textAlign: 'center' }}>
+        {/* Centered Bottom CTA */}
         <div
           style={{
-            backgroundColor: '#1F2937',
-            color: '#FFFFFF',
-            border: '2px solid #1F2937',
-            padding: '3rem 1.5rem',
-            boxShadow: '6px 6px 0 0 #F18B25',
+            marginTop: '3rem',
+            backgroundColor: '#FFF7ED',
+            border: '1.5px solid #1F2937',
+            padding: '2.25rem 1.5rem',
+            textAlign: 'center',
           }}
         >
-          <h2
+          <h3
             style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '1.85rem',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '1.4rem',
               fontWeight: 900,
               textTransform: 'uppercase',
-              color: '#FFFFFF',
+              color: '#1F2937',
               marginBottom: '0.5rem',
             }}
           >
-            Implement The Framework in 30 Days
-          </h2>
+            Ready to execute Tier 01?
+          </h3>
           <p
             style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: '1rem',
-              color: '#D1D5DB',
-              maxWidth: '620px',
-              margin: '0 auto 1.75rem',
+              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontSize: '0.95rem',
+              color: '#4B5563',
+              maxWidth: '560px',
+              margin: '0 auto 1.5rem',
             }}
           >
-            Get instant access to step-by-step video templates, Notion blueprints, and automated prompt chains.
+            Start with the 2-minute Superpower Diagnostic or model your retirement gap right now.
           </p>
-
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <Link
-              to="/builder"
+              to="/quiz"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.9rem 2rem',
+                gap: '0.45rem',
                 backgroundColor: '#F18B25',
+                border: '1.5px solid #1F2937',
                 color: '#1F2937',
-                border: '2px solid #FFFFFF',
-                fontFamily: "'Inter', sans-serif",
                 fontSize: '0.82rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
+                fontWeight: 800,
                 textTransform: 'uppercase',
+                padding: '0.8rem 1.75rem',
                 textDecoration: 'none',
-                boxShadow: '4px 4px 0 0 #FFFFFF',
               }}
             >
-              <span>Join Builder Plan ($47/mo)</span>
-              <ArrowRight size={15} />
+              <Sparkles size={14} />
+              <span>Launch Archetype Quiz</span>
             </Link>
-
             <Link
-              to="/start-here"
+              to="/tools"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.9rem 1.75rem',
-                backgroundColor: 'transparent',
-                color: '#FFFFFF',
-                border: '2px solid #FFFFFF',
-                fontFamily: "'Inter', sans-serif",
+                gap: '0.45rem',
+                backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
+                color: '#1F2937',
                 fontSize: '0.82rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
+                fontWeight: 800,
                 textTransform: 'uppercase',
+                padding: '0.8rem 1.5rem',
                 textDecoration: 'none',
               }}
             >
-              <span>See Guided Onboarding</span>
+              <span>View All Tools</span>
+              <ArrowRight size={14} />
             </Link>
           </div>
         </div>
       </section>
+
     </div>
   );
 }

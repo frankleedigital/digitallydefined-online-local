@@ -3,414 +3,446 @@ import { Link } from 'react-router-dom';
 import {
   Wrench,
   Calculator,
-  Compass,
-  TrendingUp,
-  DollarSign,
-  Cpu,
+  Sparkles,
   Target,
+  DollarSign,
+  TrendingUp,
+  Cpu,
   ArrowRight,
   Shield,
-  Zap,
-  CheckCircle2,
-  Sparkles,
   Layers,
-  Database,
-  Search,
+  CheckCircle,
+  Clock,
+  ExternalLink,
+  MessageSquare
 } from 'lucide-react';
 
-const ECOSYSTEM_TOOLS = [
-  {
-    id: 'gap-calc',
-    title: 'Retirement Gap Calculator',
-    badge: 'Flagship Tool',
-    category: 'Calculators',
-    tagColor: '#DC2626',
-    tagBg: '#FEE2E2',
-    icon: Calculator,
-    desc: 'Model your exact retirement shortfall based on current savings, projected age, and needed monthly income. Calculates the precise number of faceless digital assets required to bridge the gap.',
-    specs: ['Median Gen X Gap Modeling', 'Faceless Asset Equivalent Calculator', 'Instant Monthly Cashflow Targets'],
-    route: '/gap',
-    cta: 'Launch Gap Calculator',
-  },
-  {
-    id: 'superpower-quiz',
-    title: 'Digital Superpower Quiz',
-    badge: 'Personalization Engine',
-    category: 'Assessment',
-    tagColor: '#F18B25',
-    tagBg: '#FEF3C7',
-    icon: Compass,
-    desc: 'A 2-minute diagnostic scoring your career expertise into one of 4 proven faceless archetypes: The Content Architect, The Curator, The Systems Builder, or The Template Designer.',
-    specs: ['4 Proven Gen X Archetypes', 'Zero Tech Jargon', 'Dynamic Next-Step Plan Generation'],
-    route: '/quiz',
-    cta: 'Take Superpower Quiz',
-  },
-  {
-    id: 'niche-scorecard',
-    title: 'Niche Profitability Scorecard',
-    badge: 'Validation Tool',
-    category: 'Validation',
-    tagColor: '#0284C7',
-    tagBg: '#E0F2FE',
-    icon: Target,
-    desc: 'Score any digital product niche from 0 to 100 based on 5 weighted metrics: Audience Pain Point, Spending Power, Search Intent, Evergreen Demand, and Privacy Ease.',
-    specs: ['Weighted 0-100 Scoring Index', 'Immediate Viability Filter', 'Niche Risk Assessment'],
-    route: '/scorecard',
-    cta: 'Run Niche Scorecard',
-  },
-  {
-    id: 'roi-engine',
-    title: '10X ROI Engine',
-    badge: 'ROI Modeler',
-    category: 'Calculators',
-    tagColor: '#16A34A',
-    tagBg: '#DCFCE7',
-    icon: TrendingUp,
-    desc: 'Calculate the exponential return on time and money when building digital assets vs traditional hourly consulting or corporate overtime. Highlights the power of $27-$97 recurring templates.',
-    specs: ['Hours-to-Revenue Multiplier', 'Digital Asset Margin Modeling', 'Break-Even Timelines'],
-    route: '/calculator/roi',
-    cta: 'Launch ROI Engine',
-  },
-  {
-    id: 'freedom-calculator',
-    title: 'Freedom Number Calculator',
-    badge: 'Milestone Planner',
-    category: 'Calculators',
-    tagColor: '#8B5CF6',
-    tagBg: '#EDE9FE',
-    icon: DollarSign,
-    desc: 'Define your absolute baseline freedom number: the exact monthly income required to quit burnout corporate work or subsidize part-time career transitions.',
-    specs: ['Core Expense Floor Analysis', 'Phase-by-Phase Freedom Tiers', 'Asset Allocation Plan'],
-    route: '/calculator/freedom',
-    cta: 'Calculate Freedom Number',
-  },
-  {
-    id: 'automation-studio',
-    title: 'Content & Automation Studio',
-    badge: 'Systems Engine',
-    category: 'Automation',
-    tagColor: '#47B7D4',
-    tagBg: '#E0F2FE',
-    icon: Cpu,
-    desc: 'Explore the automated backend architecture: how Supabase, OmniRoute AI, and scheduled cron jobs manage faceless newsletter generation, content formatting, and customer lead routing.',
-    specs: ['Faceless Content Pipeline', 'Zero-Camera Distribution', 'OmniRoute LLM Infrastructure'],
-    route: '/automation',
-    cta: 'Explore Automation Studio',
-  },
-];
-
 export default function ToolsUnified() {
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
 
-  const filteredTools = ECOSYSTEM_TOOLS.filter((tool) => {
-    const matchesCat = selectedCategory === 'All' || tool.category === selectedCategory;
-    const matchesSearch =
-      tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.desc.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCat && matchesSearch;
-  });
+  const tools = [
+    {
+      id: 'gap-calculator',
+      title: 'Retirement Gap Calculator',
+      category: 'calculators',
+      categoryLabel: 'Financial Modeling',
+      icon: Calculator,
+      color: '#F18B25',
+      status: 'Live & Active',
+      isLive: true,
+      description:
+        'Quantify your exact shortfall between current savings and desired retirement lifestyle. Calculates the faceless digital asset equivalent needed to close the gap permanently.',
+      time: '3 mins',
+      href: '/gap',
+      actionLabel: 'Launch Calculator',
+    },
+    {
+      id: 'superpower-quiz',
+      title: 'Digital Superpower Diagnostic',
+      category: 'diagnostics',
+      categoryLabel: 'Archetype Assessment',
+      icon: Sparkles,
+      color: '#47B7D4',
+      status: 'Live & Active',
+      isLive: true,
+      description:
+        'Uncover your highest-leverage digital asset archetype (The Curator, The Systems Builder, The Template Architect, or The Research Synthesizer) based on your career experience.',
+      time: '2 mins',
+      href: '/quiz',
+      actionLabel: 'Take Assessment',
+    },
+    {
+      id: 'niche-scorecard',
+      title: 'Niche Profitability Scorecard',
+      category: 'diagnostics',
+      categoryLabel: 'Market Validation',
+      icon: Target,
+      color: '#1F2937',
+      status: 'Live & Active',
+      isLive: true,
+      description:
+        'Score potential digital product niches across 4 commercial pillars: pain urgency, purchasing power, faceless delivery fit, and competition saturation before creating anything.',
+      time: '4 mins',
+      href: '/scorecard',
+      actionLabel: 'Score Your Niche',
+    },
+    {
+      id: 'roi-engine',
+      title: '10X Asset ROI Multiplier',
+      category: 'calculators',
+      categoryLabel: 'Return on Effort',
+      icon: TrendingUp,
+      color: '#F18B25',
+      status: 'Live & Active',
+      isLive: true,
+      description:
+        'Compare the lifetime cashflow and net margins of faceless digital assets against physical real estate, stock portfolios, and active client consulting.',
+      time: '3 mins',
+      href: '/roi',
+      actionLabel: 'Calculate Multiplier',
+    },
+    {
+      id: 'freedom-calculator',
+      title: 'Freedom Number Calculator',
+      category: 'calculators',
+      categoryLabel: 'Cashflow Planning',
+      icon: DollarSign,
+      color: '#47B7D4',
+      status: 'Live & Active',
+      isLive: true,
+      description:
+        'Determine your baseline monthly freedom threshold and map the exact unit sales per week needed across $27, $47, and $97 products to leave corporate work.',
+      time: '3 mins',
+      href: '/freedom',
+      actionLabel: 'Find Freedom Number',
+    },
+    {
+      id: 'automation-studio',
+      title: 'Content & Automation Studio',
+      category: 'automation',
+      categoryLabel: 'AI Engine',
+      icon: Cpu,
+      color: '#1F2937',
+      status: 'Coming Soon (Q2)',
+      isLive: false,
+      description:
+        'Autonomous prompt pipelines and Supabase Edge scripts to generate, format, and schedule faceless newsletter content and digital download delivery automatically.',
+      time: 'Autonomous',
+      href: '/automation',
+      actionLabel: 'Preview Architecture',
+    },
+  ];
+
+  const filteredTools =
+    activeCategory === 'all'
+      ? tools
+      : tools.filter((t) => t.category === activeCategory);
+
+  const categories = [
+    { id: 'all', label: 'All Tools & Agents' },
+    { id: 'calculators', label: 'Financial Calculators' },
+    { id: 'diagnostics', label: 'Archetype & Niche' },
+    { id: 'automation', label: 'AI & Automation' },
+  ];
 
   return (
-    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
-      {/* 1. HEADER / HERO */}
+    <div style={{ backgroundColor: '#FFFCF9', color: '#1F2937', minHeight: '100vh' }}>
+      
+      {/* Header Section — Centered */}
       <section
         style={{
-          borderBottom: '2px solid #1F2937',
-          backgroundColor: '#FFFFFF',
-          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
+          maxWidth: '1040px',
+          margin: '0 auto',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem 2rem',
           textAlign: 'center',
         }}
       >
-        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                padding: '0.35rem 0.85rem',
-                backgroundColor: '#FFFCF9',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.7rem',
-                fontWeight: 900,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: '#1F2937',
-              }}
-            >
-              <Wrench size={14} color="#F18B25" />
-              <span>Diagnostic & Execution Suite</span>
-            </span>
-          </div>
-
-          <h1
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 900,
-              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
-              lineHeight: 1.1,
-              letterSpacing: '-0.03em',
-              textTransform: 'uppercase',
-              color: '#1F2937',
-              maxWidth: '850px',
-              margin: '0 auto 1.25rem',
-            }}
-          >
-            Tools, Calculators & <span style={{ color: '#F18B25' }}>Autonomous</span> Engines
-          </h1>
-
-          <p
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
-              lineHeight: 1.6,
-              color: '#4B5563',
-              maxWidth: '720px',
-              margin: '0 auto 2.5rem',
-            }}
-          >
-            Every tool in the DigitallyDefined ecosystem is engineered to eliminate guesswork, validate niche viability,
-            and calculate your fastest mathematical path to retirement freedom.
-          </p>
-
-          {/* Quick Filter Bar */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
           <div
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: '0.5rem',
+              gap: '0.45rem',
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
+              padding: '0.35rem 0.85rem',
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: '#F18B25',
+              boxShadow: 'none',
             }}
           >
-            {['All', 'Calculators', 'Assessment', 'Validation', 'Automation'].map((cat) => (
+            <Wrench size={13} color="#F18B25" />
+            <span>Interactive Diagnostic Suite</span>
+          </div>
+        </div>
+
+        <h1
+          style={{
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(2rem, 4vw, 3rem)',
+            textTransform: 'uppercase',
+            letterSpacing: '-0.02em',
+            color: '#1F2937',
+            marginBottom: '1rem',
+          }}
+        >
+          Tools, Calculators & Autonomous Engines
+        </h1>
+
+        <p
+          style={{
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontSize: '1.05rem',
+            color: '#4B5563',
+            maxWidth: '680px',
+            margin: '0 auto 2.5rem',
+            lineHeight: 1.6,
+          }}
+        >
+          Zero fluff, zero theory. Private, browser-based tools designed specifically to help 
+          Gen X women evaluate retirement shortfalls, validate digital product niches, and model recurring cashflow.
+        </p>
+
+        {/* Filter Tabs (Thin Frame, No Shadow) */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            marginBottom: '2.5rem',
+          }}
+        >
+          {categories.map((cat) => {
+            const isSelected = activeCategory === cat.id;
+            return (
               <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                key={cat.id}
+                type="button"
+                onClick={() => setActiveCategory(cat.id)}
                 style={{
-                  padding: '0.55rem 1.1rem',
-                  backgroundColor: selectedCategory === cat ? '#1F2937' : '#FFFCF9',
-                  color: selectedCategory === cat ? '#FFFFFF' : '#1F2937',
-                  border: '2px solid #1F2937',
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '0.75rem',
+                  backgroundColor: isSelected ? '#1F2937' : '#FFFFFF',
+                  color: isSelected ? '#FFFFFF' : '#1F2937',
+                  border: '1.5px solid #1F2937',
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.78rem',
+                  fontFamily: "'Inter', system-ui, sans-serif",
                   fontWeight: 800,
                   textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
                   cursor: 'pointer',
-                  boxShadow: selectedCategory === cat ? '3px 3px 0 0 #F18B25' : '2px 2px 0 0 #1F2937',
+                  boxShadow: 'none',
                   transition: 'all 0.15s ease',
                 }}
               >
-                {cat}
+                {cat.label}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* 2. TOOLS GRID */}
-      <section style={{ maxWidth: '1080px', margin: '0 auto', padding: '4rem 1.25rem' }}>
+      {/* Grid of Tools — Centered (Max-Width 1040px) */}
+      <section
+        style={{
+          maxWidth: '1040px',
+          margin: '0 auto',
+          padding: '0 1.25rem 4rem',
+        }}
+      >
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '2rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))',
+            gap: '1.5rem',
           }}
         >
           {filteredTools.map((tool) => {
-            const ToolIcon = tool.icon;
+            const Icon = tool.icon;
             return (
               <div
                 key={tool.id}
                 style={{
                   backgroundColor: '#FFFFFF',
-                  border: '2px solid #1F2937',
-                  padding: '2rem',
-                  boxShadow: '4px 4px 0 0 #1F2937',
+                  border: '1.5px solid #1F2937',
+                  padding: '1.75rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
+                  boxShadow: 'none',
                 }}
               >
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-                    <span
-                      style={{
-                        padding: '0.2rem 0.55rem',
-                        backgroundColor: tool.tagBg,
-                        color: tool.tagColor,
-                        border: `1.5px solid ${tool.tagColor}`,
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: '0.65rem',
-                        fontWeight: 900,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em',
-                      }}
-                    >
-                      {tool.badge}
-                    </span>
-
+                  {/* Card Header: Icon + Category + Status */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      justifyContent: 'space-between',
+                      marginBottom: '1.25rem',
+                    }}
+                  >
                     <div
                       style={{
-                        width: '36px',
-                        height: '36px',
-                        backgroundColor: '#FFFCF9',
+                        width: '42px',
+                        height: '42px',
+                        backgroundColor: '#FAF8F5',
                         border: '1.5px solid #1F2937',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
                     >
-                      <ToolIcon size={18} color="#1F2937" />
+                      <Icon size={20} color={tool.color} />
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem' }}>
+                      <span
+                        style={{
+                          fontSize: '0.68rem',
+                          fontWeight: 800,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.06em',
+                          color: '#6B7280',
+                        }}
+                      >
+                        {tool.categoryLabel}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: '0.65rem',
+                          fontWeight: 700,
+                          color: tool.isLive ? '#15803D' : '#B45309',
+                          backgroundColor: tool.isLive ? '#DCFCE7' : '#FEF3C7',
+                          padding: '0.1rem 0.4rem',
+                          border: `1px solid ${tool.isLive ? '#86EFAC' : '#FDE68A'}`,
+                        }}
+                      >
+                        {tool.status}
+                      </span>
                     </div>
                   </div>
 
+                  {/* Title */}
                   <h3
                     style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: '1.35rem',
-                      fontWeight: 900,
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: '1.15rem',
+                      fontWeight: 800,
                       textTransform: 'uppercase',
+                      letterSpacing: '-0.01em',
                       color: '#1F2937',
-                      marginBottom: '0.75rem',
+                      marginBottom: '0.65rem',
                     }}
                   >
                     {tool.title}
                   </h3>
 
+                  {/* Description */}
                   <p
                     style={{
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: '0.9rem',
-                      lineHeight: 1.6,
+                      fontFamily: "'DM Sans', system-ui, sans-serif",
+                      fontSize: '0.88rem',
                       color: '#4B5563',
+                      lineHeight: 1.55,
                       marginBottom: '1.5rem',
                     }}
                   >
-                    {tool.desc}
+                    {tool.description}
                   </p>
-
-                  <div style={{ marginBottom: '1.75rem' }}>
-                    <div
-                      style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: '0.68rem',
-                        fontWeight: 900,
-                        textTransform: 'uppercase',
-                        color: '#6B7280',
-                        marginBottom: '0.5rem',
-                        letterSpacing: '0.05em',
-                      }}
-                    >
-                      Key Capabilities:
-                    </div>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      {tool.specs.map((s, idx) => (
-                        <li
-                          key={idx}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.45rem',
-                            fontSize: '0.82rem',
-                            color: '#1F2937',
-                            fontFamily: "'DM Sans', sans-serif",
-                            fontWeight: 600,
-                          }}
-                        >
-                          <CheckCircle2 size={13} color="#16A34A" />
-                          <span>{s}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
                 </div>
 
-                <Link
-                  to={tool.route}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    padding: '0.85rem 1.25rem',
-                    backgroundColor: '#FFFCF9',
-                    color: '#1F2937',
-                    border: '2px solid #1F2937',
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: '0.78rem',
-                    fontWeight: 900,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    textDecoration: 'none',
-                    boxShadow: '3px 3px 0 0 #1F2937',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <span>{tool.cta}</span>
-                  <ArrowRight size={14} />
-                </Link>
+                {/* Footer / CTA (Centered, Thin Frame) */}
+                <div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      paddingTop: '1rem',
+                      borderTop: '1px solid #E5E7EB',
+                      marginBottom: '1rem',
+                      fontSize: '0.78rem',
+                      color: '#6B7280',
+                    }}
+                  >
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <Clock size={13} /> {tool.time}
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <Shield size={13} color="#F18B25" /> 100% Private
+                    </span>
+                  </div>
+
+                  <Link
+                    to={tool.href}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.45rem',
+                      backgroundColor: tool.isLive ? '#F18B25' : '#FFFFFF',
+                      border: '1.5px solid #1F2937',
+                      color: '#1F2937',
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: '0.82rem',
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      padding: '0.75rem 1rem',
+                      textDecoration: 'none',
+                      boxShadow: 'none',
+                    }}
+                  >
+                    <span>{tool.actionLabel}</span>
+                    <ArrowRight size={14} />
+                  </Link>
+                </div>
               </div>
             );
           })}
         </div>
-      </section>
 
-      {/* 3. NEED A CUSTOM TOOL CTA */}
-      <section style={{ maxWidth: '1080px', margin: '0 auto', padding: '0 1.25rem' }}>
+        {/* Suggest a Tool Banner — Centered */}
         <div
           style={{
-            backgroundColor: '#1F2937',
-            color: '#FFFFFF',
-            border: '2px solid #1F2937',
-            padding: '2.5rem',
+            marginTop: '3.5rem',
+            backgroundColor: '#FAF8F5',
+            border: '1.5px solid #1F2937',
+            padding: '2rem 1.5rem',
             textAlign: 'center',
-            boxShadow: '6px 6px 0 0 #F18B25',
           }}
         >
-          <h2
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#F18B25', marginBottom: '0.5rem' }}>
+            <MessageSquare size={16} />
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Co-Creation Priority
+            </span>
+          </div>
+          <h3
             style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '1.65rem',
-              fontWeight: 900,
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '1.25rem',
+              fontWeight: 800,
               textTransform: 'uppercase',
-              color: '#FFFFFF',
+              color: '#1F2937',
               marginBottom: '0.5rem',
             }}
           >
-            Need a Specific Calculator or Generator?
-          </h2>
+            Need a specific calculator or validation engine?
+          </h3>
           <p
             style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: '0.95rem',
-              color: '#D1D5DB',
-              maxWidth: '600px',
+              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontSize: '0.92rem',
+              color: '#4B5563',
+              maxWidth: '560px',
               margin: '0 auto 1.5rem',
+              lineHeight: 1.55,
             }}
           >
-            We are actively engineering tools based on member feedback. Submit your idea through our Community Hub.
+            We build custom tools based on community requests. Tell us what calculation or checklist would save you the most time.
           </p>
-
           <Link
             to="/#feedback"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.45rem',
-              padding: '0.85rem 1.75rem',
-              backgroundColor: '#F18B25',
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
               color: '#1F2937',
-              border: '2px solid #FFFFFF',
-              fontFamily: "'Inter', sans-serif",
               fontSize: '0.8rem',
-              fontWeight: 900,
-              letterSpacing: '0.08em',
+              fontWeight: 800,
               textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              padding: '0.75rem 1.5rem',
               textDecoration: 'none',
-              boxShadow: '3px 3px 0 0 #FFFFFF',
             }}
           >
             <span>Request a Custom Tool</span>
@@ -418,6 +450,7 @@ export default function ToolsUnified() {
           </Link>
         </div>
       </section>
+
     </div>
   );
 }

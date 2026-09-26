@@ -1,286 +1,460 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Shield,
+  Check,
   ArrowRight,
-  CheckCircle2,
+  Shield,
   Sparkles,
   Zap,
   Crown,
+  HelpCircle,
+  Clock,
   Lock,
+  Layers,
+  CheckCircle2
 } from 'lucide-react';
 
 export default function PricingUnified() {
   const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'lifetime'
 
-  const PLANS = [
+  const plans = [
     {
       id: 'starter',
-      name: 'Starter Tools',
-      badge: 'Free Tier',
-      badgeBg: '#FFFCF9',
-      badgeColor: '#1F2937',
-      price: '$0',
-      period: 'Forever free',
-      desc: 'Essential diagnostics and calculators to benchmark your financial position.',
+      name: 'Starter & Discovery',
+      badge: 'Free Forever',
+      priceMonthly: '$0',
+      priceLifetime: '$0',
+      period: 'no credit card required',
+      description: 'Full access to all client-side calculators, archetype diagnostic, and the 4-tier blueprint.',
+      icon: Sparkles,
+      color: '#47B7D4',
       features: [
-        'Retirement Gap Diagnostic Calculator',
-        'Digital Superpower Quiz (Archetype profile)',
-        'Niche Profitability Scorecard (Basic)',
-        'Weekly Faceless Blueprint Newsletter',
+        'Digital Superpower Quiz & Archetype Profile',
+        'Retirement Gap Calculator & Financial Model',
+        'Niche Profitability Scorecard',
+        'Complete 4-Tier Blueprint Overview',
+        'Client-Side Data Privacy',
       ],
-      cta: 'Start Free Today',
-      route: '/start-here',
-      primary: false,
+      ctaText: 'Start Free Today',
+      ctaHref: '/start-here',
+      isPopular: false,
+      btnStyle: {
+        backgroundColor: '#FFFFFF',
+        color: '#1F2937',
+      },
     },
     {
       id: 'builder',
-      name: 'Builder Plan',
+      name: 'Builder Fast-Track',
       badge: 'Most Popular',
-      badgeBg: '#F18B25',
-      badgeColor: '#1F2937',
-      price: billingCycle === 'monthly' ? '$47' : '$297',
-      period: billingCycle === 'monthly' ? '/ month' : 'lifetime pass',
-      desc: 'The complete step-by-step operating system to build your first $500–$2k/mo digital asset.',
+      priceMonthly: '$47',
+      priceLifetime: '$297',
+      period: billingCycle === 'monthly' ? '/ month' : 'one-time payment',
+      description: 'The step-by-step implementation toolkit to build and launch your first 2 faceless digital assets.',
+      icon: Zap,
+      color: '#F18B25',
       features: [
-        'Complete 4-Tier Faceless System Video Course',
-        'Notion Digital Asset Operating System',
-        'AI Prompt Chains & Product Blueprint Kits',
-        'Email Automation & Lead Magnet Templates',
-        'Private Gen X Peer Community Access',
+        'Everything in Starter Tier',
+        '10 Faceless Asset Prompt Blueprints (AI-Powered)',
+        'Pre-built Notion Template Operating Systems',
+        '1-Page Checkout Funnel Copy & Design Frameworks',
+        'Stripe & Lemon Squeezy Integration Cheatsheets',
+        'Hermes AI Mentor System Guidance',
       ],
-      cta: billingCycle === 'monthly' ? 'Join Builder ($47/mo)' : 'Get Lifetime ($297)',
-      route: '/builder',
-      primary: true,
+      ctaText: 'Join Builder Tier',
+      ctaHref: '/plans/builder',
+      isPopular: true,
+      btnStyle: {
+        backgroundColor: '#F18B25',
+        color: '#1F2937',
+      },
     },
     {
       id: 'empire',
-      name: 'Empire Tier',
-      badge: 'Advisory Suite',
-      badgeBg: '#FEF3C7',
-      badgeColor: '#B45309',
-      price: billingCycle === 'monthly' ? '$197' : '$997',
-      period: billingCycle === 'monthly' ? '/ month' : 'lifetime pass',
-      desc: 'For Gen X leaders building a multi-asset portfolio with private architecture review.',
+      name: 'Empire & Automation',
+      badge: 'Complete Portfolio',
+      priceMonthly: '$197',
+      priceLifetime: '$997',
+      period: billingCycle === 'monthly' ? '/ month' : 'one-time payment',
+      description: 'For women ready to build a 5+ asset portfolio with autonomous email sequences and multi-platform distribution.',
+      icon: Crown,
+      color: '#1F2937',
       features: [
-        'Everything in Builder Plan',
-        'Private 1-on-1 Product & Niche Review',
-        'Custom Automation & Edge Webhook Blueprints',
+        'Everything in Builder Tier',
+        'Autonomous Content & Email Workflow Pipelines',
+        'Supabase Edge Automation Blueprints',
         'Multi-Asset Portfolio Scaling Playbook',
-        'Direct Access Advisory Slack / Discord',
+        'Private Quarterly Strategy & Portfolio Review',
+        'Direct Access to Next-Gen Tools & Updates',
       ],
-      cta: billingCycle === 'monthly' ? 'Join Empire ($197/mo)' : 'Get Empire Lifetime ($997)',
-      route: '/empire',
-      primary: false,
+      ctaText: 'Join Empire Tier',
+      ctaHref: '/plans/empire',
+      isPopular: false,
+      btnStyle: {
+        backgroundColor: '#1F2937',
+        color: '#FFFFFF',
+      },
     },
   ];
 
   return (
-    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
-      {/* 1. HERO */}
+    <div style={{ backgroundColor: '#FFFCF9', color: '#1F2937', minHeight: '100vh' }}>
+      
+      {/* Header — Centered */}
       <section
         style={{
-          borderBottom: '2px solid #1F2937',
-          backgroundColor: '#FFFFFF',
-          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
+          maxWidth: '1040px',
+          margin: '0 auto',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem 2rem',
           textAlign: 'center',
         }}
       >
-        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                padding: '0.35rem 0.85rem',
-                backgroundColor: '#FFFCF9',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.7rem',
-                fontWeight: 900,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: '#1F2937',
-              }}
-            >
-              <Shield size={14} color="#F18B25" />
-              <span>Transparent & Risk-Free</span>
-            </span>
-          </div>
-
-          <h1
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 900,
-              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
-              lineHeight: 1.1,
-              letterSpacing: '-0.03em',
-              textTransform: 'uppercase',
-              color: '#1F2937',
-              maxWidth: '850px',
-              margin: '0 auto 1.25rem',
-            }}
-          >
-            Simple, Honest <span style={{ color: '#F18B25' }}>Membership</span> Plans
-          </h1>
-
-          <p
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
-              lineHeight: 1.6,
-              color: '#4B5563',
-              maxWidth: '720px',
-              margin: '0 auto 2.5rem',
-            }}
-          >
-            Every plan comes with a 30-day 100% money-back guarantee. No lock-in contracts. Cancel anytime.
-          </p>
-
-          {/* Toggle */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              backgroundColor: '#FFFCF9',
-              border: '2px solid #1F2937',
-              padding: '0.35rem',
-              boxShadow: '3px 3px 0 0 #1F2937',
+              gap: '0.45rem',
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
+              padding: '0.35rem 0.85rem',
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: '#F18B25',
+              boxShadow: 'none',
             }}
           >
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              style={{
-                padding: '0.55rem 1.25rem',
-                backgroundColor: billingCycle === 'monthly' ? '#1F2937' : 'transparent',
-                color: billingCycle === 'monthly' ? '#FFFFFF' : '#1F2937',
-                border: 'none',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.75rem',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-              }}
-            >
-              Monthly Billing
-            </button>
-            <button
-              onClick={() => setBillingCycle('lifetime')}
-              style={{
-                padding: '0.55rem 1.25rem',
-                backgroundColor: billingCycle === 'lifetime' ? '#1F2937' : 'transparent',
-                color: billingCycle === 'lifetime' ? '#FFFFFF' : '#1F2937',
-                border: 'none',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.75rem',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-              }}
-            >
-              Lifetime Pass (Save 40%)
-            </button>
+            <Sparkles size={13} color="#F18B25" />
+            <span>Transparent Investment</span>
           </div>
+        </div>
+
+        <h1
+          style={{
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(2rem, 4vw, 3rem)',
+            textTransform: 'uppercase',
+            letterSpacing: '-0.02em',
+            color: '#1F2937',
+            marginBottom: '1rem',
+          }}
+        >
+          Simple, Predictable Plans for Gen X Women
+        </h1>
+
+        <p
+          style={{
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontSize: '1.05rem',
+            color: '#4B5563',
+            maxWidth: '640px',
+            margin: '0 auto 2rem',
+            lineHeight: 1.6,
+          }}
+        >
+          Start completely free with our diagnostic tools, or unlock production-ready prompt systems 
+          and templates to build your faceless digital real estate in days.
+        </p>
+
+        {/* Toggle Monthly / Lifetime */}
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            backgroundColor: '#FAF8F5',
+            border: '1.5px solid #1F2937',
+            padding: '0.25rem',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setBillingCycle('monthly')}
+            style={{
+              backgroundColor: billingCycle === 'monthly' ? '#1F2937' : 'transparent',
+              color: billingCycle === 'monthly' ? '#FFFFFF' : '#1F2937',
+              border: 'none',
+              padding: '0.45rem 1rem',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              cursor: 'pointer',
+            }}
+          >
+            Monthly Membership
+          </button>
+          <button
+            type="button"
+            onClick={() => setBillingCycle('lifetime')}
+            style={{
+              backgroundColor: billingCycle === 'lifetime' ? '#1F2937' : 'transparent',
+              color: billingCycle === 'lifetime' ? '#FFFFFF' : '#1F2937',
+              border: 'none',
+              padding: '0.45rem 1rem',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+            }}
+          >
+            <span>Lifetime Access</span>
+            <span style={{ color: '#F18B25', fontSize: '0.65rem', fontWeight: 900 }}>SAVE 50%</span>
+          </button>
         </div>
       </section>
 
-      {/* 2. PLANS GRID */}
-      <section style={{ maxWidth: '1080px', margin: '0 auto', padding: '4rem 1.25rem' }}>
+      {/* Pricing Cards Grid — Centered (Max-Width 1040px) */}
+      <section
+        style={{
+          maxWidth: '1040px',
+          margin: '0 auto',
+          padding: '0 1.25rem 4.5rem',
+        }}
+      >
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '2rem',
+            gap: '1.5rem',
             alignItems: 'stretch',
           }}
         >
-          {PLANS.map((plan) => (
-            <div
-              key={plan.id}
-              style={{
-                backgroundColor: '#FFFFFF',
-                border: plan.primary ? '3px solid #1F2937' : '2px solid #1F2937',
-                padding: '2.25rem 1.75rem',
-                boxShadow: plan.primary ? '6px 6px 0 0 #F18B25' : '4px 4px 0 0 #1F2937',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                position: 'relative',
-              }}
-            >
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <span
+          {plans.map((plan) => {
+            const Icon = plan.icon;
+            const price = billingCycle === 'monthly' ? plan.priceMonthly : plan.priceLifetime;
+            return (
+              <div
+                key={plan.id}
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  border: plan.isPopular ? '2px solid #F18B25' : '1.5px solid #1F2937',
+                  padding: '1.75rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  boxShadow: 'none',
+                  position: 'relative',
+                }}
+              >
+                {/* Popular Pill */}
+                {plan.isPopular && (
+                  <div
                     style={{
-                      padding: '0.2rem 0.55rem',
-                      backgroundColor: plan.badgeBg,
-                      color: plan.badgeColor,
+                      position: 'absolute',
+                      top: '-12px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      backgroundColor: '#F18B25',
                       border: '1.5px solid #1F2937',
-                      fontFamily: "'Inter', sans-serif",
+                      color: '#1F2937',
                       fontSize: '0.65rem',
                       fontWeight: 900,
                       textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      padding: '0.15rem 0.65rem',
                     }}
                   >
                     {plan.badge}
-                  </span>
-                </div>
+                  </div>
+                )}
 
-                <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', color: '#1F2937', margin: '0 0 0.5rem' }}>
-                  {plan.name}
-                </h2>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1rem' }}>
+                    <div
+                      style={{
+                        width: '38px',
+                        height: '38px',
+                        backgroundColor: '#FAF8F5',
+                        border: '1.5px solid #1F2937',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Icon size={18} color={plan.color} />
+                    </div>
+                    <div>
+                      <h3
+                        style={{
+                          fontFamily: "'Inter', system-ui, sans-serif",
+                          fontSize: '1.1rem',
+                          fontWeight: 900,
+                          textTransform: 'uppercase',
+                          color: '#1F2937',
+                          margin: 0,
+                        }}
+                      >
+                        {plan.name}
+                      </h3>
+                      {!plan.isPopular && (
+                        <span style={{ fontSize: '0.7rem', color: '#6B7280', fontWeight: 600 }}>
+                          {plan.badge}
+                        </span>
+                      )}
+                    </div>
+                  </div>
 
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.88rem', color: '#6B7280', margin: '0 0 1.5rem', lineHeight: 1.5 }}>
-                  {plan.desc}
-                </p>
+                  {/* Price */}
+                  <div style={{ marginBottom: '1.25rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
+                      <span
+                        style={{
+                          fontFamily: "'Inter', system-ui, sans-serif",
+                          fontSize: '2.5rem',
+                          fontWeight: 900,
+                          color: '#1F2937',
+                          lineHeight: 1,
+                        }}
+                      >
+                        {price}
+                      </span>
+                      <span style={{ fontSize: '0.82rem', color: '#6B7280', fontWeight: 600 }}>
+                        {plan.period}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '0.85rem', color: '#4B5563', lineHeight: 1.5, marginTop: '0.65rem', margin: 0 }}>
+                      {plan.description}
+                    </p>
+                  </div>
 
-                <div style={{ borderTop: '2px solid #1F2937', borderBottom: '2px solid #1F2937', padding: '1.25rem 0', marginBottom: '1.75rem' }}>
-                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '2.75rem', fontWeight: 900, color: '#1F2937', lineHeight: 1 }}>
-                    {plan.price}
-                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6B7280', textTransform: 'none', marginLeft: '0.35rem' }}>
-                      {plan.period}
-                    </span>
+                  {/* Features List */}
+                  <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: '1.25rem', marginBottom: '1.75rem' }}>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.75rem' }}>
+                      What's Included:
+                    </div>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                      {plan.features.map((feat, fIdx) => (
+                        <li
+                          key={fIdx}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '0.5rem',
+                            fontSize: '0.84rem',
+                            fontFamily: "'DM Sans', system-ui, sans-serif",
+                            color: '#4B5563',
+                            lineHeight: 1.45,
+                          }}
+                        >
+                          <Check size={15} color="#F18B25" style={{ flexShrink: 0, marginTop: '0.15rem' }} />
+                          <span>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
 
-                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-                  {plan.features.map((feat, idx) => (
-                    <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.45rem', fontSize: '0.85rem', color: '#1F2937', fontFamily: "'DM Sans', sans-serif" }}>
-                      <CheckCircle2 size={15} color="#16A34A" style={{ flexShrink: 0, marginTop: '2px' }} />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* CTA Button */}
+                <div>
+                  <Link
+                    to={plan.ctaHref}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.45rem',
+                      backgroundColor: plan.btnStyle.backgroundColor,
+                      color: plan.btnStyle.color,
+                      border: '1.5px solid #1F2937',
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: '0.82rem',
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      padding: '0.85rem',
+                      textDecoration: 'none',
+                      boxShadow: 'none',
+                    }}
+                  >
+                    <span>{plan.ctaText}</span>
+                    <ArrowRight size={14} />
+                  </Link>
+                </div>
               </div>
+            );
+          })}
+        </div>
 
-              <Link
-                to={plan.route}
+        {/* 100% Satisfaction & Guarantee Banner — Centered */}
+        <div
+          style={{
+            marginTop: '3.5rem',
+            backgroundColor: '#FAF8F5',
+            border: '1.5px solid #1F2937',
+            padding: '2rem 1.5rem',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1.5rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', maxWidth: '640px' }}>
+            <div
+              style={{
+                width: '46px',
+                height: '46px',
+                backgroundColor: '#FFF7ED',
+                border: '1.5px solid #F18B25',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <Shield size={22} color="#F18B25" />
+            </div>
+            <div>
+              <h4
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.45rem',
-                  padding: '0.9rem 1.5rem',
-                  backgroundColor: plan.primary ? '#F18B25' : '#FFFCF9',
-                  color: '#1F2937',
-                  border: '2px solid #1F2937',
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '0.8rem',
-                  fontWeight: 900,
-                  letterSpacing: '0.08em',
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '1rem',
+                  fontWeight: 800,
                   textTransform: 'uppercase',
-                  textDecoration: 'none',
-                  boxShadow: '3px 3px 0 0 #1F2937',
+                  color: '#1F2937',
+                  margin: '0 0 0.25rem 0',
                 }}
               >
-                <span>{plan.cta}</span>
-                <ArrowRight size={14} />
-              </Link>
+                14-Day Practical Action Guarantee
+              </h4>
+              <p style={{ fontSize: '0.85rem', color: '#4B5563', margin: 0, lineHeight: 1.5 }}>
+                If you follow the prompt blueprints and don't have a validated digital product topic and draft within 14 days, email us for an unconditional refund.
+              </p>
             </div>
-          ))}
+          </div>
+
+          <Link
+            to="/start-here"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
+              color: '#1F2937',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              padding: '0.7rem 1.25rem',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <span>Start Free Diagnostic</span>
+            <ArrowRight size={13} />
+          </Link>
         </div>
       </section>
+
     </div>
   );
 }

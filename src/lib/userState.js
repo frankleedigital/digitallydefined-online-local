@@ -37,7 +37,7 @@ export const SUPERPOWER_PROFILES = {
       'Curated lifestyle and productivity playbooks',
     ],
     starterAsset: '30-Day Faceless Content & Affiliate System',
-    nextPath: '/tools/roadmap',
+    nextPath: '/tools',
   },
   builder: {
     id: 'builder',
@@ -62,14 +62,14 @@ export const SUPERPOWER_PROFILES = {
       'Interactive ROI and business calculators',
     ],
     starterAsset: 'Turnkey Notion Business Dashboard & Funnel',
-    nextPath: '/tools/roadmap',
+    nextPath: '/tools',
   },
   educator: {
     id: 'educator',
     title: 'The Knowledge Educator',
     tagline: 'Your decades of experience packaged into digital assets.',
-    color: '#16A34A',
-    accentColor: '#16A34A',
+    color: '#F18B25',
+    accentColor: '#F18B25',
     iconName: 'BookOpen',
     badge: 'Educator Profile',
     strengths: [
@@ -87,14 +87,14 @@ export const SUPERPOWER_PROFILES = {
       'Standard Operating Procedure (SOP) toolkits',
     ],
     starterAsset: 'Signature 5-Step Digital Playbook',
-    nextPath: '/tools/roadmap',
+    nextPath: '/tools',
   },
   connector: {
     id: 'connector',
     title: 'The Community Connector',
     tagline: 'You build digital spaces people never want to leave.',
-    color: '#8B5CF6',
-    accentColor: '#8B5CF6',
+    color: '#47B7D4',
+    accentColor: '#47B7D4',
     iconName: 'Users',
     badge: 'Connector Profile',
     strengths: [
@@ -112,14 +112,14 @@ export const SUPERPOWER_PROFILES = {
       'Accountability co-working cohorts',
     ],
     starterAsset: 'Micro-Membership Community Hub',
-    nextPath: '/tools/roadmap',
+    nextPath: '/tools',
   },
   strategist: {
     id: 'strategist',
     title: 'The Digital Strategist',
     tagline: 'You see the big picture and command high-ticket value.',
-    color: '#C20F0A',
-    accentColor: '#C20F0A',
+    color: '#1F2937',
+    accentColor: '#1F2937',
     iconName: 'TrendingUp',
     badge: 'Strategist Profile',
     strengths: [
@@ -137,7 +137,7 @@ export const SUPERPOWER_PROFILES = {
       'M&A and asset valuation audits',
     ],
     starterAsset: 'Executive Digital Strategy Toolkit',
-    nextPath: '/tools/roadmap',
+    nextPath: '/tools',
   },
 };
 
@@ -200,75 +200,82 @@ export function getUserState() {
   }
 }
 
-export function saveQuizResult(superpowerKey, answers = {}, extra = {}) {
-  if (typeof window === 'undefined') return;
-  const payload = {
-    superpower: superpowerKey,
-    answers,
-    timestamp: new Date().toISOString(),
-    ...extra,
+export const getUserData = getUserState;
+
+export function subscribeUserState(callback) {
+  if (typeof window === 'undefined') return () => {};
+
+  const handler = () => {
+    callback(getUserState());
   };
-  localStorage.setItem(STORAGE_KEYS.QUIZ, JSON.stringify(payload));
-  window.dispatchEvent(new Event('dd_user_state_updated'));
+
+  window.addEventListener('dd_user_state_updated', handler);
+  window.addEventListener('storage', handler);
+
+  return () => {
+    window.removeEventListener('dd_user_state_updated', handler);
+    window.removeEventListener('storage', handler);
+  };
 }
+
+export const subscribeUserData = subscribeUserState;
+
+function notifyStateUpdate() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('dd_user_state_updated'));
+  }
+}
+
+export function saveQuizResult(result) {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(STORAGE_KEYS.QUIZ, JSON.stringify(result));
+    notifyStateUpdate();
+  } catch (err) {
+    console.error('Failed to save quiz result:', err);
+  }
+}
+
+export const setUserQuizData = saveQuizResult;
 
 export function saveGapResult(gapData) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(STORAGE_KEYS.GAP, JSON.stringify({
-    ...gapData,
-    timestamp: new Date().toISOString(),
-  }));
-  window.dispatchEvent(new Event('dd_user_state_updated'));
+  try {
+    localStorage.setItem(STORAGE_KEYS.GAP, JSON.stringify(gapData));
+    notifyStateUpdate();
+  } catch (err) {
+    console.error('Failed to save gap result:', err);
+  }
 }
 
 export function saveFreedomResult(freedomData) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(STORAGE_KEYS.FREEDOM, JSON.stringify({
-    ...freedomData,
-    timestamp: new Date().toISOString(),
-  }));
-  window.dispatchEvent(new Event('dd_user_state_updated'));
+  try {
+    localStorage.setItem(STORAGE_KEYS.FREEDOM, JSON.stringify(freedomData));
+    notifyStateUpdate();
+  } catch (err) {
+    console.error('Failed to save freedom result:', err);
+  }
 }
 
-export function savePlanSelection(planName) {
+export function saveScorecardResult(scorecardData) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(STORAGE_KEYS.PLAN, planName);
-  window.dispatchEvent(new Event('dd_user_state_updated'));
+  try {
+    localStorage.setItem(STORAGE_KEYS.SCORECARD, JSON.stringify(scorecardData));
+    notifyStateUpdate();
+  } catch (err) {
+    console.error('Failed to save scorecard result:', err);
+  }
 }
 
-export function setUserPlanTier(planName) {
-  savePlanSelection(planName);
-}
+export const setUserScorecardData = saveScorecardResult;
 
-export function setUserQuizData({ superpower, answers = {}, name = '', email = '' }) {
-  saveQuizResult(superpower, answers, { name, email });
-}
-
-export function setUserGapData(gapData) {
-  saveGapResult(gapData);
-}
-
-export function setUserScorecardData(scorecardData) {
+export function savePlanSelection(planId) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(STORAGE_KEYS.SCORECARD, JSON.stringify({
-    ...scorecardData,
-    timestamp: new Date().toISOString(),
-  }));
-  window.dispatchEvent(new Event('dd_user_state_updated'));
+  try {
+    localStorage.setItem(STORAGE_KEYS.PLAN, planId);
+    notifyStateUpdate();
+  } catch (err) {
+    console.error('Failed to save plan selection:', err);
+  }
 }
-
-export { STORAGE_KEYS };
-
-export default {
-  SUPERPOWER_PROFILES,
-  STORAGE_KEYS,
-  getUserState,
-  saveQuizResult,
-  saveGapResult,
-  saveFreedomResult,
-  savePlanSelection,
-  setUserPlanTier,
-  setUserQuizData,
-  setUserGapData,
-  setUserScorecardData,
-};

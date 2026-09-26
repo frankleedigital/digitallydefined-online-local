@@ -1,29 +1,30 @@
-// DigitallyDefined — unified Soft Brutalism design tokens
-// Single source of truth for the online-local site theme.
-// Mirrored in: digitallydefined-dashboard/src/theme.js
+// DigitallyDefined — Proof-of-Concept Design Tokens (No Dashboard, No Shadows)
+// Single source of truth for the DigitallyDefined proof of concept.
 
 export const tokens = {
   palette: {
-    background: "#FFFCF9", // cream
-    card: "#FFFFFF", // white surface
-    panel: "#FFFAF5", // warm white
-    textPrimary: "#2D3748", // matches HTML reference files
-    textInk: "#111111",
-    textMuted: "#6B7280",   // matches reference files
-    orange: "#F18B25",      // primary accent / CTA
-    aqua: "#47B7D4",        // secondary / info
-    red: "#C20F0A",         // matches reference files
-    success: "#16A34A",
-    gold: "#EAB308",
+    background: "#FFFCF9", // warm cream
+    card: "#FFFFFF",       // crisp white surface
+    panel: "#FAF8F5",      // soft warm neutral
+    textPrimary: "#1F2937",// refined charcoal
+    textInk: "#111827",    // deep charcoal
+    textMuted: "#6B7280",  // accessible neutral gray
+    orange: "#F18B25",     // signature brand orange accent / CTA
+    orangeLight: "#FFF7ED",// subtle warm tint
+    aqua: "#47B7D4",       // supportive secondary
+    aquaLight: "#F0F9FF",  // subtle aqua tint
+    coral: "#E05D52",      // deficit indicator
+    border: "#1F2937",     // thin brand frame
+    borderLight: "#E5E7EB",// light frame divider
   },
 
   type: {
     heading: "Inter",
     body: "DM Sans",
-    weight: 900,
-    headingSpacing: "-0.03em",
-    eyebrowSpace: "0.15em",
-    bodyLineHeight: "1.6",
+    weight: 800,
+    headingSpacing: "-0.025em",
+    eyebrowSpace: "0.12em",
+    bodyLineHeight: "1.65",
   },
 
   spacing: {
@@ -31,58 +32,48 @@ export const tokens = {
     sm: "16px",
     md: "24px",
     lg: "40px",
-    xl: "60px",
-    gridGap: "32px",
-    container: "1100px",
+    xl: "56px",
+    gridGap: "24px",
+    container: "1040px",
   },
 
   geometry: {
-    width: "2px",           // reference files use 2px solid borders
-    color: "#111111",
-    radius: "0px", // Brutalism: never rounded
+    width: "1.5px",        // thin black/charcoal frame
+    color: "#1F2937",
+    radius: "0px",         // clean geometric structure
   },
 
   shadow: {
-    card: "none",
-    hard: "4px 4px 0 0 rgba(0,0,0,1)", // true hard shadow from reference files
-    hover: "4px 4px 0 0 rgba(0,0,0,1)",
-    elevated: "4px 4px 0 0 rgba(0,0,0,1)",
+    card: "none",          // NO SHADOWS across the entire site
+    hard: "none",
+    hover: "none",
+    elevated: "none",
     none: "none",
   },
 
-  // Flat, geometric, brutalist visual language
-  icon: { style: "flat-line-geometric", stroke: "1.5px" },
-  illustration: { style: "flat-abstract", radius: "0px", figures: "none" },
-
-  rules: [
-    "no silhouettes",
-    "no human forms",
-    "no gradients",
-    "no rounded corners",
-    "no non-brand fonts",
-    "no off-palette colors",
-    "no non-brutalist shadows",
-  ],
+  icon: { style: "flat-line-minimal", stroke: "1.75px" },
 };
 
 export const theme = {
   fonts: {
-    heading: `'${tokens.type.heading}', system-ui, sans-serif`,
-    body: `'${tokens.type.body}', system-ui, sans-serif`,
-    app: `'${tokens.type.heading}', '${tokens.type.body}', system-ui, sans-serif`,
+    heading: `'${tokens.type.heading}', system-ui, -apple-system, sans-serif`,
+    body: `'${tokens.type.body}', system-ui, -apple-system, sans-serif`,
+    app: `'${tokens.type.heading}', system-ui, sans-serif`,
   },
   colors: {
     background: tokens.palette.background,
     card: tokens.palette.card,
     panel: tokens.palette.panel,
     textPrimary: tokens.palette.textPrimary,
+    textInk: tokens.palette.textInk,
     textMuted: tokens.palette.textMuted,
     border: tokens.geometry.color,
+    borderLight: tokens.palette.borderLight,
     orange: tokens.palette.orange,
+    orangeLight: tokens.palette.orangeLight,
     aqua: tokens.palette.aqua,
-    red: tokens.palette.red,
-    success: tokens.palette.success,
-    gold: tokens.palette.gold,
+    aquaLight: tokens.palette.aquaLight,
+    coral: tokens.palette.coral,
     accent: tokens.palette.orange,
   },
   geometry: tokens.geometry,
@@ -91,76 +82,96 @@ export const theme = {
   layout: tokens.spacing,
 };
 
-// --- Computed primitives -------------------------------------------
+// --- Computed primitives (Thin frames, zero shadows) ---
 export const brutalBorder = `${theme.geometry.width} solid ${theme.geometry.color}`;
+export const thinBorder = `1px solid ${theme.geometry.color}`;
+export const lightBorder = `1px solid ${theme.colors.borderLight}`;
 
 export const brutalCard = {
   border: brutalBorder,
-  borderRadius: 0,
-  boxShadow: theme.shadows.card,
+  borderRadius: "0px",
+  boxShadow: "none",
   backgroundColor: theme.colors.card,
 };
 
 export const brutalHeading = {
   fontFamily: theme.fonts.heading,
-  fontWeight: tokens.type.weight,
+  fontWeight: 800,
   fontStyle: "normal",
   textTransform: "uppercase",
   letterSpacing: tokens.type.headingSpacing,
   color: theme.colors.textPrimary,
-  lineHeight: 1.1,
+  lineHeight: 1.15,
 };
 
 export const brutalEyebrow = {
   fontFamily: theme.fonts.heading,
-  fontSize: "0.65rem",
-  fontWeight: 700,
-  letterSpacing: "0.15em",
+  fontSize: "0.7rem",
+  fontWeight: 800,
+  letterSpacing: tokens.type.eyebrowSpace,
   textTransform: "uppercase",
-  margin: 0,
   color: theme.colors.orange,
-};
-
-export const brutalButtonBase = {
-  display: "inline-block",
-  fontFamily: theme.fonts.heading,
-  fontWeight: 700,
-  fontSize: "0.8rem",
-  letterSpacing: "0.12em",
-  textTransform: "uppercase",
-  border: brutalBorder,
-  borderRadius: 0,
-  boxShadow: "none",
-  textDecoration: "none",
-  cursor: "pointer",
-  padding: "0.9rem 2rem",
-  transition: "background 150ms, color 150ms",
+  margin: 0,
 };
 
 export const brutalButtonPrimary = {
-  ...brutalButtonBase,
   backgroundColor: theme.colors.orange,
-  color: theme.colors.textPrimary,
-};
-
-export const brutalButtonSecondary = {
-  ...brutalButtonBase,
-  backgroundColor: theme.colors.aqua,
-  color: theme.colors.textPrimary,
+  color: "#1F2937",
+  border: brutalBorder,
+  borderRadius: "0px",
+  fontFamily: theme.fonts.heading,
+  fontWeight: 800,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  padding: "0.85rem 1.75rem",
+  cursor: "pointer",
+  boxShadow: "none",
+  textDecoration: "none",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "0.5rem",
+  transition: "all 0.15s ease",
 };
 
 export const brutalButtonOutline = {
-  ...brutalButtonBase,
-  backgroundColor: "transparent",
-  color: theme.colors.textPrimary,
-};
-
-// Hard-shadow card — for featured / pitch / revenue cards
-export const brutalCardHard = {
+  backgroundColor: "#FFFFFF",
+  color: "#1F2937",
   border: brutalBorder,
-  borderRadius: 0,
-  boxShadow: "4px 4px 0 0 rgba(0,0,0,1)",
-  backgroundColor: theme.colors.card,
+  borderRadius: "0px",
+  fontFamily: theme.fonts.heading,
+  fontWeight: 800,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  padding: "0.85rem 1.75rem",
+  cursor: "pointer",
+  boxShadow: "none",
+  textDecoration: "none",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "0.5rem",
+  transition: "all 0.15s ease",
 };
 
-export default theme;
+export const brutalButtonSecondary = {
+  backgroundColor: "#1F2937",
+  color: "#FFFFFF",
+  border: brutalBorder,
+  borderRadius: "0px",
+  fontFamily: theme.fonts.heading,
+  fontWeight: 800,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  padding: "0.85rem 1.75rem",
+  cursor: "pointer",
+  boxShadow: "none",
+  textDecoration: "none",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "0.5rem",
+  transition: "all 0.15s ease",
+};
+
+export const brutalButtonBase = brutalButtonPrimary;

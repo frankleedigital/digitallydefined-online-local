@@ -1,92 +1,96 @@
 import React from 'react';
 
-export default function Logo({
-  as: Component = 'span',
-  style = {},
-  className = '',
-  showTagline = false,
-  size = 'medium', // 'small' | 'medium' | 'large'
-}) {
-  const fontSizes = {
-    small: '0.8rem',
-    medium: '0.95rem',
-    large: '1.2rem',
-  };
+export default function Logo({ size = 'medium', showTagline = false, style = {} }) {
+  const isSmall = size === 'small';
+  const isLarge = size === 'large';
 
-  const paddings = {
-    small: '0.25rem 0.5rem',
-    medium: '0.35rem 0.65rem',
-    large: '0.5rem 0.9rem',
-  };
-
-  const frameStyle = {
-    display: 'inline-flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: showTagline ? '0.15rem' : '0',
-    padding: paddings[size] || paddings.medium,
-    border: '2px solid #1F2937',
-    backgroundColor: '#FFFFFF',
-    lineHeight: 1,
-    whiteSpace: 'nowrap',
-    width: 'fit-content',
-    boxSizing: 'border-box',
-    textDecoration: 'none',
-    boxShadow: 'none',
-  };
-
-  const wordStyle = {
-    fontFamily: "'Inter', system-ui, sans-serif",
-    fontSize: fontSizes[size] || fontSizes.medium,
-    fontWeight: 900,
-    letterSpacing: '-0.03em',
-    textTransform: 'uppercase',
-  };
+  const badgeSize = isSmall ? '24px' : isLarge ? '34px' : '28px';
+  const iconSize = isSmall ? 13 : isLarge ? 18 : 15;
+  const fontSize = isSmall ? '0.95rem' : isLarge ? '1.45rem' : '1.15rem';
 
   return (
-    <Component
-      className={`dd-brand-logo ${className}`.trim()}
-      style={{ ...frameStyle, ...style }}
-      aria-label="DigitallyDefined"
+    <div
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '0.55rem',
+        textDecoration: 'none',
+        ...style,
+      }}
     >
-      <div style={{ display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>
-        <span
-          style={{
-            ...wordStyle,
-            color: '#1F2937',
-            fontStyle: 'normal',
-          }}
+      {/* Geometric Clean Badge (Thin Frame, No Shadow) */}
+      <div
+        style={{
+          width: badgeSize,
+          height: badgeSize,
+          backgroundColor: '#FFFFFF',
+          border: '1.5px solid #1F2937',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}
+      >
+        <svg
+          width={iconSize}
+          height={iconSize}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#1F2937"
+          strokeWidth="2.5"
+          strokeLinecap="square"
+          strokeLinejoin="miter"
         >
-          DIGITALLY
-        </span>
-        <span
-          style={{
-            ...wordStyle,
-            color: '#F18B25',
-            fontStyle: 'italic',
-            marginLeft: '0.08rem',
-          }}
-        >
-          DEFINED
-        </span>
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" fill="#F18B25" stroke="#F18B25" />
+        </svg>
       </div>
 
-      {showTagline && (
+      {/* Typography */}
+      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
         <span
           style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: '0.55rem',
-            fontWeight: 700,
-            letterSpacing: '0.12em',
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            fontWeight: 900,
+            fontSize: fontSize,
+            letterSpacing: '-0.02em',
             textTransform: 'uppercase',
-            color: '#6B7280',
-            lineHeight: 1,
-            marginTop: '2px',
+            color: '#1F2937',
+            display: 'inline-flex',
+            alignItems: 'baseline',
+            gap: '0.2rem',
           }}
         >
-          Faceless Digital Real Estate for Gen X Women
+          <span>DIGITALLY</span>
+          <span
+            style={{
+              fontStyle: 'italic',
+              color: '#F18B25',
+              fontWeight: 900,
+            }}
+          >
+            DEFINED
+          </span>
         </span>
-      )}
-    </Component>
+
+        {showTagline && (
+          <span
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.62rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              color: '#6B7280',
+              marginTop: '0.2rem',
+            }}
+          >
+            Faceless Digital Wealth for Gen X Women
+          </span>
+        )}
+      </div>
+    </div>
   );
 }

@@ -1,232 +1,312 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Layers,
-  ArrowRight,
+  Zap,
   CheckCircle2,
-  Sparkles,
+  ArrowRight,
   Shield,
   Clock,
-  Cpu,
-  Database,
+  Sparkles,
   Lock,
-  Zap,
+  Layers,
+  FileText,
+  Workflow
 } from 'lucide-react';
 
 export default function BuilderPlanUnified() {
-  const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'lifetime'
+  const [billing, setBilling] = useState('monthly'); // 'monthly' | 'lifetime'
+
+  const modules = [
+    {
+      title: 'Module 1: Archetype & Knowledge Extraction',
+      description: 'Turn 10–25 years of career problem-solving into structured, sellable digital frameworks.',
+      deliverable: '1 Validated Product Specification Document',
+    },
+    {
+      title: 'Module 2: AI Prompt Blueprints for High-Utility Assets',
+      description: 'Step-by-step prompts for Claude & ChatGPT to build templates, guides, and client-side calculators.',
+      deliverable: '1 Complete Digital Asset Pack ($27–$97 retail price)',
+    },
+    {
+      title: 'Module 3: Faceless Sales Page & 1-Page Funnel',
+      description: 'Copy-and-paste sales page templates with high-converting soft brutalist cards and centered CTAs.',
+      deliverable: '1 Live Checkout Funnel via Lemon Squeezy or Stripe',
+    },
+    {
+      title: 'Module 4: Automated Delivery & Welcome Engines',
+      description: 'Set up instant digital file delivery and automated email sequences without technical frustration.',
+      deliverable: '1 Fully Automated Hands-Off Fulfillment Pipeline',
+    },
+  ];
 
   return (
-    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
-      {/* 1. HERO */}
+    <div style={{ backgroundColor: '#FFFCF9', color: '#1F2937', minHeight: '100vh' }}>
+      
+      {/* Header — Centered */}
       <section
         style={{
-          borderBottom: '2px solid #1F2937',
-          backgroundColor: '#FFFFFF',
-          padding: 'clamp(3rem, 5vw, 4.5rem) 1.25rem',
+          maxWidth: '1040px',
+          margin: '0 auto',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem 2rem',
           textAlign: 'center',
         }}
       >
-        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                padding: '0.35rem 0.85rem',
-                backgroundColor: '#FFFCF9',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.7rem',
-                fontWeight: 900,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: '#1F2937',
-              }}
-            >
-              <Sparkles size={14} color="#F18B25" />
-              <span>Core Execution Blueprint</span>
-            </span>
-          </div>
-
-          <h1
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 900,
-              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
-              lineHeight: 1.1,
-              letterSpacing: '-0.03em',
-              textTransform: 'uppercase',
-              color: '#1F2937',
-              maxWidth: '850px',
-              margin: '0 auto 1.25rem',
-            }}
-          >
-            The <span style={{ color: '#F18B25' }}>Builder</span> Plan
-          </h1>
-
-          <p
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
-              lineHeight: 1.6,
-              color: '#4B5563',
-              maxWidth: '720px',
-              margin: '0 auto 2.5rem',
-            }}
-          >
-            The complete step-by-step operating system for Gen X women building their first $500–$2,000/month
-            faceless digital asset portfolio. Zero tech intimidation.
-          </p>
-
-          {/* Billing Toggle */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              backgroundColor: '#FFFCF9',
-              border: '2px solid #1F2937',
-              padding: '0.35rem',
-              boxShadow: '3px 3px 0 0 #1F2937',
+              gap: '0.45rem',
+              backgroundColor: '#FFF7ED',
+              border: '1.5px solid #F18B25',
+              padding: '0.35rem 0.85rem',
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: '#F18B25',
+              boxShadow: 'none',
             }}
           >
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              style={{
-                padding: '0.55rem 1.25rem',
-                backgroundColor: billingCycle === 'monthly' ? '#1F2937' : 'transparent',
-                color: billingCycle === 'monthly' ? '#FFFFFF' : '#1F2937',
-                border: 'none',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.75rem',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-              }}
-            >
-              Monthly ($47/mo)
-            </button>
-            <button
-              onClick={() => setBillingCycle('lifetime')}
-              style={{
-                padding: '0.55rem 1.25rem',
-                backgroundColor: billingCycle === 'lifetime' ? '#1F2937' : 'transparent',
-                color: billingCycle === 'lifetime' ? '#FFFFFF' : '#1F2937',
-                border: 'none',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.75rem',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-              }}
-            >
-              Lifetime Pass ($297)
-            </button>
+            <Zap size={13} color="#F18B25" />
+            <span>Builder Fast-Track Tier</span>
           </div>
+        </div>
+
+        <h1
+          style={{
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(2rem, 4vw, 3rem)',
+            textTransform: 'uppercase',
+            letterSpacing: '-0.02em',
+            color: '#1F2937',
+            marginBottom: '1rem',
+          }}
+        >
+          Build Your First 2 Faceless Digital Assets
+        </h1>
+
+        <p
+          style={{
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontSize: '1.05rem',
+            color: '#4B5563',
+            maxWidth: '680px',
+            margin: '0 auto 2rem',
+            lineHeight: 1.6,
+          }}
+        >
+          The step-by-step implementation toolkit designed for Gen X women to transform 
+          career experience into recurring digital revenue—with zero camera time.
+        </p>
+
+        {/* Pricing Selection */}
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            backgroundColor: '#FAF8F5',
+            border: '1.5px solid #1F2937',
+            padding: '0.25rem',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setBilling('monthly')}
+            style={{
+              backgroundColor: billing === 'monthly' ? '#1F2937' : 'transparent',
+              color: billing === 'monthly' ? '#FFFFFF' : '#1F2937',
+              border: 'none',
+              padding: '0.45rem 1rem',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+            }}
+          >
+            $47 / Month
+          </button>
+          <button
+            type="button"
+            onClick={() => setBilling('lifetime')}
+            style={{
+              backgroundColor: billing === 'lifetime' ? '#1F2937' : 'transparent',
+              color: billing === 'lifetime' ? '#FFFFFF' : '#1F2937',
+              border: 'none',
+              padding: '0.45rem 1rem',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+            }}
+          >
+            <span>$297 Lifetime</span>
+            <span style={{ color: '#F18B25', fontSize: '0.65rem' }}>SAVE 50%</span>
+          </button>
         </div>
       </section>
 
-      {/* 2. CARD & DELIVERABLES */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '4rem 1.25rem' }}>
+      {/* Modules List — Centered */}
+      <section
+        style={{
+          maxWidth: '1040px',
+          margin: '0 auto',
+          padding: '0 1.25rem 4.5rem',
+        }}
+      >
         <div
           style={{
             backgroundColor: '#FFFFFF',
-            border: '2px solid #1F2937',
-            padding: 'clamp(2rem, 4vw, 3rem)',
-            boxShadow: '6px 6px 0 0 #1F2937',
+            border: '1.5px solid #1F2937',
+            padding: 'clamp(1.5rem, 4vw, 2.5rem)',
+            marginBottom: '2.5rem',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', borderBottom: '2px solid #1F2937', paddingBottom: '1.75rem', marginBottom: '2rem' }}>
-            <div>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 900, textTransform: 'uppercase', color: '#F18B25', letterSpacing: '0.1em' }}>
-                Full Builder Access
-              </span>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '3rem', fontWeight: 900, color: '#1F2937', lineHeight: 1, marginTop: '0.35rem' }}>
-                {billingCycle === 'monthly' ? '$47' : '$297'}
-                <span style={{ fontSize: '1rem', fontWeight: 700, color: '#6B7280', textTransform: 'none', marginLeft: '0.35rem' }}>
-                  {billingCycle === 'monthly' ? '/ month' : 'one-time payment'}
-                </span>
-              </div>
-            </div>
+          <h2
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '1.3rem',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              color: '#1F2937',
+              marginBottom: '1.5rem',
+              paddingBottom: '0.75rem',
+              borderBottom: '1.5px solid #1F2937',
+            }}
+          >
+            Core Curriculum & Implementation Blueprints
+          </h2>
 
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {modules.map((mod, idx) => (
+              <div
+                key={idx}
+                style={{
+                  padding: '1.25rem',
+                  backgroundColor: '#FAF8F5',
+                  border: '1px solid #1F2937',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <h3
+                    style={{
+                      fontFamily: "'Inter', system-ui, sans-serif",
+                      fontSize: '1rem',
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      color: '#1F2937',
+                      margin: 0,
+                    }}
+                  >
+                    {mod.title}
+                  </h3>
+                  <span
+                    style={{
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      color: '#9A3412',
+                      backgroundColor: '#FFF7ED',
+                      padding: '0.15rem 0.5rem',
+                      border: '1px solid #FED7AA',
+                    }}
+                  >
+                    Output: {mod.deliverable}
+                  </span>
+                </div>
+                <p style={{ fontSize: '0.88rem', color: '#4B5563', lineHeight: 1.5, margin: 0 }}>
+                  {mod.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Action Checkout Box — Centered */}
+        <div
+          style={{
+            backgroundColor: '#FFF7ED',
+            border: '2px solid #F18B25',
+            padding: '2.5rem 1.5rem',
+            textAlign: 'center',
+          }}
+        >
+          <h3
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '1.6rem',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              color: '#1F2937',
+              marginBottom: '0.5rem',
+            }}
+          >
+            Ready to start building?
+          </h3>
+          <p
+            style={{
+              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontSize: '1rem',
+              color: '#4B5563',
+              maxWidth: '540px',
+              margin: '0 auto 1.75rem',
+            }}
+          >
+            Get instant access to all prompt blueprints, Notion templates, and the Hermes AI Mentor workspace.
+          </p>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <a
               href="https://buy.stripe.com/test_builder"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                padding: '1rem 2rem',
                 backgroundColor: '#F18B25',
+                border: '1.5px solid #1F2937',
                 color: '#1F2937',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.85rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.88rem',
+                fontWeight: 800,
                 textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                padding: '0.9rem 2.25rem',
                 textDecoration: 'none',
-                boxShadow: '4px 4px 0 0 #1F2937',
               }}
             >
-              <span>{billingCycle === 'monthly' ? 'Start Builder Membership' : 'Get Lifetime Access'}</span>
+              <span>Enroll in Builder Tier ({billing === 'monthly' ? '$47/mo' : '$297'})</span>
               <ArrowRight size={15} />
             </a>
-          </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.25rem', fontWeight: 900, textTransform: 'uppercase', color: '#1F2937', margin: 0 }}>
-              What's Included in Builder:
-            </h2>
-
-            {[
-              {
-                title: 'The 4-Tier Faceless System Video Course',
-                desc: '12 bite-sized video modules walking step-by-step through niche validation, product architecture, automated funnels, and scaling.',
-              },
-              {
-                title: 'Notion Digital Asset Operating System',
-                desc: 'Ready-to-clone workspace with product databases, customer trackers, content calendar, and legal privacy checklist.',
-              },
-              {
-                title: 'AI Prompt Chains & Product Blueprints',
-                desc: 'Pre-engineered prompts that turn your corporate expertise into sellable checklists, calculators, and SOPs in under 60 minutes.',
-              },
-              {
-                title: 'Email Automation & Lead Magnet Templates',
-                desc: 'Pre-written 5-day welcome sequences and conversion email copy optimized for faceless distribution.',
-              },
-              {
-                title: 'Private Gen X Peer Community Access',
-                desc: 'Connect with hundreds of women walking the exact same digital reinvention journey with zero hustle culture fluff.',
-              },
-            ].map((item, idx) => (
-              <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                <CheckCircle2 size={18} color="#16A34A" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <div>
-                  <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', fontWeight: 900, color: '#1F2937', margin: '0 0 0.2rem' }}>
-                    {item.title}
-                  </h3>
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.88rem', color: '#4B5563', margin: 0, lineHeight: 1.5 }}>
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', fontSize: '0.75rem', color: '#6B7280', fontFamily: "'Inter', sans-serif", fontWeight: 800, textTransform: 'uppercase' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <Shield size={14} color="#16A34A" /> 30-Day Money Back Guarantee
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <Lock size={14} color="#16A34A" /> Cancel Anytime in 1-Click
-            </span>
+            <Link
+              to="/pricing"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
+                color: '#1F2937',
+                fontSize: '0.88rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                padding: '0.9rem 1.75rem',
+                textDecoration: 'none',
+              }}
+            >
+              <span>Compare All Plans</span>
+            </Link>
           </div>
         </div>
       </section>
+
     </div>
   );
 }

@@ -4,1233 +4,1212 @@ import {
   Sparkles,
   ArrowRight,
   Shield,
-  EyeOff,
-  Lock,
-  Zap,
+  Clock,
   TrendingUp,
-  Database,
-  Layers,
-  Compass,
   Calculator,
-  Target,
-  FileText,
-  DollarSign,
-  Cpu,
-  BarChart3,
-  HelpCircle,
+  Compass,
+  Layers,
+  Wrench,
   CheckCircle2,
-  AlertTriangle,
-  MessageSquare,
-  Send,
   HeartHandshake,
+  Lock,
+  ChevronRight,
+  MessageSquare,
+  HelpCircle,
+  Award,
+  Send,
+  Check
 } from 'lucide-react';
-import { getUserState } from '../lib/userState';
+import { getUserData, subscribeUserData } from '../lib/userState';
 
 export default function HomeUnified() {
-  const [userState, setUserState] = useState(getUserState());
+  const [userData, setUserData] = useState(() => getUserData());
 
-  // Feedback State (Community Voice instead of social proof)
-  const [feedbackCategory, setFeedbackCategory] = useState('Faceless Digital Products');
-  const [feedbackValuation, setFeedbackValuation] = useState('Extremely Validating & Practical');
-  const [feedbackNote, setFeedbackNote] = useState('');
-  const [feedbackEmail, setFeedbackEmail] = useState('');
-  const [feedbackStatus, setFeedbackStatus] = useState(null);
-
-  // Quick gap teaser state
-  const [previewSavings, setPreviewSavings] = useState(75000);
-  const [previewMonthlyNeed, setPreviewMonthlyNeed] = useState(4500);
+  // Community Feedback / Co-Creation State
+  const [feedbackCategory, setFeedbackCategory] = useState('Faceless Digital Products ($27–$97)');
+  const [rating, setRating] = useState('5');
+  const [feedbackNotes, setFeedbackNotes] = useState('');
+  const [userBackground, setUserBackground] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    const handleStateUpdate = () => {
-      setUserState(getUserState());
-    };
-    window.addEventListener('dd_user_state_updated', handleStateUpdate);
-    return () => window.removeEventListener('dd_user_state_updated', handleStateUpdate);
+    const unsub = subscribeUserData((updated) => {
+      setUserData(updated);
+    });
+    return unsub;
   }, []);
 
   const handleFeedbackSubmit = (e) => {
     e.preventDefault();
-    setFeedbackStatus('submitting');
+    const submission = {
+      category: feedbackCategory,
+      rating: rating,
+      notes: feedbackNotes,
+      background: userBackground,
+      timestamp: new Date().toISOString(),
+    };
     try {
-      const stored = localStorage.getItem('dd_community_feedback') || '[]';
-      const parsed = JSON.parse(stored);
-      parsed.push({
-        category: feedbackCategory,
-        valuation: feedbackValuation,
-        note: feedbackNote,
-        email: feedbackEmail,
-        timestamp: new Date().toISOString(),
-      });
-      localStorage.setItem('dd_community_feedback', JSON.stringify(parsed));
-      setFeedbackStatus('success');
-      setFeedbackNote('');
-      setFeedbackEmail('');
-    } catch {
-      setFeedbackStatus('error');
+      const existing = JSON.parse(localStorage.getItem('dd_community_feedback') || '[]');
+      existing.push(submission);
+      localStorage.setItem('dd_community_feedback', JSON.stringify(existing));
+    } catch (err) {
+      console.error('Failed to save feedback locally', err);
     }
+    setSubmitted(true);
   };
 
-  const calculatedPreviewShortfall = Math.max(0, previewMonthlyNeed * 300 - previewSavings);
-  const calculatedAssetsNeeded = Math.ceil(previewMonthlyNeed / 500);
+  const topicOptions = [
+    'Faceless Digital Products ($27–$97)',
+    'Closing the $500k+ Retirement Gap',
+    'AI Workflow & Prompt Blueprints',
+    'Niche Selection & Validation Scorecard',
+    'Automated Content & Email Distribution',
+    'Notion Operating Systems & Templates',
+  ];
 
   return (
-    <div style={{ backgroundColor: '#FFFCF9', color: '#2D3748', minHeight: '100vh', paddingBottom: '5rem' }}>
-      {/* 0. DYNAMIC PERSONALIZATION STATUS BANNER */}
-      <section style={{ backgroundColor: '#1F2937', color: '#FFFFFF', padding: '0.65rem 1.25rem', borderBottom: '2px solid #1F2937' }}>
-        <div style={{ maxWidth: '1080px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.78rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ backgroundColor: '#F18B25', color: '#1F2937', padding: '0.15rem 0.45rem', fontWeight: 900, textTransform: 'uppercase', fontSize: '0.65rem', letterSpacing: '0.05em' }}>
-              {userState.hasQuiz ? 'Profile Active' : 'Gen X Fact'}
-            </span>
-            <span style={{ color: '#E5E7EB', fontWeight: 500 }}>
-              {userState.hasQuiz
-                ? `Archetype detected: ${userState.superpowerTitle || 'The Content Architect'}. Ready to build your digital asset.`
-                : '74% of Gen X women report a retirement gap. Faceless digital real estate replaces corporate salary with zero camera presence.'}
-            </span>
-          </div>
-
-          <Link
-            to={userState.hasQuiz ? '/start-here' : '/quiz'}
-            style={{
-              color: '#F18B25',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.25rem',
-            }}
-          >
-            <span>{userState.hasQuiz ? 'View Action Plan' : 'Take 2-Min Quiz'}</span>
-            <ArrowRight size={13} />
-          </Link>
-        </div>
-      </section>
-
-      {/* 1. HERO SECTION (CENTERED & CONVERSION-FOCUSED) */}
+    <div style={{ backgroundColor: '#FFFCF9', color: '#1F2937', minHeight: '100vh' }}>
+      
+      {/* ========================================================
+          HERO SECTION — Centered, Clean, Feminine, Shadow-Free
+         ======================================================== */}
       <section
         style={{
-          borderBottom: '2px solid #1F2937',
-          backgroundColor: '#FFFFFF',
-          padding: 'clamp(3.5rem, 6vw, 5.5rem) 1.25rem',
+          maxWidth: '1040px',
+          margin: '0 auto',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem 3rem',
           textAlign: 'center',
         }}
       >
-        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-block', marginBottom: '1.25rem' }}>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                padding: '0.4rem 0.9rem',
-                backgroundColor: '#FFFCF9',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.7rem',
-                fontWeight: 900,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: '#1F2937',
-              }}
-            >
-              <Shield size={14} color="#F18B25" />
-              <span>Gen X Women & Digital Reinvention</span>
-            </span>
-          </div>
-
-          <h1
+        {/* Eyebrow Pill */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
+          <div
             style={{
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 900,
-              fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
-              lineHeight: 1.08,
-              letterSpacing: '-0.03em',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
+              padding: '0.35rem 0.85rem',
+              fontSize: '0.72rem',
+              fontWeight: 800,
               textTransform: 'uppercase',
-              color: '#1F2937',
-              maxWidth: '920px',
-              margin: '0 auto 1.5rem',
+              letterSpacing: '0.08em',
+              color: '#F18B25',
+              boxShadow: 'none',
             }}
           >
-            Close The Retirement Gap. Build <span style={{ color: '#F18B25' }}>Faceless Digital</span> Real Estate.
-          </h1>
+            <Sparkles size={13} color="#F18B25" />
+            <span>Gen X Women's Digital Reinvention</span>
+          </div>
+        </div>
 
-          <p
+        {/* Main Headline */}
+        <h1
+          style={{
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(2.1rem, 4.5vw, 3.4rem)',
+            lineHeight: 1.12,
+            letterSpacing: '-0.03em',
+            textTransform: 'uppercase',
+            color: '#1F2937',
+            maxWidth: '860px',
+            margin: '0 auto 1.25rem',
+          }}
+        >
+          You are not behind. <br />
+          You are <span style={{ color: '#F18B25', fontStyle: 'italic' }}>early in the AI shift.</span>
+        </h1>
+
+        {/* Supporting Subtitle */}
+        <p
+          style={{
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontSize: 'clamp(1rem, 1.8vw, 1.18rem)',
+            lineHeight: 1.6,
+            color: '#4B5563',
+            maxWidth: '680px',
+            margin: '0 auto 2.25rem',
+          }}
+        >
+          Gen X women face the largest retirement deficit in history ($540,000 median gap). 
+          Build quiet, high-margin faceless digital real estate using AI—without being on camera, 
+          without tech overwhelm, and without risking your savings.
+        </p>
+
+        {/* Centered Primary CTAs */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '1rem',
+            marginBottom: '2.5rem',
+          }}
+        >
+          <Link
+            to="/gap"
             style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
-              lineHeight: 1.65,
-              color: '#4B5563',
-              maxWidth: '760px',
-              margin: '0 auto 2.5rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              backgroundColor: '#F18B25',
+              border: '1.5px solid #1F2937',
+              color: '#1F2937',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.88rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              padding: '0.9rem 2rem',
+              textDecoration: 'none',
+              boxShadow: 'none',
             }}
           >
-            You are not behind. You are not too late. You are early in the AI shift. We help Gen X women build automated,
-            faceless digital income assets without being on camera, dancing on social media, or sacrificing privacy.
-          </p>
+            <Calculator size={16} strokeWidth={2.5} />
+            <span>Calculate Your Retirement Gap</span>
+            <ArrowRight size={15} strokeWidth={2.5} />
+          </Link>
 
-          {/* Hard Data Strip */}
+          <Link
+            to="/quiz"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
+              color: '#1F2937',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.88rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              padding: '0.9rem 1.75rem',
+              textDecoration: 'none',
+              boxShadow: 'none',
+            }}
+          >
+            <Sparkles size={16} color="#F18B25" />
+            <span>Discover Your Superpower</span>
+          </Link>
+        </div>
+
+        {/* 3 Core Trust Badges */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '1.5rem',
+            fontSize: '0.82rem',
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            color: '#4B5563',
+            fontWeight: 600,
+          }}
+        >
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Shield size={14} color="#F18B25" /> 100% Faceless (No Camera)
+          </span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Clock size={14} color="#F18B25" /> 5–7 Hours / Week
+          </span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Lock size={14} color="#F18B25" /> Private Client-Side Tools
+          </span>
+        </div>
+      </section>
+
+      {/* ========================================================
+          DATA & REALITY SECTION — Centered, Honest, Evidence-Based
+         ======================================================== */}
+      <section
+        style={{
+          backgroundColor: '#FAF8F5',
+          borderTop: '1.5px solid #1F2937',
+          borderBottom: '1.5px solid #1F2937',
+          padding: 'clamp(2.5rem, 5vw, 3.75rem) 1.25rem',
+        }}
+      >
+        <div style={{ maxWidth: '1040px', margin: '0 auto', textAlign: 'center' }}>
+          <div
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: '#F18B25',
+              marginBottom: '0.5rem',
+            }}
+          >
+            The Gen X Reality & The Digital Bridge
+          </div>
+          <h2
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontWeight: 900,
+              fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
+              textTransform: 'uppercase',
+              letterSpacing: '-0.02em',
+              color: '#1F2937',
+              maxWidth: '750px',
+              margin: '0 auto 2rem',
+            }}
+          >
+            Why traditional retirement advice failed Gen X women
+          </h2>
+
+          {/* 3 Metric Cards (Thin Frame, No Shadow) */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
-              gap: '1rem',
-              maxWidth: '880px',
-              margin: '0 auto 2.5rem',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '1.25rem',
+              textAlign: 'left',
             }}
           >
-            <div style={{ backgroundColor: '#FFFCF9', border: '2px solid #1F2937', padding: '1rem', textAlign: 'center', boxShadow: '3px 3px 0 0 #1F2937' }}>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.75rem', fontWeight: 900, color: '#C20F0A', lineHeight: 1 }}>
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
+                padding: '1.75rem',
+                boxShadow: 'none',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '2rem',
+                  fontWeight: 900,
+                  color: '#E05D52',
+                  marginBottom: '0.35rem',
+                }}
+              >
                 $540,000
               </div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', color: '#6B7280', marginTop: '0.35rem' }}>
-                Median Gen X Retirement Deficit
+              <div
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  color: '#1F2937',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Median Retirement Deficit
               </div>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', system-ui, sans-serif",
+                  fontSize: '0.86rem',
+                  color: '#4B5563',
+                  lineHeight: 1.55,
+                  margin: 0,
+                }}
+              >
+                Gen X women spent peak earning years balancing caregiving, mortgage shifts, and career interruptions.
+              </p>
             </div>
 
-            <div style={{ backgroundColor: '#FFFCF9', border: '2px solid #1F2937', padding: '1rem', textAlign: 'center', boxShadow: '3px 3px 0 0 #1F2937' }}>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.75rem', fontWeight: 900, color: '#16A34A', lineHeight: 1 }}>
-                85%+
-              </div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', color: '#6B7280', marginTop: '0.35rem' }}>
-                Net Margin on Faceless Assets
-              </div>
-            </div>
-
-            <div style={{ backgroundColor: '#FFFCF9', border: '2px solid #1F2937', padding: '1rem', textAlign: 'center', boxShadow: '3px 3px 0 0 #1F2937' }}>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.75rem', fontWeight: 900, color: '#47B7D4', lineHeight: 1 }}>
-                0 Hours
-              </div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', color: '#6B7280', marginTop: '0.35rem' }}>
-                Required On Camera or Video
-              </div>
-            </div>
-
-            <div style={{ backgroundColor: '#FFFCF9', border: '2px solid #1F2937', padding: '1rem', textAlign: 'center', boxShadow: '3px 3px 0 0 #1F2937' }}>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.75rem', fontWeight: 900, color: '#F18B25', lineHeight: 1 }}>
-                10-15 hrs
-              </div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', color: '#6B7280', marginTop: '0.35rem' }}>
-                Weekly Automation Rhythm
-              </div>
-            </div>
-          </div>
-
-          {/* Centered Dual CTAs */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '1rem',
-              flexWrap: 'wrap',
-              marginBottom: '2rem',
-            }}
-          >
-            <Link
-              to="/quiz"
+            <div
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '1.05rem 2.25rem',
-                backgroundColor: '#F18B25',
-                color: '#1F2937',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.85rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                textDecoration: 'none',
-                boxShadow: '4px 4px 0 0 #1F2937',
-              }}
-            >
-              <Compass size={16} />
-              <span>Discover Your Superpower (2 Min)</span>
-              <ArrowRight size={15} />
-            </Link>
-
-            <Link
-              to="/gap"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '1.05rem 2rem',
                 backgroundColor: '#FFFFFF',
-                color: '#1F2937',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.85rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                textDecoration: 'none',
-                boxShadow: '4px 4px 0 0 #1F2937',
+                border: '1.5px solid #1F2937',
+                padding: '1.75rem',
+                boxShadow: 'none',
               }}
             >
-              <Calculator size={16} />
-              <span>Calculate Retirement Gap</span>
-            </Link>
-          </div>
+              <div
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '2rem',
+                  fontWeight: 900,
+                  color: '#1F2937',
+                  marginBottom: '0.35rem',
+                }}
+              >
+                74%
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  color: '#1F2937',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Underprepared by Traditional Models
+              </div>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', system-ui, sans-serif",
+                  fontSize: '0.86rem',
+                  color: '#4B5563',
+                  lineHeight: 1.55,
+                  margin: 0,
+                }}
+              >
+                Saving 10% of a salary into a 401(k) cannot close a 6-figure gap in 10–15 years. You need scalable leverage.
+              </p>
+            </div>
 
-          {/* Trust points */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '1.5rem',
-              flexWrap: 'wrap',
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '0.72rem',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              color: '#6B7280',
-            }}
-          >
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <CheckCircle2 size={14} color="#16A34A" /> 100% Privacy Guaranteed
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <CheckCircle2 size={14} color="#16A34A" /> No Social Media Dancing
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <CheckCircle2 size={14} color="#16A34A" /> AI-Powered Asset Kits
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <CheckCircle2 size={14} color="#16A34A" /> Built for Gen X Women
-            </span>
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
+                padding: '1.75rem',
+                boxShadow: 'none',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '2rem',
+                  fontWeight: 900,
+                  color: '#F18B25',
+                  marginBottom: '0.35rem',
+                }}
+              >
+                3–5 Assets
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  color: '#1F2937',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                The Faceless Real Estate Solution
+              </div>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', system-ui, sans-serif",
+                  fontSize: '0.86rem',
+                  color: '#4B5563',
+                  lineHeight: 1.55,
+                  margin: 0,
+                }}
+              >
+                3 to 5 micro-digital assets generating $500/mo each provide $1,500–$2,500/mo in recurring cashflow—equivalent to a $600k portfolio.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. THE MISSION SECTION (MATCHES PRACTICAL PATH WIDTH & CENTERING) */}
+      {/* ========================================================
+          MISSION & PHILOSOPHY — Centered, Matching Practical Path Width
+         ======================================================== */}
       <section
         style={{
-          maxWidth: '1080px',
+          maxWidth: '1040px',
           margin: '0 auto',
-          padding: '4.5rem 1.25rem',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem',
+          textAlign: 'center',
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <span
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '0.72rem',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.15em',
-              color: '#F18B25',
-            }}
-          >
-            Why DigitallyDefined Exists
-          </span>
-          <h2
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
-              fontWeight: 900,
-              textTransform: 'uppercase',
-              letterSpacing: '-0.03em',
-              color: '#1F2937',
-              marginTop: '0.5rem',
-              lineHeight: 1.15,
-            }}
-          >
-            The Generation That Carried Everything Is Finally Building for Themselves.
-          </h2>
-          <p
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: '1rem',
-              lineHeight: 1.65,
-              color: '#6B7280',
-              maxWidth: '740px',
-              margin: '0.85rem auto 0',
-            }}
-          >
-            Gen X women have spent decades managing corporate burnout, raising children, and caring for aging parents.
-            You didn't fail traditional retirement — traditional retirement models failed you.
-          </p>
+        <div
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: '#F18B25',
+            marginBottom: '0.5rem',
+          }}
+        >
+          Our Core Mission
         </div>
+        <h2
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)',
+            textTransform: 'uppercase',
+            letterSpacing: '-0.02em',
+            color: '#1F2937',
+            maxWidth: '800px',
+            margin: '0 auto 1.5rem',
+          }}
+        >
+          Quiet power, practical execution, zero camera drama
+        </h2>
+        <p
+          style={{
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontSize: '1.05rem',
+            lineHeight: 1.65,
+            color: '#4B5563',
+            maxWidth: '720px',
+            margin: '0 auto 2.5rem',
+          }}
+        >
+          You don’t need to dance on TikTok, show your face, or master complex coding. 
+          Your decades of professional expertise, organization, and problem-solving are 
+          the ultimate fuel for high-demand digital templates, guides, and tools.
+        </p>
 
+        {/* 3 Mission Pillars (Matching width & alignment) */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '1.75rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '1.25rem',
+            textAlign: 'left',
           }}
         >
-          {/* Mission Card 1 */}
           <div
             style={{
               backgroundColor: '#FFFFFF',
-              border: '2px solid #1F2937',
-              padding: '2rem 1.5rem',
-              boxShadow: '4px 4px 0 0 #1F2937',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
+              border: '1.5px solid #1F2937',
+              padding: '1.75rem',
             }}
           >
-            <div>
-              <div
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  backgroundColor: '#FEE2E2',
-                  border: '1.5px solid #DC2626',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '1rem',
-                }}
-              >
-                <AlertTriangle size={18} color="#DC2626" />
-              </div>
-
-              <h3
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '1.2rem',
-                  fontWeight: 900,
-                  textTransform: 'uppercase',
-                  color: '#1F2937',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                The Reality Check
-              </h3>
-
-              <p
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: '0.9rem',
-                  lineHeight: 1.6,
-                  color: '#4B5563',
-                  margin: 0,
-                }}
-              >
-                Gen X has the largest retirement gap in American history. Relying solely on market returns and 401(k) contributions
-                at age 45-59 creates an unavoidable shortfall that traditional financial planners ignore.
-              </p>
-            </div>
-
             <div
               style={{
-                marginTop: '1.5rem',
-                paddingTop: '1rem',
-                borderTop: '1px solid #E5E7EB',
-                fontSize: '0.75rem',
-                fontWeight: 800,
-                color: '#DC2626',
-                fontFamily: "'Inter', sans-serif",
-                textTransform: 'uppercase',
+                width: '40px',
+                height: '40px',
+                backgroundColor: '#FFF7ED',
+                border: '1px solid #F18B25',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1rem',
               }}
             >
-              74% feel underprepared · $540k avg gap
+              <HeartHandshake size={20} color="#F18B25" />
             </div>
-          </div>
-
-          {/* Mission Card 2 */}
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              border: '2px solid #1F2937',
-              padding: '2rem 1.5rem',
-              boxShadow: '4px 4px 0 0 #1F2937',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  backgroundColor: '#E0F2FE',
-                  border: '1.5px solid #0284C7',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '1rem',
-                }}
-              >
-                <EyeOff size={18} color="#0284C7" />
-              </div>
-
-              <h3
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '1.2rem',
-                  fontWeight: 900,
-                  textTransform: 'uppercase',
-                  color: '#1F2937',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                The Faceless Breakthrough
-              </h3>
-
-              <p
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: '0.9rem',
-                  lineHeight: 1.6,
-                  color: '#4B5563',
-                  margin: 0,
-                }}
-              >
-                You do not need to become an influencer or build a personal brand. Digital assets — Notion hubs, specialized calculators,
-                automation blueprints, and niche databases — sell based on pure utility and problem-solving.
-              </p>
-            </div>
-
-            <div
+            <h3
               style={{
-                marginTop: '1.5rem',
-                paddingTop: '1rem',
-                borderTop: '1px solid #E5E7EB',
-                fontSize: '0.75rem',
-                fontWeight: 800,
-                color: '#0284C7',
-                fontFamily: "'Inter', sans-serif",
-                textTransform: 'uppercase',
-              }}
-            >
-              Zero on-camera time · Total identity privacy
-            </div>
-          </div>
-
-          {/* Mission Card 3 */}
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              border: '2px solid #1F2937',
-              padding: '2rem 1.5rem',
-              boxShadow: '4px 4px 0 0 #1F2937',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  backgroundColor: '#DCFCE7',
-                  border: '1.5px solid #16A34A',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '1rem',
-                }}
-              >
-                <Cpu size={18} color="#16A34A" />
-              </div>
-
-              <h3
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '1.2rem',
-                  fontWeight: 900,
-                  textTransform: 'uppercase',
-                  color: '#1F2937',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                The AI Multiplier
-              </h3>
-
-              <p
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: '0.9rem',
-                  lineHeight: 1.6,
-                  color: '#4B5563',
-                  margin: 0,
-                }}
-              >
-                Generative AI handles 80% of the mechanical work: drafting, structuring, formatting, and coding.
-                Your 20+ years of professional and life experience is the irreplaceable ingredient that commands premium prices.
-              </p>
-            </div>
-
-            <div
-              style={{
-                marginTop: '1.5rem',
-                paddingTop: '1rem',
-                borderTop: '1px solid #E5E7EB',
-                fontSize: '0.75rem',
-                fontWeight: 800,
-                color: '#16A34A',
-                fontFamily: "'Inter', sans-serif",
-                textTransform: 'uppercase',
-              }}
-            >
-              Fast execution · 85%+ profit margins
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. THE 4-STEP PRACTICAL PATH (PRACTICAL FRAMEWORK) */}
-      <section
-        style={{
-          backgroundColor: '#FFFFFF',
-          borderTop: '2px solid #1F2937',
-          borderBottom: '2px solid #1F2937',
-          padding: '4.5rem 1.25rem',
-        }}
-      >
-        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <span
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.72rem',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '1rem',
                 fontWeight: 800,
                 textTransform: 'uppercase',
-                letterSpacing: '0.15em',
-                color: '#47B7D4',
-              }}
-            >
-              The Step-by-Step Blueprint
-            </span>
-            <h2
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                letterSpacing: '-0.03em',
                 color: '#1F2937',
-                marginTop: '0.5rem',
+                marginBottom: '0.5rem',
               }}
             >
-              The 4-Step Practical Path to Faceless Wealth
-            </h2>
+              1. Empathy & Dignity
+            </h3>
             <p
               style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: '1rem',
-                color: '#6B7280',
-                maxWidth: '680px',
-                margin: '0.75rem auto 0',
+                fontFamily: "'DM Sans', system-ui, sans-serif",
+                fontSize: '0.88rem',
+                color: '#4B5563',
+                lineHeight: 1.55,
+                margin: 0,
               }}
             >
-              How we take you from financial anxiety to owning a portfolio of cash-generating digital assets.
+              No shame about where you are starting from. We provide step-by-step systems tailored for busy lives and real responsibilities.
             </p>
           </div>
 
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-              gap: '1.5rem',
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
+              padding: '1.75rem',
             }}
           >
-            {[
-              {
-                step: '01',
-                title: 'Claim Your Niche',
-                desc: 'Audit your unmonetized skills, score high-demand niches (0-100), and secure your digital boundaries with zero identity exposure.',
-                icon: Database,
-                accent: '#F18B25',
-              },
-              {
-                step: '02',
-                title: 'Package Assets',
-                desc: 'Turn your deep industry experience into high-utility digital products ($27-$97) using structured Notion templates and automated tools.',
-                icon: TrendingUp,
-                accent: '#47B7D4',
-              },
-              {
-                step: '03',
-                title: 'Automate Traffic',
-                desc: 'Build self-sustaining traffic flywheels using search intent, curated newsletters, and automated lead capture magnets.',
-                icon: Layers,
-                accent: '#16A34A',
-              },
-              {
-                step: '04',
-                title: 'Compound Cashflow',
-                desc: 'Stack multiple $500/mo assets to replace corporate salary, close your retirement gap, and establish generational digital property.',
-                icon: DollarSign,
-                accent: '#8B5CF6',
-              },
-            ].map((p) => {
-              const StepIcon = p.icon;
-              return (
-                <div
-                  key={p.step}
-                  style={{
-                    backgroundColor: '#FFFCF9',
-                    border: '2px solid #1F2937',
-                    padding: '1.75rem',
-                    boxShadow: '4px 4px 0 0 #1F2937',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.75rem', fontWeight: 900, color: p.accent, lineHeight: 1 }}>
-                        {p.step}
-                      </span>
-                      <div
-                        style={{
-                          width: '32px',
-                          height: '32px',
-                          backgroundColor: '#FFFFFF',
-                          border: '1.5px solid #1F2937',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <StepIcon size={16} color="#1F2937" />
-                      </div>
-                    </div>
-
-                    <h3
-                      style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: '1.15rem',
-                        fontWeight: 900,
-                        textTransform: 'uppercase',
-                        color: '#1F2937',
-                        marginBottom: '0.5rem',
-                      }}
-                    >
-                      {p.title}
-                    </h3>
-
-                    <p
-                      style={{
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontSize: '0.88rem',
-                        lineHeight: 1.55,
-                        color: '#4B5563',
-                        margin: 0,
-                      }}
-                    >
-                      {p.desc}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                backgroundColor: '#F0F9FF',
+                border: '1px solid #47B7D4',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1rem',
+              }}
+            >
+              <Award size={20} color="#47B7D4" />
+            </div>
+            <h3
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '1rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                color: '#1F2937',
+                marginBottom: '0.5rem',
+              }}
+            >
+              2. Experience Monetization
+            </h3>
+            <p
+              style={{
+                fontFamily: "'DM Sans', system-ui, sans-serif",
+                fontSize: '0.88rem',
+                color: '#4B5563',
+                lineHeight: 1.55,
+                margin: 0,
+              }}
+            >
+              Transform your career knowledge into high-utility digital assets that buyers gladly pay for again and again.
+            </p>
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              border: '1.5px solid #1F2937',
+              padding: '1.75rem',
+            }}
+          >
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                backgroundColor: '#FAF8F5',
+                border: '1px solid #1F2937',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1rem',
+              }}
+            >
+              <TrendingUp size={20} color="#1F2937" />
+            </div>
+            <h3
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '1rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                color: '#1F2937',
+                marginBottom: '0.5rem',
+              }}
+            >
+              3. Automated Cashflow
+            </h3>
+            <p
+              style={{
+                fontFamily: "'DM Sans', system-ui, sans-serif",
+                fontSize: '0.88rem',
+                color: '#4B5563',
+                lineHeight: 1.55,
+                margin: 0,
+              }}
+            >
+              Set up automated distribution pipelines so your digital real estate generates income 24/7 without active hourly labor.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================
+          PRACTICAL 4-PHASE PATHWAY — Centered, Modular
+         ======================================================== */}
+      <section
+        style={{
+          backgroundColor: '#FAF8F5',
+          borderTop: '1.5px solid #1F2937',
+          borderBottom: '1.5px solid #1F2937',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem',
+        }}
+      >
+        <div style={{ maxWidth: '1040px', margin: '0 auto', textAlign: 'center' }}>
+          <div
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: '#F18B25',
+              marginBottom: '0.5rem',
+            }}
+          >
+            The Practical Blueprint
+          </div>
+          <h2
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontWeight: 900,
+              fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
+              textTransform: 'uppercase',
+              letterSpacing: '-0.02em',
+              color: '#1F2937',
+              maxWidth: '750px',
+              margin: '0 auto 2.5rem',
+            }}
+          >
+            4 Steps from Zero to Automated Digital Income
+          </h2>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+              gap: '1.25rem',
+              textAlign: 'left',
+              marginBottom: '2.5rem',
+            }}
+          >
+            {/* Phase 1 */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
+                padding: '1.5rem',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  color: '#F18B25',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Phase 01
+              </div>
+              <h3
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '1rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  color: '#1F2937',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Diagnostic & Niche
+              </h3>
+              <p style={{ fontSize: '0.85rem', color: '#4B5563', lineHeight: 1.5, margin: 0 }}>
+                Identify your archetype and quantify your exact retirement gap using our private tools.
+              </p>
+            </div>
+
+            {/* Phase 2 */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
+                padding: '1.5rem',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  color: '#47B7D4',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Phase 02
+              </div>
+              <h3
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '1rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  color: '#1F2937',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                AI Asset Build
+              </h3>
+              <p style={{ fontSize: '0.85rem', color: '#4B5563', lineHeight: 1.5, margin: 0 }}>
+                Package your knowledge into high-value Notion hubs, templates, or calculators in under 10 days.
+              </p>
+            </div>
+
+            {/* Phase 3 */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
+                padding: '1.5rem',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  color: '#1F2937',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Phase 03
+              </div>
+              <h3
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '1rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  color: '#1F2937',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Faceless Launch
+              </h3>
+              <p style={{ fontSize: '0.85rem', color: '#4B5563', lineHeight: 1.5, margin: 0 }}>
+                Deploy simple 1-page checkout funnels with zero video recording or social media burnout.
+              </p>
+            </div>
+
+            {/* Phase 4 */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
+                padding: '1.5rem',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  color: '#F18B25',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Phase 04
+              </div>
+              <h3
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '1rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  color: '#1F2937',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Scale & Automate
+              </h3>
+              <p style={{ fontSize: '0.85rem', color: '#4B5563', lineHeight: 1.5, margin: 0 }}>
+                Connect automated email engines and build 3–5 assets to permanently secure your income floor.
+              </p>
+            </div>
+          </div>
+
+          {/* Centered CTA */}
+          <div style={{ textAlign: 'center' }}>
             <Link
               to="/framework"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                padding: '0.85rem 1.75rem',
                 backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
                 color: '#1F2937',
-                border: '2px solid #1F2937',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.8rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.85rem',
+                fontWeight: 800,
                 textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                padding: '0.85rem 1.75rem',
                 textDecoration: 'none',
-                boxShadow: '3px 3px 0 0 #1F2937',
               }}
             >
-              <span>Explore The Full Framework</span>
+              <Layers size={15} color="#F18B25" />
+              <span>Explore The Full 4-Tier Framework</span>
               <ArrowRight size={14} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* 4. INTERACTIVE RETIREMENT GAP PREVIEW CALCULATOR */}
+      {/* ========================================================
+          COMMUNITY FEEDBACK & CO-CREATION HUB — Replaces Fake Social Proof
+         ======================================================== */}
       <section
         style={{
-          maxWidth: '1080px',
+          maxWidth: '1040px',
           margin: '0 auto',
-          padding: '4.5rem 1.25rem',
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: '#FFFFFF',
-            border: '2px solid #1F2937',
-            padding: 'clamp(2rem, 4vw, 3rem)',
-            boxShadow: '6px 6px 0 0 #1F2937',
-          }}
-        >
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <span
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.72rem',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                letterSpacing: '0.15em',
-                color: '#F18B25',
-              }}
-            >
-              Instant Diagnostic Tool
-            </span>
-            <h2
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                letterSpacing: '-0.03em',
-                color: '#1F2937',
-                marginTop: '0.5rem',
-              }}
-            >
-              Model Your Retirement Gap Right Now
-            </h2>
-            <p
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: '0.95rem',
-                color: '#6B7280',
-                maxWidth: '650px',
-                margin: '0.5rem auto 0',
-              }}
-            >
-              Adjust your parameters to see how many $500/mo faceless digital assets you need to achieve total freedom.
-            </p>
-          </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '2rem',
-              alignItems: 'center',
-            }}
-          >
-            {/* Left Controls */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div>
-                <label style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.4rem' }}>
-                  <span>Current Savings / 401(k):</span>
-                  <span style={{ color: '#F18B25' }}>${previewSavings.toLocaleString()}</span>
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="500000"
-                  step="5000"
-                  value={previewSavings}
-                  onChange={(e) => setPreviewSavings(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: '#F18B25' }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.4rem' }}>
-                  <span>Desired Monthly Income:</span>
-                  <span style={{ color: '#47B7D4' }}>${previewMonthlyNeed.toLocaleString()}/mo</span>
-                </label>
-                <input
-                  type="range"
-                  min="2000"
-                  max="15000"
-                  step="250"
-                  value={previewMonthlyNeed}
-                  onChange={(e) => setPreviewMonthlyNeed(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: '#47B7D4' }}
-                />
-              </div>
-            </div>
-
-            {/* Right Output Card */}
-            <div
-              style={{
-                backgroundColor: '#FFFCF9',
-                border: '2px solid #1F2937',
-                padding: '1.75rem',
-                textAlign: 'center',
-              }}
-            >
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.68rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#6B7280' }}>
-                Your Projected Solution
-              </span>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '2.4rem', fontWeight: 900, color: '#1F2937', margin: '0.5rem 0 0.25rem', lineHeight: 1 }}>
-                {calculatedAssetsNeeded} Faceless Assets
-              </div>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.85rem', color: '#4B5563', margin: '0 0 1.25rem' }}>
-                Generating ~$500/mo each replaces ${previewMonthlyNeed.toLocaleString()}/mo without needing ${calculatedPreviewShortfall.toLocaleString()} in stock market capital.
-              </p>
-
-              <Link
-                to="/gap"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#F18B25',
-                  color: '#1F2937',
-                  border: '2px solid #1F2937',
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '0.78rem',
-                  fontWeight: 900,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  textDecoration: 'none',
-                  boxShadow: '3px 3px 0 0 #1F2937',
-                }}
-              >
-                <span>Full Interactive Gap Calculator</span>
-                <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. GEN X WOMEN COMMUNITY VOICE & FEEDBACK SECTION (USER DIRECTION: CO-CREATION INSTEAD OF FAKE SOCIAL PROOF) */}
-      <section
-        style={{
-          backgroundColor: '#FFFFFF',
-          borderTop: '2px solid #1F2937',
-          borderBottom: '2px solid #1F2937',
-          padding: '4.5rem 1.25rem',
-        }}
-      >
-        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.72rem',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                letterSpacing: '0.15em',
-                color: '#F18B25',
-              }}
-            >
-              <HeartHandshake size={15} />
-              <span>Community Voice & Co-Creation Hub</span>
-            </span>
-
-            <h2
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: 'clamp(1.8rem, 4vw, 2.75rem)',
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                letterSpacing: '-0.03em',
-                color: '#1F2937',
-                marginTop: '0.5rem',
-              }}
-            >
-              What Do You Want to Build? We’re Listening.
-            </h2>
-            <p
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: '1rem',
-                color: '#6B7280',
-                maxWidth: '680px',
-                margin: '0.75rem auto 0',
-              }}
-            >
-              DigitallyDefined is built with and for Gen X women. Share what topics you need most,
-              and give honest feedback on how valuable the site and tools feel to your journey.
-            </p>
-          </div>
-
-          <div
-            style={{
-              backgroundColor: '#FFFCF9',
-              border: '2px solid #1F2937',
-              padding: 'clamp(1.75rem, 3.5vw, 2.75rem)',
-              boxShadow: '6px 6px 0 0 #1F2937',
-              maxWidth: '850px',
-              margin: '0 auto',
-            }}
-          >
-            <form onSubmit={handleFeedbackSubmit}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem', marginBottom: '1.25rem' }}>
-                {/* Topic interest */}
-                <div>
-                  <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.35rem' }}>
-                    What do you want to learn more about?
-                  </label>
-                  <select
-                    value={feedbackCategory}
-                    onChange={(e) => setFeedbackCategory(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.7rem 0.85rem',
-                      border: '2px solid #1F2937',
-                      fontSize: '0.88rem',
-                      fontFamily: "'DM Sans', sans-serif",
-                      backgroundColor: '#FFFFFF',
-                      outline: 'none',
-                      fontWeight: 600,
-                    }}
-                  >
-                    <option value="Faceless Digital Products">Faceless Digital Products ($27–$97)</option>
-                    <option value="AI Workflow & Prompt Systems">AI Workflow & Prompt Systems</option>
-                    <option value="Retirement Gap & Financial Models">Closing the $500k+ Retirement Gap</option>
-                    <option value="Niche Selection & Validation">Niche Selection & Validation</option>
-                    <option value="Automated Distribution & Newsletters">Automated Distribution & Newsletters</option>
-                    <option value="Notion & Systems Building">Notion & Systems Architecture</option>
-                  </select>
-                </div>
-
-                {/* Value perception */}
-                <div>
-                  <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.35rem' }}>
-                    How do you feel about the website value?
-                  </label>
-                  <select
-                    value={feedbackValuation}
-                    onChange={(e) => setFeedbackValuation(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.7rem 0.85rem',
-                      border: '2px solid #1F2937',
-                      fontSize: '0.88rem',
-                      fontFamily: "'DM Sans', sans-serif",
-                      backgroundColor: '#FFFFFF',
-                      outline: 'none',
-                      fontWeight: 600,
-                    }}
-                  >
-                    <option value="Extremely Validating & Practical">Extremely Validating & Practical</option>
-                    <option value="Clear Strategy - Ready to Build">Clear Strategy — Ready to Build</option>
-                    <option value="Need More Examples & Templates">Need More Examples & Templates</option>
-                    <option value="Interested In Hands-On Guidance">Interested in Hands-On Guidance</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Note / Feedback */}
-              <div style={{ marginBottom: '1.25rem' }}>
-                <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.35rem' }}>
-                  Your Thoughts, Career Background, or Questions:
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  placeholder="Tell us about your background, what challenges you are facing, or what tool you would like us to build next..."
-                  value={feedbackNote}
-                  onChange={(e) => setFeedbackNote(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 0.85rem',
-                    border: '2px solid #1F2937',
-                    fontSize: '0.88rem',
-                    fontFamily: "'DM Sans', sans-serif",
-                    backgroundColor: '#FFFFFF',
-                    outline: 'none',
-                    resize: 'vertical',
-                  }}
-                />
-              </div>
-
-              {/* Optional Email */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#1F2937', marginBottom: '0.35rem' }}>
-                  Your Email (Optional — for direct roadmap updates):
-                </label>
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={feedbackEmail}
-                  onChange={(e) => setFeedbackEmail(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.7rem 0.85rem',
-                    border: '2px solid #1F2937',
-                    fontSize: '0.88rem',
-                    fontFamily: "'DM Sans', sans-serif",
-                    backgroundColor: '#FFFFFF',
-                    outline: 'none',
-                  }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-                <button
-                  type="submit"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.45rem',
-                    padding: '0.85rem 1.75rem',
-                    backgroundColor: '#F18B25',
-                    color: '#1F2937',
-                    border: '2px solid #1F2937',
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: '0.8rem',
-                    fontWeight: 900,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    cursor: 'pointer',
-                    boxShadow: '3px 3px 0 0 #1F2937',
-                  }}
-                >
-                  <Send size={15} />
-                  <span>Submit Community Feedback</span>
-                </button>
-
-                <span style={{ fontSize: '0.72rem', color: '#6B7280', fontFamily: "'Inter', sans-serif", fontWeight: 700, textTransform: 'uppercase' }}>
-                  ✓ 100% Anonymous & Privacy Protected
-                </span>
-              </div>
-
-              {feedbackStatus === 'success' && (
-                <div
-                  style={{
-                    marginTop: '1.25rem',
-                    padding: '0.85rem 1.25rem',
-                    backgroundColor: '#DCFCE7',
-                    border: '2px solid #16A34A',
-                    color: '#166534',
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: '0.8rem',
-                    fontWeight: 800,
-                    textTransform: 'uppercase',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                  }}
-                >
-                  <CheckCircle2 size={16} />
-                  <span>Thank you! Your feedback has been saved and will shape our next asset blueprints.</span>
-                </div>
-              )}
-            </form>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. FINAL CONVERSION BANNER */}
-      <section
-        style={{
-          maxWidth: '1080px',
-          margin: '0 auto',
-          padding: '4.5rem 1.25rem 0',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem',
           textAlign: 'center',
         }}
       >
         <div
           style={{
-            backgroundColor: '#1F2937',
-            color: '#FFFFFF',
-            border: '2px solid #1F2937',
-            padding: 'clamp(2.5rem, 5vw, 4rem) 1.5rem',
-            boxShadow: '6px 6px 0 0 #F18B25',
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: '#F18B25',
+            marginBottom: '0.5rem',
           }}
         >
-          <span
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: '0.72rem',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.15em',
-              color: '#F18B25',
-              display: 'inline-block',
-              marginBottom: '0.75rem',
-            }}
-          >
-            Your Reinvention Starts Today
-          </span>
+          Community Voice & Co-Creation
+        </div>
+        <h2
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
+            textTransform: 'uppercase',
+            letterSpacing: '-0.02em',
+            color: '#1F2937',
+            maxWidth: '750px',
+            margin: '0 auto 1.25rem',
+          }}
+        >
+          Help us build what you need most
+        </h2>
+        <p
+          style={{
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontSize: '1rem',
+            lineHeight: 1.6,
+            color: '#4B5563',
+            maxWidth: '660px',
+            margin: '0 auto 2.5rem',
+          }}
+        >
+          We don't do fake testimonials. We build in the open with Gen X women. 
+          Tell us what topics, tools, or templates would help you reinvent yourself fastest.
+        </p>
 
+        {/* Feedback Card (Thin Frame, No Shadow) */}
+        <div
+          style={{
+            maxWidth: '680px',
+            margin: '0 auto',
+            backgroundColor: '#FFFFFF',
+            border: '1.5px solid #1F2937',
+            padding: 'clamp(1.5rem, 4vw, 2.25rem)',
+            textAlign: 'left',
+          }}
+        >
+          {submitted ? (
+            <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+              <div
+                style={{
+                  width: '50px',
+                  height: '50px',
+                  backgroundColor: '#FFF7ED',
+                  border: '1.5px solid #F18B25',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1rem',
+                }}
+              >
+                <Check size={26} color="#F18B25" />
+              </div>
+              <h3
+                style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '1.25rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  color: '#1F2937',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Thank You for Your Feedback!
+              </h3>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', system-ui, sans-serif",
+                  fontSize: '0.9rem',
+                  color: '#4B5563',
+                  maxWidth: '460px',
+                  margin: '0 auto 1.5rem',
+                  lineHeight: 1.55,
+                }}
+              >
+                Your response has been saved locally and helps direct the next set of free tools and blueprints we build.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSubmitted(false)}
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1.5px solid #1F2937',
+                  padding: '0.5rem 1.25rem',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                }}
+              >
+                Submit another idea
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleFeedbackSubmit}>
+              {/* Question 1: What do you want to learn most? */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    color: '#1F2937',
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  1. What area of digital reinvention do you want to know more about?
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.6rem' }}>
+                  {topicOptions.map((topic) => {
+                    const isSelected = feedbackCategory === topic;
+                    return (
+                      <button
+                        key={topic}
+                        type="button"
+                        onClick={() => setFeedbackCategory(topic)}
+                        style={{
+                          textAlign: 'left',
+                          padding: '0.65rem 0.85rem',
+                          backgroundColor: isSelected ? '#FFF7ED' : '#FFFFFF',
+                          border: isSelected ? '1.5px solid #F18B25' : '1px solid #E5E7EB',
+                          color: isSelected ? '#9A3412' : '#1F2937',
+                          fontSize: '0.82rem',
+                          fontWeight: isSelected ? 700 : 500,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '0.5rem',
+                        }}
+                      >
+                        <span>{topic}</span>
+                        {isSelected && <CheckCircle2 size={14} color="#F18B25" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Question 2: How do you feel about the website clarity & value? */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    color: '#1F2937',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  2. How clear and practical does this website feel to your situation?
+                </label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  {['1 - Confusing', '2', '3 - Clear', '4', '5 - Extremely Helpful'].map((val, idx) => {
+                    const numVal = (idx + 1).toString();
+                    const isSelected = rating === numVal;
+                    return (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setRating(numVal)}
+                        style={{
+                          flex: 1,
+                          padding: '0.65rem 0.35rem',
+                          textAlign: 'center',
+                          backgroundColor: isSelected ? '#F18B25' : '#FFFFFF',
+                          border: '1.5px solid #1F2937',
+                          color: '#1F2937',
+                          fontSize: '0.78rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Question 3: Career Background / Ideas */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    color: '#1F2937',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  3. Your background or specific questions (Optional & Private)
+                </label>
+                <textarea
+                  rows={3}
+                  value={feedbackNotes}
+                  onChange={(e) => setFeedbackNotes(e.target.value)}
+                  placeholder="e.g., 'I have 20 years in HR management and want to know how to turn that into a 1-page template...'"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1.5px solid #1F2937',
+                    fontFamily: "'DM Sans', system-ui, sans-serif",
+                    fontSize: '0.88rem',
+                    color: '#1F2937',
+                    outline: 'none',
+                    backgroundColor: '#FFFFFF',
+                    resize: 'vertical',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              {/* Centered Submit Button */}
+              <div style={{ textAlign: 'center' }}>
+                <button
+                  type="submit"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    backgroundColor: '#F18B25',
+                    border: '1.5px solid #1F2937',
+                    color: '#1F2937',
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: '0.85rem',
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    padding: '0.85rem 2rem',
+                    cursor: 'pointer',
+                    boxShadow: 'none',
+                  }}
+                >
+                  <Send size={15} strokeWidth={2.5} />
+                  <span>Submit Community Feedback</span>
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </section>
+
+      {/* ========================================================
+          FINAL CTA BANNER — Centered, Direct
+         ======================================================== */}
+      <section
+        style={{
+          backgroundColor: '#FFF7ED',
+          borderTop: '1.5px solid #1F2937',
+          padding: 'clamp(3rem, 6vw, 4.5rem) 1.25rem',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h2
             style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: 'clamp(1.9rem, 4vw, 3rem)',
+              fontFamily: "'Inter', system-ui, sans-serif",
               fontWeight: 900,
+              fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
               textTransform: 'uppercase',
-              letterSpacing: '-0.03em',
-              color: '#FFFFFF',
-              maxWidth: '750px',
-              margin: '0 auto 1.25rem',
-              lineHeight: 1.12,
+              letterSpacing: '-0.02em',
+              color: '#1F2937',
+              marginBottom: '1rem',
             }}
           >
-            Stop Trading Time for Corporate Uncertainty. Build Your Faceless Asset.
+            Ready to close your gap with faceless assets?
           </h2>
-
           <p
             style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: '1rem',
-              color: '#D1D5DB',
-              maxWidth: '620px',
-              margin: '0 auto 2.25rem',
+              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontSize: '1.05rem',
+              color: '#4B5563',
+              lineHeight: 1.6,
+              marginBottom: '2rem',
             }}
           >
-            Join hundreds of Gen X women creating recurring digital income with complete privacy and zero social media pressure.
+            Take the 2-minute diagnostic or calculate your exact numbers to get your customized step-by-step roadmap.
           </p>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '1rem',
+            }}
+          >
             <Link
-              to="/quiz"
+              to="/gap"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                padding: '1rem 2.25rem',
                 backgroundColor: '#F18B25',
+                border: '1.5px solid #1F2937',
                 color: '#1F2937',
-                border: '2px solid #FFFFFF',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.85rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.88rem',
+                fontWeight: 800,
                 textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                padding: '0.9rem 2rem',
                 textDecoration: 'none',
-                boxShadow: '4px 4px 0 0 #FFFFFF',
               }}
             >
-              <span>Take Free Superpower Quiz</span>
-              <ArrowRight size={16} />
+              <Calculator size={16} />
+              <span>Launch Gap Calculator</span>
+              <ArrowRight size={15} />
             </Link>
 
             <Link
-              to="/builder"
+              to="/start-here"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                padding: '1rem 2rem',
-                backgroundColor: 'transparent',
-                color: '#FFFFFF',
-                border: '2px solid #FFFFFF',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.85rem',
-                fontWeight: 900,
-                letterSpacing: '0.08em',
+                backgroundColor: '#FFFFFF',
+                border: '1.5px solid #1F2937',
+                color: '#1F2937',
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.88rem',
+                fontWeight: 800,
                 textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                padding: '0.9rem 1.75rem',
                 textDecoration: 'none',
               }}
             >
-              <span>Join Builder Plan ($47/mo)</span>
+              <Compass size={16} color="#F18B25" />
+              <span>Read 3-Step Start Guide</span>
             </Link>
           </div>
         </div>
       </section>
+
     </div>
   );
 }

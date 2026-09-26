@@ -1,283 +1,221 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
-import SocialIcons from './SocialIcons';
-import { Shield, Sparkles, ArrowRight, Lock, EyeOff } from 'lucide-react';
-import { theme } from '../config/theme';
+import {
+  Shield,
+  Sparkles,
+  Lock,
+  Layers,
+  Wrench,
+  Calculator,
+  Compass,
+  Heart,
+  Bot
+} from 'lucide-react';
 
 export default function BrandFooter() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer
       style={{
-        backgroundColor: '#FFFCF9',
-        borderTop: '2px solid #1F2937',
-        padding: '3.5rem 1.25rem 2.5rem',
+        backgroundColor: '#FFFFFF',
+        borderTop: '1.5px solid #1F2937',
         marginTop: 'auto',
       }}
     >
+      {/* Centered Footer Content Container (Max-Width 1040px) */}
       <div
         style={{
-          maxWidth: '1080px',
+          maxWidth: '1040px',
           margin: '0 auto',
+          padding: '3.5rem 1.25rem 2.5rem',
         }}
       >
-        {/* Top Section: Brand Statement & Community Card */}
+        {/* Top Grid: Manifesto & Ecosystem */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
             gap: '2.5rem',
-            marginBottom: '3rem',
             paddingBottom: '2.5rem',
-            borderBottom: '2px solid #1F2937',
+            borderBottom: '1px solid #E5E7EB',
           }}
         >
-          {/* Brand Col */}
-          <div>
-            <Logo size="medium" showTagline={true} style={{ marginBottom: '1.25rem' }} />
+          {/* Brand & Gen X Women Mission */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+            <Logo size="medium" />
             <p
               style={{
                 fontFamily: "'DM Sans', system-ui, sans-serif",
-                fontSize: '0.92rem',
-                lineHeight: 1.65,
+                fontSize: '0.88rem',
                 color: '#4B5563',
-                maxWidth: '420px',
-                marginTop: '1rem',
+                lineHeight: 1.6,
+                margin: 0,
               }}
             >
-              The definitive operating system for Gen X women building faceless digital real estate.
-              Close the retirement gap, build quiet wealth, and scale recurring income assets without
-              ever stepping in front of a camera.
+              The faceless digital ecosystem designed specifically for Gen X women to close the
+              retirement gap by building automated digital assets with AI—without being on camera.
             </p>
-
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.35rem 0.65rem',
-                  backgroundColor: '#FFFFFF',
-                  border: '2px solid #1F2937',
-                  fontSize: '0.68rem',
-                  fontWeight: 800,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  color: '#1F2937',
-                  boxShadow: '2px 2px 0 0 #1F2937',
-                }}
-              >
-                <EyeOff size={13} color="#F18B25" />
-                <span>Faceless by Design</span>
-              </div>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.35rem 0.65rem',
-                  backgroundColor: '#FFFFFF',
-                  border: '2px solid #1F2937',
-                  fontSize: '0.68rem',
-                  fontWeight: 800,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  color: '#1F2937',
-                  boxShadow: '2px 2px 0 0 #1F2937',
-                }}
-              >
-                <Lock size={13} color="#47B7D4" />
-                <span>Privacy-First</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Links: Blueprint & Roadmaps */}
-          <div>
-            <h4
-              style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: '0.82rem',
-                fontWeight: 900,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: '#1F2937',
-                marginBottom: '1rem',
-              }}
-            >
-              Core Ecosystem
-            </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '0.65rem' }}>
-              {[
-                { label: 'Faceless Framework', href: '/framework' },
-                { label: 'Start Here Blueprint', href: '/start-here' },
-                { label: 'Digital Superpower Quiz', href: '/quiz' },
-                { label: 'Retirement Gap Calculator', href: '/gap' },
-                { label: 'Freedom Number Calculator', href: '/freedom' },
-                { label: '10x ROI Wealth Tool', href: '/roi' },
-                { label: 'Niche Scorecard', href: '/scorecard' },
-              ].map((item) => (
-                <li key={item.href}>
-                  <Link
-                    to={item.href}
-                    style={{
-                      fontFamily: "'DM Sans', system-ui, sans-serif",
-                      fontSize: '0.88rem',
-                      fontWeight: 600,
-                      color: '#4B5563',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Plans & Studio */}
-          <div>
-            <h4
-              style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: '0.82rem',
-                fontWeight: 900,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: '#1F2937',
-                marginBottom: '1rem',
-              }}
-            >
-              Plans & Studio
-            </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '0.65rem' }}>
-              {[
-                { label: 'Builder Plan ($47/mo)', href: '/builder' },
-                { label: 'Empire Plan ($197/mo)', href: '/empire' },
-                { label: 'Full Pricing Matrix', href: '/pricing' },
-                { label: 'Digital Products Catalog', href: '/products' },
-                { label: 'AI & Automation Engine', href: '/automation' },
-                { label: 'Our Mission & Story', href: '/about' },
-                { label: 'Contact & Support', href: '/contact' },
-              ].map((item) => (
-                <li key={item.href}>
-                  <Link
-                    to={item.href}
-                    style={{
-                      fontFamily: "'DM Sans', system-ui, sans-serif",
-                      fontSize: '0.88rem',
-                      fontWeight: 600,
-                      color: '#4B5563',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Community & Mastermind */}
-          <div>
             <div
               style={{
-                backgroundColor: '#FFFFFF',
-                border: '2px solid #1F2937',
-                padding: '1.35rem',
-                boxShadow: '4px 4px 0 0 #1F2937',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                backgroundColor: '#FFF7ED',
+                border: '1px solid #F18B25',
+                padding: '0.35rem 0.65rem',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: '#9A3412',
+                marginTop: '0.25rem',
+                width: 'fit-content',
               }}
             >
-              <h4
+              <Shield size={13} color="#F18B25" />
+              <span>100% Faceless • Zero Camera Required</span>
+            </div>
+          </div>
+
+          {/* Quick Pathways */}
+          <div>
+            <h4
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: '#1F2937',
+                marginBottom: '1rem',
+              }}
+            >
+              System Pathways
+            </h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              <li>
+                <Link to="/start-here" style={{ color: '#4B5563', textDecoration: 'none', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Compass size={14} color="#F18B25" />
+                  <span>3-Step Start Guide</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/framework" style={{ color: '#4B5563', textDecoration: 'none', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Layers size={14} color="#47B7D4" />
+                  <span>4-Tier Faceless System</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/pricing" style={{ color: '#4B5563', textDecoration: 'none', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span style={{ width: '14px', textAlign: 'center', fontWeight: 800, color: '#F18B25', fontSize: '0.8rem' }}>$</span>
+                  <span>Plans & Membership</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" style={{ color: '#4B5563', textDecoration: 'none', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Heart size={14} color="#E05D52" />
+                  <span>About Our Mission</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Interactive Tools */}
+          <div>
+            <h4
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: '#1F2937',
+                marginBottom: '1rem',
+              }}
+            >
+              Interactive Tools
+            </h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              <li>
+                <Link to="/gap" style={{ color: '#4B5563', textDecoration: 'none', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Calculator size={14} color="#F18B25" />
+                  <span>Retirement Gap Calculator</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/quiz" style={{ color: '#4B5563', textDecoration: 'none', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Sparkles size={14} color="#47B7D4" />
+                  <span>Superpower Archetype Quiz</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/tools" style={{ color: '#4B5563', textDecoration: 'none', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Wrench size={14} color="#1F2937" />
+                  <span>Complete Tools Directory</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Privacy & Trust Box */}
+          <div
+            style={{
+              backgroundColor: '#FAF8F5',
+              border: '1.5px solid #1F2937',
+              padding: '1.25rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.65rem',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+              <Lock size={15} color="#1F2937" />
+              <span
                 style={{
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: '0.85rem',
-                  fontWeight: 900,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  color: '#1F2937',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                Join 1,280+ Gen X Women
-              </h4>
-              <p
-                style={{
-                  fontFamily: "'DM Sans', system-ui, sans-serif",
-                  fontSize: '0.82rem',
-                  color: '#6B7280',
-                  lineHeight: 1.5,
-                  marginBottom: '1rem',
-                }}
-              >
-                Access private discussions, asset teardowns, and peer feedback in our exclusive community.
-              </p>
-              <a
-                href="https://facebook.com/groups/digitallydefin1"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  width: '100%',
-                  padding: '0.75rem 1rem',
-                  backgroundColor: '#F18B25',
-                  color: '#1F2937',
-                  border: '2px solid #1F2937',
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontSize: '0.75rem',
-                  fontWeight: 900,
-                  letterSpacing: '0.08em',
+                  fontWeight: 800,
                   textTransform: 'uppercase',
-                  textDecoration: 'none',
-                  boxSizing: 'border-box',
-                  boxShadow: '2px 2px 0 0 #1F2937',
+                  color: '#1F2937',
                 }}
               >
-                <span>Join Community</span>
-                <ArrowRight size={14} />
-              </a>
+                Privacy-First Architecture
+              </span>
             </div>
-            <div style={{ marginTop: '1.25rem' }}>
-              <SocialIcons />
-            </div>
+            <p
+              style={{
+                fontFamily: "'DM Sans', system-ui, sans-serif",
+                fontSize: '0.8rem',
+                color: '#4B5563',
+                margin: 0,
+                lineHeight: 1.5,
+              }}
+            >
+              Calculators and quiz assessments run client-side. Your financial figures and answers
+              remain private to your browser session.
+            </p>
           </div>
         </div>
 
-        {/* Bottom Strip */}
+        {/* Bottom Bar: Copyright & Principles */}
         <div
           style={{
+            paddingTop: '1.5rem',
             display: 'flex',
+            flexWrap: 'wrap',
             alignItems: 'center',
             justifyContent: 'space-between',
-            flexWrap: 'wrap',
             gap: '1rem',
-            fontSize: '0.75rem',
+            fontSize: '0.78rem',
             color: '#6B7280',
             fontFamily: "'DM Sans', system-ui, sans-serif",
           }}
         >
           <div>
-            &copy; {currentYear} DIGITALLYDEFINED. All rights reserved. Built for Gen X Women.
+            © {new Date().getFullYear()} DigitallyDefined. Built for Gen X Women Reinventing Themselves.
           </div>
-          <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-              <span
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: '#16A34A',
-                  display: 'inline-block',
-                }}
-              />
-              All Systems Operational
-            </span>
-            <span>Privacy-First Architecture</span>
+          <div style={{ display: 'flex', gap: '1.25rem' }}>
+            <Link to="/about" style={{ color: '#6B7280', textDecoration: 'none' }}>Manifesto</Link>
+            <Link to="/contact" style={{ color: '#6B7280', textDecoration: 'none' }}>Contact & Feedback</Link>
+            <Link to="/start-here" style={{ color: '#F18B25', textDecoration: 'none', fontWeight: 700 }}>Get Started</Link>
           </div>
         </div>
       </div>
