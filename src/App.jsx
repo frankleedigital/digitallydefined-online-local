@@ -2,6 +2,17 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import SiteLayout from './components/Layout/SiteLayout.jsx';
 import RequireUnlock from './components/RequireUnlock.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
+
+// The quiz is a multi-step flow with state on every screen. A render error
+// previously unmounted the tree and produced a fully blank page with no way
+// back. Each quiz route gets a scoped boundary so a crash shows a retry
+// instead — answers live in localStorage and survive.
+const quiz = (element) => (
+  <ErrorBoundary compact onReset={() => window.scrollTo({ top: 0 })}>
+    {element}
+  </ErrorBoundary>
+);
 
 const HomePage = lazy(() => import('./features/home/pages/HomePage.jsx'));
 const QuizPage = lazy(() => import('./features/quiz/pages/QuizPage.jsx'));
@@ -34,11 +45,11 @@ function App() {
         {/* Public funnel */}
         <Route path="/" element={<SiteLayout><HomePage /></SiteLayout>} />
         <Route path="/start-here" element={<SiteLayout><StartHerePage /></SiteLayout>} />
-        <Route path="/quiz" element={<SiteLayout><QuizPage /></SiteLayout>} />
-        <Route path="/quiz/inbox" element={<SiteLayout><QuizInboxPage /></SiteLayout>} />
+        <Route path="/quiz" element={quiz(<SiteLayout><QuizPage /></SiteLayout>)} />
+        <Route path="/quiz/inbox" element={quiz(<SiteLayout><QuizInboxPage /></SiteLayout>)} />
 
         {/* Results — reads localStorage, never route state */}
-        <Route path="/results" element={<SiteLayout><ResultsPage /></SiteLayout>} />
+        <Route path="/results" element={quiz(<SiteLayout><ResultsPage /></SiteLayout>)} />
 
         {/* Plan pages */}
         <Route path="/builder" element={<SiteLayout><BuilderPage /></SiteLayout>} />
@@ -51,7 +62,7 @@ function App() {
         {/* Personalized roadmap (post-quiz) + shareable persona roadmaps */}
         <Route path="/roadmap" element={guarded(<RoadmapPage />)} />
         <Route path="/roadmap/:type" element={<SiteLayout><RoadmapPage /></SiteLayout>} />
-        <Route path="/quiz/results" element={guarded(<ResultsPage />)} />
+        <Route path="/quiz/results" element={quiz(guarded(<ResultsPage />))} />
 
         {/* Private workspace + tools (unlocked after quiz) */}
         <Route path="/dashboard" element={guarded(<DashboardPage />)} />

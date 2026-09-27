@@ -20,8 +20,54 @@ class ErrorBoundary extends React.Component {
     console.error('[ErrorBoundary]', error, info);
   }
 
+  /** Clears the error so React re-renders the children from scratch. */
+  handleReset = () => {
+    this.setState({ error: null });
+    if (typeof this.props.onReset === 'function') this.props.onReset();
+  };
+
   render() {
     if (this.state.error) {
+      // Scoped variant (e.g. around the quiz): keep the surrounding chrome so
+      // the visitor is not dumped back to the launcher mid-flow.
+      if (this.props.compact) {
+        return (
+          <section className="story-section story-section--cream">
+            <div className="dd-container">
+              <div className="dd-card">
+                <p className="label label--orange">Something broke</p>
+                <h1 className="dd-heading">We could not load this step.</h1>
+                <p style={{ marginTop: '12px' }}>
+                  Your answers are still saved in this browser. Try again — if it keeps
+                  happening, email us and we will fix it.
+                </p>
+                <pre
+                  style={{
+                    marginTop: '16px',
+                    whiteSpace: 'pre-wrap',
+                    fontSize: '0.8rem',
+                    background: '#FFFAF5',
+                    border: '1px solid #111111',
+                    padding: '0.75rem',
+                    overflowX: 'auto',
+                  }}
+                >
+                  {String(this.state.error?.message || this.state.error)}
+                </pre>
+                <div className="action-row" style={{ marginTop: '1.5rem' }}>
+                  <button type="button" className="btn btn--primary" onClick={this.handleReset}>
+                    Try again
+                  </button>
+                  <a className="btn btn--outline" href="/">
+                    Back to the launcher
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
       return (
         <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: '2rem', background: '#FFFCF9', color: '#111111', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
           <div style={{ maxWidth: 560, border: '1px solid #111111', boxShadow: '1px 1px 0px rgba(0,0,0,0.08)', padding: '1.5rem', background: '#FFFFFF' }}>
