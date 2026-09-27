@@ -114,4 +114,5 @@ public
 ```
 
 .env.local
-.vercel
+.vercel/*
+!.vercel/repo.json
