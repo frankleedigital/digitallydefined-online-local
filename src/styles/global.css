@@ -1977,3 +1977,13 @@ p { text-align: left; }
   .brand-footer__nav-cols { grid-template-columns: 1fr; gap: 1.5rem; }
   .brand-footer__bottom { flex-direction: column; align-items: flex-start; }
 }
+
+/* Quiz email capture — optional delivery gate before the result */
+.quiz-capture__card { max-width: 42rem; margin: 0 auto; }
+.quiz-capture__title { font-family: var(--font-heading); font-weight: 800; text-transform: uppercase; letter-spacing: -0.03em; font-size: 1.5rem; margin: 0.75rem 0 0; }
+.quiz-capture__text { margin-top: 0.5rem; }
+.quiz-capture__row { display: grid; gap: 1rem; margin-top: 1.5rem; }
+@media (min-width: 640px) { .quiz-capture__row { grid-template-columns: 1fr 1fr; } }
+.quiz-capture__error { margin-top: 0.75rem; color: var(--color-red, #8B1A0A); font-size: 0.85rem; }
+.quiz-capture__submit { margin-top: 1.5rem; }
+

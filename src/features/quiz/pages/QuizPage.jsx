@@ -13,11 +13,12 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { QUESTIONS } from '../lib/questions.js';
 import { buildQuizResult, saveQuizResult } from '../lib/quizLogic.js';
 import QuizResultCard from '../components/QuizResultCard.jsx';
+import QuizEmailCapture from '../components/QuizEmailCapture.jsx';
 import { submitQuiz } from '../api/quizApi.js';
 import { useToolState } from '../../../hooks/useToolState.js';
 import { trackQuizStart, trackQuizComplete, trackFormSubmit } from '../../../utils/analytics.js';
 
-const STAGES = { INTRO: 'intro', QUESTIONS: 'questions', RESULT: 'result' };
+const STAGES = { INTRO: 'intro', QUESTIONS: 'questions', EMAIL: 'email', RESULT: 'result' };
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
 const BENEFITS = [
@@ -96,19 +97,25 @@ export default function QuizPage() {
     }
   }
 
-  function finishQuiz(finalAnswers) {
+  /**
+   * Build, persist and SHOW the result first; only then attempt delivery.
+   *
+   * The previous flow saved on delivery success, so a slow or failed network
+   * call left the user staring at a stalled page. Scoring is deterministic and
+   * local, so the result is always available and must never depend on the
+   * network. `recipient` is optional — the result renders with or without it.
+   */
+  function finishQuiz(finalAnswers, recipient) {
     const nextResult = buildQuizResult({
-      name: contact.name,
-      email: contact.email,
+      name: recipient?.name ?? contact.name,
+      email: recipient?.email ?? contact.email,
       answers: finalAnswers,
     });
 
     // Persist immediately: /results, /roadmap and /dashboard all read this key.
-    // The old flow only saved on a successful AI call, which is why a stale
-    // persona could stay on screen forever.
     setResult(nextResult);
     saveQuizResult(nextResult);
-    trackQuizComplete({ email: contact.email, superpower: nextResult.superpower });
+    trackQuizComplete({ email: nextResult.email, superpower: nextResult.superpower });
     updateToolState({
       quizComplete: true,
       quizSuperpower: nextResult.superpower,
@@ -116,7 +123,10 @@ export default function QuizPage() {
     });
     setStage(STAGES.RESULT);
     if (typeof window !== 'undefined') window.scrollTo({ top: 0 });
-    if (contact.email) deliver(nextResult, contact);
+
+    // Delivery is strictly best-effort and never gates the result.
+    const email = recipient?.email ?? contact.email;
+    if (email) deliver(nextResult, { name: recipient?.name ?? contact.name, email });
   }
 
   function selectAnswer(value) {
@@ -126,7 +136,14 @@ export default function QuizPage() {
       setStep(step + 1);
       return;
     }
-    finishQuiz(nextAnswers);
+    // Last question: ask for optional delivery before revealing the result.
+    setStage(STAGES.EMAIL);
+  }
+
+  /** Optional email gate. Always shows the result, even if delivery fails. */
+  function handleCapture(recipient) {
+    setContact(recipient);
+    finishQuiz(answers, recipient);
   }
 
   function goBack() {
@@ -137,7 +154,12 @@ export default function QuizPage() {
     setStep(step - 1);
   }
 
-  function handleCapture(event) {
+  /**
+   * Post-result delivery opt-in. Kept separate from handleCapture(): at this
+   * point the result is already on screen, so this only re-delivers and never
+   * re-runs scoring.
+   */
+  function handleResultCapture(event) {
     event.preventDefault();
     const recipient = { name: contact.name.trim(), email: contact.email.trim() };
     if (!recipient.email) return;
@@ -248,6 +270,32 @@ export default function QuizPage() {
     );
   }
 
+  // Optional email gate — shown after the last answer, before the result.
+  // "Skip" is always available: the result must never be held hostage to an
+  // email address.
+  if (stage === STAGES.EMAIL) {
+    return (
+      <section className="page-hero">
+        <div className="dd-container">
+          <QuizEmailCapture
+            onSubmit={handleCapture}
+            submitting={delivery.state === 'sending'}
+            error={null}
+          />
+          <div className="action-row">
+            <button
+              type="button"
+              className="btn btn--outline"
+              onClick={() => finishQuiz(answers, null)}
+            >
+              Skip — show my result
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="story-section story-section--cream">
       <div className="dd-container">
@@ -265,7 +313,7 @@ export default function QuizPage() {
           }
         >
           {!result?.emailSent && (
-            <form className="quiz-capture" onSubmit={handleCapture}>
+            <form className="quiz-capture" onSubmit={handleResultCapture}>
               <span className="label label--orange">Optional</span>
               <h3>Want this roadmap in your inbox?</h3>
               <p>
