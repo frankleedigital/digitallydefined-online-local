@@ -112,23 +112,32 @@ export function onHermesTyping(cb) {
 }
 
 /**
- * Probe Hermes reachability via /api/hermes/status.
- * The endpoint is served by the Vite middleware (dev/preview) and by the
- * Vercel serverless function (production).
+ * Probe Hermes reachability via the backend's /api/hermes/status route.
+ *
+ * The public site and the backend are different origins, so the path must be
+ * absolute — a relative fetch would hit the site's own Vite/Vercel handler and
+ * never reach the gateway. The route requires the dashboard API key and always
+ * answers 200 with an `available` boolean (it never fails hard), so a degraded
+ * gateway shows the widget as offline rather than breaking the page.
  */
 export async function getHermesStatus() {
+  const backendUrl = (import.meta.env.VITE_BACKEND_URL || 'https://digitallydefined-backend-clean.vercel.app/api').replace(/\/+$/, '');
+  const url = `${backendUrl}/hermes/status`;
   try {
-    const res = await fetch('/api/hermes/status', {
+    const res = await fetch(url, {
       method: 'GET',
-      headers: { Accept: 'application/json' },
+      headers: getHermesHeaders({ Accept: 'application/json' }),
       signal: AbortSignal.timeout(9000),
     });
     if (!res.ok) return { online: false, status: res.status, checkedAt: Date.now() };
     const data = await res.json();
     return {
-      online: Boolean(data?.online),
+      // The route returns `available`; accept `online` too so an older backend
+      // build keeps working.
+      online: Boolean(data?.available ?? data?.online),
       status: data?.status ?? res.status,
       provider: data?.provider || null,
+      reason: data?.reason || null,
       checkedAt: Date.now(),
     };
   } catch (err) {
