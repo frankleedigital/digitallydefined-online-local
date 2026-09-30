@@ -56,16 +56,16 @@ export default function BrandNav() {
         style={{
           backgroundColor: '#FFF7ED',
           borderBottom: '1px solid #FED7AA',
-          padding: '0.45rem 1rem',
+          padding: '0.45rem 1.5rem',
           textAlign: 'center',
-          fontSize: '0.78rem',
+          fontSize: '0.8rem',
           fontFamily: "'DM Sans', system-ui, sans-serif",
           color: '#9A3412',
           fontWeight: 600,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '0.5rem',
+          gap: '0.6rem',
         }}
       >
         <span
@@ -80,7 +80,7 @@ export default function BrandNav() {
             fontWeight: 800,
             textTransform: 'uppercase',
             letterSpacing: '0.08em',
-            padding: '0.1rem 0.45rem',
+            padding: '0.1rem 0.5rem',
           }}
         >
           GEN X REINVENTION
@@ -101,19 +101,20 @@ export default function BrandNav() {
         </Link>
       </div>
 
-      {/* Main Nav Container — Centered, Max-Width 1040px */}
+      {/* Main Nav Container — Widened & Unsquished (Max-Width 1200px, Generous Spacing) */}
       <div
         style={{
-          maxWidth: '1040px',
+          maxWidth: '1200px',
           margin: '0 auto',
-          padding: '0.75rem 1.25rem',
+          padding: '0.85rem 2rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: '1.5rem',
         }}
       >
         {/* Brand Logo */}
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        <Link to="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
           <Logo size="medium" />
         </Link>
 
@@ -122,7 +123,7 @@ export default function BrandNav() {
           style={{
             display: 'none',
             alignItems: 'center',
-            gap: '1.5rem',
+            gap: '1.75rem',
           }}
           className="desktop-nav"
         >
@@ -135,18 +136,19 @@ export default function BrandNav() {
                 to={link.href}
                 style={{
                   fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: '0.82rem',
+                  fontSize: '0.84rem',
                   fontWeight: active ? 800 : 600,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
+                  letterSpacing: '0.06em',
                   color: active ? '#F18B25' : '#1F2937',
                   textDecoration: 'none',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.35rem',
+                  gap: '0.4rem',
                   padding: '0.35rem 0.25rem',
                   borderBottom: active ? '2px solid #F18B25' : '2px solid transparent',
                   transition: 'all 0.15s ease',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {Icon && <Icon size={14} strokeWidth={2} />}
@@ -161,7 +163,8 @@ export default function BrandNav() {
           style={{
             display: 'none',
             alignItems: 'center',
-            gap: '0.75rem',
+            gap: '1rem',
+            flexShrink: 0,
           }}
           className="desktop-nav"
         >
@@ -172,14 +175,15 @@ export default function BrandNav() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.35rem',
+                gap: '0.4rem',
                 backgroundColor: '#FFF7ED',
                 border: '1px solid #F18B25',
                 color: '#9A3412',
-                fontSize: '0.72rem',
+                fontSize: '0.74rem',
                 fontWeight: 700,
-                padding: '0.35rem 0.65rem',
+                padding: '0.4rem 0.75rem',
                 textDecoration: 'none',
+                whiteSpace: 'nowrap',
               }}
             >
               <Sparkles size={12} color="#F18B25" />
@@ -191,17 +195,18 @@ export default function BrandNav() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.35rem',
+                gap: '0.4rem',
                 backgroundColor: '#FFFFFF',
                 border: '1.5px solid #1F2937',
                 color: '#1F2937',
-                fontSize: '0.75rem',
+                fontSize: '0.76rem',
                 fontWeight: 800,
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
-                padding: '0.45rem 0.85rem',
+                padding: '0.48rem 0.95rem',
                 textDecoration: 'none',
                 boxShadow: 'none',
+                whiteSpace: 'nowrap',
               }}
             >
               <Sparkles size={13} color="#F18B25" />
@@ -215,17 +220,18 @@ export default function BrandNav() {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.4rem',
+              gap: '0.45rem',
               backgroundColor: '#F18B25',
               border: '1.5px solid #1F2937',
               color: '#1F2937',
-              fontSize: '0.75rem',
+              fontSize: '0.76rem',
               fontWeight: 800,
               textTransform: 'uppercase',
               letterSpacing: '0.06em',
-              padding: '0.45rem 1rem',
+              padding: '0.48rem 1.15rem',
               textDecoration: 'none',
               boxShadow: 'none',
+              whiteSpace: 'nowrap',
             }}
           >
             <span>Start Here</span>
@@ -241,8 +247,8 @@ export default function BrandNav() {
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '38px',
-            height: '38px',
+            width: '40px',
+            height: '40px',
             backgroundColor: '#FFFFFF',
             border: '1.5px solid #1F2937',
             color: '#1F2937',
@@ -262,10 +268,10 @@ export default function BrandNav() {
           style={{
             backgroundColor: '#FFFFFF',
             borderTop: '1.5px solid #1F2937',
-            padding: '1rem 1.25rem',
+            padding: '1.25rem 1.5rem',
             display: 'flex',
             flexDirection: 'column',
-            gap: '0.75rem',
+            gap: '0.85rem',
           }}
         >
           {navLinks.map((link) => {
@@ -332,7 +338,7 @@ export default function BrandNav() {
 
       {/* Inline styles for responsive display */}
       <style>{`
-        @media (min-width: 820px) {
+        @media (min-width: 860px) {
           .desktop-nav {
             display: flex !important;
           }
